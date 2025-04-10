@@ -3,8 +3,10 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
-import { ProtectedRoute } from './component/protectedRoute';
+import { ProtectedRoute } from './component/ProtectedRoute';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { MatchingPage } from './pages/MatchingPage';
+import { ProfilPage } from './pages/ProfilPage';
 
 function App() {
   return (
@@ -15,7 +17,8 @@ function App() {
           <Route path="/" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />}/>
           {/* Add other routes here */}
-          <Route path="/dashboard" element={<ProtectedRoute>hello</ProtectedRoute>}/>
+          <Route path="/match" element={<ProtectedRoute><MatchingPage/></ProtectedRoute>}/>
+          <Route path="/profil" element={<ProtectedRoute><ProfilPage/></ProtectedRoute>}/>
          
           {/* Last for not found route */}
           <Route path="*" element={<NotFoundPage />} />

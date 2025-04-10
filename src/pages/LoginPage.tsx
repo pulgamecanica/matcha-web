@@ -19,7 +19,7 @@ export function LoginPage() {
 
     try {
       await login(username, password);
-      navigate('/dashboard');
+      navigate('/match');
     } catch (err: unknown) {
       if (isAxiosError(err)) {
         if (err.response?.status === 401) {
