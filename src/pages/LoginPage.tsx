@@ -1,7 +1,7 @@
-// src/pages/LoginPage.tsx
-
-import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'
+import { useAuth } from '@hooks/useAuth';
+import LoadingScreen from '@components/LoadingScreen';
 import { useNavigate } from 'react-router-dom';
 import { isAxiosError } from 'axios';
 
@@ -9,9 +9,18 @@ export function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
-
-  const { login } = useAuth();
+  const { isAuthenticated, loading, login } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, loading, navigate]);
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -19,7 +28,6 @@ export function LoginPage() {
 
     try {
       await login(username, password);
-      navigate('/dashboard');
     } catch (err: unknown) {
       if (isAxiosError(err)) {
         if (err.response?.status === 401) {
@@ -36,43 +44,60 @@ export function LoginPage() {
   }
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-4 border rounded">
-      <h1 className="text-xl mb-4">Login</h1>
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <div>
-          <label className="block mb-1">Username</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            autoComplete="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1">Password</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="bg-blue-600 text-white py-2 px-4 rounded"
-        >
+    <div className="flex justify-center items-center min-h-screen px-4">
+      <div className="w-full max-w-md p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+        <h1 className="text-2xl font-semibold mb-6 text-center text-gray-900 dark:text-white">
           Login
-        </button>
-      </form>
+        </h1>
 
-      {error && <p className="text-red-600 mt-2">{error}</p>}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">
+              Username
+            </label>
+            <input
+              type="text"
+              autoComplete="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
 
-      {/* You can link to the RegisterPage if using react-router */}
-      {/* <Link to="/register" className="text-blue-700">Go to Register</Link> */}
+          <div>
+            <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-200">
+              Password
+            </label>
+            <input
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
+          >
+            Login
+          </button>
+        </form>
+
+        {error && (
+          <p className="mt-4 text-center text-sm text-red-600 dark:text-red-400">
+            {error}
+          </p>
+        )}
+
+        <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-300">
+          Don't have an account?{' '}
+          <Link to="/register" className="text-blue-600 dark:text-blue-400 hover:underline">
+            Register
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
