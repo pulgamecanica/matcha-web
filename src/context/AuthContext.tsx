@@ -1,19 +1,9 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect,
-} from 'react';
-import {
-  loginUser,
-  logoutUser,
-  registerUser,
-  confirmUser,
-  RegisterData,
-} from '../api/authService';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode';
+import { loginUser, logoutUser, registerUser, confirmUser, RegisterData } from '../api/authService';
 
 type AuthContextType = {
+  isAuthentificated: boolean;
   token: string | null;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
@@ -23,24 +13,32 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children } : { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
     // On mount, check if a token is in localStorage
     const storedToken = localStorage.getItem('token');
-    if (storedToken) {
-      setToken(storedToken);
+    if (storedToken && !isTokenExpired(storedToken)) {
+     setToken(storedToken);
     }
   }, []);
+
+  const isTokenExpired = (token: string): boolean => {
+    const decoded: any = jwtDecode(token);
+    const currentTime = Date.now() / 1000;
+    return decoded.exp < currentTime;
+  };
 
   /**
    * LOG IN
    */
   async function login(username: string, password: string) {
-    const newToken = await loginUser({ username, password });
-    localStorage.setItem('token', newToken);
-    setToken(newToken);
+    try {
+      const newToken = await loginUser({ username, password });
+      localStorage.setItem('token', newToken);
+      setToken(newToken);
+    } catch (error) {console.error('Login failed', error)};
   }
 
   /**
@@ -48,6 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
    */
   function logout() {
     logoutUser();
+    localStorage.removeItem('token');
     setToken(null);
   }
 
@@ -67,6 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const value: AuthContextType = {
     token,
+    isAuthentificated: !!token,
     login,
     logout,
     register,
@@ -82,3 +82,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   return useContext(AuthContext);
 }
+

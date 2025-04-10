@@ -19,7 +19,7 @@ export function RegisterPage() {
     first_name: '',
     last_name: '',
     gender: 'other',
-    sexual_preferences: 'both',
+    sexual_preferences: 'male',
   });
 
   function handleChange(
