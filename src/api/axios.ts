@@ -41,7 +41,7 @@ axiosInstance.interceptors.response.use(
 
       // Unauthorized or Forbidden – your Sinatra API might use 401 or 403
       // for invalid/expired tokens. Decide how to handle:
-      if (status === 401 || status === 403) {
+      if (status === 401) {
         // Option A: Force logout:
         // localStorage.removeItem('token');
         // window.location.href = '/login'; // or set some global state
