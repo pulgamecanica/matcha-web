@@ -3,8 +3,11 @@ import { AuthProvider } from '@context/AuthProvider';
 import { ThemeProvider } from '@context/ThemeProvider';
 import { LoginPage } from '@pages/LoginPage';
 import { RegisterPage } from '@pages/RegisterPage';
+import { MatchingPage } from '@pages/MatchingPage';
+import { ProfilePage } from '@pages/ProfilePage';
 import { ProtectedRoute } from '@components/ProtectedRoute';
 import ThemeToggle from '@components/ThemeToggle';
+import { NotFoundPage } from '@pages/NotFoundPage';
 
 function App() {
   return (
@@ -19,6 +22,9 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/" element={<ProtectedRoute>hello</ProtectedRoute>} />
+              <Route path="/match" element={<ProtectedRoute><MatchingPage/></ProtectedRoute>}/>
+              <Route path="/profile" element={<ProtectedRoute><ProfilePage/></ProtectedRoute>}/>
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </BrowserRouter>
         </AuthProvider>

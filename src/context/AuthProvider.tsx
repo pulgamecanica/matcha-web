@@ -11,6 +11,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const storedToken = localStorage.getItem('token');
     if (storedToken && !isTokenExpired(storedToken)) {
       setToken(storedToken);
+      // Fetch the user
+      // set up context useUser();
     }
     setLoading(false);
   }, []);
@@ -25,9 +27,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const newToken = await loginUser({ username, password });
     localStorage.setItem('token', newToken);
     setToken(newToken);
+    // Should useUser => add user
   }
 
   function logout() {
+    // Should useUser => remove user
     logoutUser();
     setToken(null);
   }
@@ -42,7 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const value = {
     token,
-    isAuthenticated: !!token,
+    isAuthenticated: !!token, // False, is authenticated is true when the token is valid and the user is fetched!
     login,
     logout,
     register,
