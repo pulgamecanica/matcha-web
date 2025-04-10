@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { ProtectedRoute } from './component/protectedRoute';
+import { NotFoundPage } from './pages/NotFoundPage';
 
 function App() {
   return (
@@ -15,6 +16,9 @@ function App() {
           <Route path="/register" element={<RegisterPage />}/>
           {/* Add other routes here */}
           <Route path="/dashboard" element={<ProtectedRoute>hello</ProtectedRoute>}/>
+         
+          {/* Last for not found route */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
