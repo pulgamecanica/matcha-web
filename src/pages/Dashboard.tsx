@@ -1,54 +1,42 @@
-import { useEffect, useState } from 'react';
-import axios from '@api/axios';
+import { DashboardCard } from '@components/DashboardCard';
+import { Heart, LogOut, User } from 'lucide-react';
+import { useAuth } from '@hooks/useAuth';
 import LoadingScreen from '@components/LoadingScreen';
-import { User } from '../types';
 
 export function Dashboard() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await axios.get<{ data: User }>('/me');
-        setUser(res.data.data);
-      } catch (err: any) {
-        const message = err?.response?.data?.error || err.message || 'Unknown error';
-        setError(message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, []);
+  const { loading } = useAuth();
 
   if (loading) return <LoadingScreen />;
-  if (error) return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-900 text-red-400 p-4">
-      <p>Error: {error}</p>
-    </div>
-  );
 
   return (
-    <div className="p-8 text-white bg-gray-900 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">Welcome, {user?.first_name} {user?.last_name} 👋</h1>
+    <div className="p-8 min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
+      <h1 className="text-3xl font-bold mb-6">Welcome 👋</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-800 p-6 rounded-xl shadow-lg">
-        <div>
-          <p><strong>Username:</strong> {user?.username}</p>
-          <p><strong>Email:</strong> {user?.email}</p>
-          <p><strong>Gender:</strong> {user?.gender}</p>
-          <p><strong>Sexual Preference:</strong> {user?.sexual_preferences}</p>
-        </div>
-        <div>
-          <p><strong>Email Verified:</strong> {user?.is_email_verified === 't' ? 'Yes' : 'No'}</p>
-          <p><strong>Banned:</strong> {user?.is_banned === 't' ? 'Yes' : 'No'}</p>
-          <p><strong>Online Status:</strong> {user?.online_status === 't' ? 'Online' : 'Offline'}</p>
-          <p><strong>Fame Rating:</strong> {user?.fame_rating}</p>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <DashboardCard
+          title="Profile"
+          icon={<User className="text-blue-400" />}
+          to="/profil"
+          description="Manage and update your personal profile."
+        />
+        <DashboardCard
+          title="Matching"
+          icon={<Heart className="text-red-500" />}
+          to="/match"
+          description="Find and match with others."
+        />
+        <DashboardCard
+          title="Log Out"
+          icon={<LogOut className="text-blue-400" />}
+          to="/login"
+          description="Log out from your account."
+        />
       </div>
     </div>
   );
 }
+
+
+
+
+
