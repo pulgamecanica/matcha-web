@@ -27,11 +27,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const newToken = await loginUser({ username, password });
     localStorage.setItem('token', newToken);
     setToken(newToken);
-    // Should useUser => add user
   }
 
   function logout() {
-    // Should useUser => remove user
     logoutUser();
     setToken(null);
   }
