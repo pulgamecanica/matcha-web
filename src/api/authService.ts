@@ -27,7 +27,7 @@ export async function confirmUser(username: string): Promise<void> {
 export async function loginUser(credentials: AuthCredentials): Promise<string> {
   const response = await axiosInstance.post('/auth/login', credentials);
   // 200 => { token: string }
-  const { token } = response.data as { token: string };
+  const { token } = response as { token: string };
   return token;
 }
 

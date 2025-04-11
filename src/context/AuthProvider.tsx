@@ -15,20 +15,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const storedToken = localStorage.getItem('token');
     
     async function initializeAuth() {
-      if (storedToken && !isTokenExpired(storedToken)) {
-        setToken(storedToken);
+      try {
+        if (storedToken && !isTokenExpired(storedToken)) {
+          console.log("LOL")
+          setToken(storedToken);
 
-        try {
-          const user = await fetchCurrentUser();
-          setUser(user);
-          setIsAuthenticated(true);
-        } catch (err) {
-          console.error('Failed to fetch user:', err);
-          localStorage.removeItem('token');
-          setToken(null);
-          setUser(null);
-          setIsAuthenticated(false);
+            const user = await fetchCurrentUser();
+            setUser(user);
+            setIsAuthenticated(true);
         }
+      } catch (err) {
+        console.error('Failed to fetch user:', err);
+        localStorage.removeItem('token');
+        setToken(null);
+        setUser(null);
+        setIsAuthenticated(false);
       }
       setLoading(false);
     }
@@ -56,7 +57,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   function logout() {
     logoutUser();
-    localStorage.removeItem('token');
     setToken(null);
     setUser(null);
     setIsAuthenticated(false);
