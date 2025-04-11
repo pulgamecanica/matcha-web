@@ -1,7 +1,7 @@
-import { Navigate } from 'react-router-dom';
 import { useAuth } from '@hooks/useAuth';
 import LoadingScreen from '@components/LoadingScreen';
 import { JSX } from 'react';
+import { ErrorBlockerMessage } from '@components/ErrorBlockerMessage';
 
 export function ProtectedRoute({ children }: { children: JSX.Element }) {
   const { token, isAuthenticated, loading } = useAuth();
@@ -11,7 +11,7 @@ export function ProtectedRoute({ children }: { children: JSX.Element }) {
   }
 
   if (!token || !isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <ErrorBlockerMessage message="Session expired. Please log in again. ⚠️" locationMessage="Go to Login" />;
   }
 
   return children;
