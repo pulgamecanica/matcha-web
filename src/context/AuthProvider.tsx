@@ -6,11 +6,13 @@ import { AuthContext } from '@context/AuthContext';
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     if (storedToken && !isTokenExpired(storedToken)) {
       setToken(storedToken);
+      setIsAuthenticated(true);
       // Fetch the user
       // set up context useUser();
     }
@@ -27,12 +29,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const newToken = await loginUser({ username, password });
     localStorage.setItem('token', newToken);
     setToken(newToken);
+    setIsAuthenticated(true);
   }
 
   function logout() {
     logoutUser();
     setToken(null);
-  }
+    setIsAuthenticated(false);
+  };
 
   async function register(data: RegisterData) {
     await registerUser(data);
@@ -44,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const value = {
     token,
-    isAuthenticated: !!token, // False, is authenticated is true when the token is valid and the user is fetched!
+    isAuthenticated,
     login,
     logout,
     register,
