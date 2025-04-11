@@ -16,7 +16,7 @@ export function Dashboard() {
         <DashboardCard
           title="Profile"
           icon={<User className="text-blue-400" />}
-          to="/profil"
+          to="/profile"
           description="Manage and update your personal profile."
         />
         <DashboardCard
