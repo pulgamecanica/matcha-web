@@ -17,7 +17,7 @@ export function Dashboard() {
 
   return (
     <div className="p-8 min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
-      <h1 className="text-3xl font-bold mb-6">Welcome {user?.data?.username}👋</h1>
+      <h1 className="text-3xl font-bold mb-6">Welcome {user?.username}👋</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <DashboardCard

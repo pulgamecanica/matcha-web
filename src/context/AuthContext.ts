@@ -5,7 +5,7 @@ import { User } from '@/types/user';
 export type AuthContextType = {
   isAuthenticated: boolean;
   token: string | null;
-  user: { data: User } | null;
+  user: User | null;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
   register: (data: RegisterData) => Promise<void>;
