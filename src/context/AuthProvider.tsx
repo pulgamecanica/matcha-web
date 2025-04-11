@@ -17,7 +17,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async function initializeAuth() {
       try {
         if (storedToken && !isTokenExpired(storedToken)) {
-          console.log("LOL")
           setToken(storedToken);
 
             const user = await fetchCurrentUser();
