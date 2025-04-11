@@ -11,8 +11,6 @@ export type RegisterData = {
   password: string;
   first_name: string;
   last_name: string;
-  gender: 'male' | 'female' | 'other';
-  sexual_preferences: 'male' | 'female' | 'non_binary' | 'everyone';
 };
 
 export async function registerUser(data: RegisterData): Promise<void> {
