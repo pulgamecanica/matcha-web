@@ -24,8 +24,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setIsAuthenticated(true);
         }
       } catch (err) {
-        console.error('Failed to fetch user:', err);
-        localStorage.removeItem('token');
+        logoutUser();
         setToken(null);
         setUser(null);
         setIsAuthenticated(false);

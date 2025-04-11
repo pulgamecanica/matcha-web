@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 
 /**
  * Create a base axios instance:
@@ -15,7 +15,7 @@ const axiosInstance = axios.create({
  * - Attach bearer token if present in localStorage (or from a more secure store).
  */
 axiosInstance.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem('token');
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -34,7 +34,12 @@ axiosInstance.interceptors.request.use(
  * - E.g., if server returns 401/403, we can log out or refresh token.
  */
 axiosInstance.interceptors.response.use(
-  (response: AxiosResponse) => response,
+  (response: AxiosResponse) => {
+    if (response.data && typeof response.data === 'object' && 'data' in response.data) {
+      return response.data.data;
+    }
+    return response.data;
+  },
   async (error: AxiosError) => {
     if (error.response) {
       const status = error.response.status;
