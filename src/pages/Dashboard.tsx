@@ -7,16 +7,17 @@ import { useNavigate } from 'react-router-dom';
 export function Dashboard() {
   const { loading, logout } = useAuth();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
-  if (loading) return <LoadingScreen />;
+  if (loading || !user) return <LoadingScreen />;
 
   return (
     <div className="p-8 min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
-      <h1 className="text-3xl font-bold mb-6">Welcome 👋</h1>
+      <h1 className="text-3xl font-bold mb-6">Welcome {user?.username}👋</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <DashboardCard

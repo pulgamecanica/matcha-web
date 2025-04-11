@@ -34,7 +34,12 @@ axiosInstance.interceptors.request.use(
  * - E.g., if server returns 401/403, we can log out or refresh token.
  */
 axiosInstance.interceptors.response.use(
-  (response: AxiosResponse) => response, // just return the response if successful
+  (response: AxiosResponse) => {
+    if (response.data && typeof response.data === 'object' && 'data' in response.data) {
+      return response.data.data;
+    }
+    return response.data;
+  },
   async (error: AxiosError) => {
     if (error.response) {
       const status = error.response.status;

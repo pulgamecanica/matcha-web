@@ -2,26 +2,47 @@ import { ReactNode, useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { loginUser, logoutUser, registerUser, confirmUser, RegisterData } from '@api/authService';
 import { AuthContext } from '@context/AuthContext';
+import { User } from '@/types/user';
+import { fetchCurrentUser } from '@/api/userService';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
-    if (storedToken && !isTokenExpired(storedToken)) {
-      setToken(storedToken);
-      setIsAuthenticated(true);
-      // Fetch the user
-      // set up context useUser();
+    
+    async function initializeAuth() {
+      try {
+        if (storedToken && !isTokenExpired(storedToken)) {
+          console.log("LOL")
+          setToken(storedToken);
+
+            const user = await fetchCurrentUser();
+            setUser(user);
+            setIsAuthenticated(true);
+        }
+      } catch (err) {
+        console.error('Failed to fetch user:', err);
+        localStorage.removeItem('token');
+        setToken(null);
+        setUser(null);
+        setIsAuthenticated(false);
+      }
+      setLoading(false);
     }
-    setLoading(false);
+    initializeAuth();
   }, []);
 
   const isTokenExpired = (token: string): boolean => {
     const decoded = jwtDecode(token);
     const currentTime = Date.now() / 1000;
+    if (!decoded.exp) {
+      return true;
+    }
+  
     return decoded.exp < currentTime;
   };
 
@@ -29,12 +50,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const newToken = await loginUser({ username, password });
     localStorage.setItem('token', newToken);
     setToken(newToken);
+    const user = await fetchCurrentUser();
+    setUser(user);
     setIsAuthenticated(true);
   }
 
   function logout() {
     logoutUser();
     setToken(null);
+    setUser(null);
     setIsAuthenticated(false);
   };
 
@@ -54,6 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     register,
     confirm,
     loading,
+    user,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
