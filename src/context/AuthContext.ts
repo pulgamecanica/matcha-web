@@ -11,6 +11,7 @@ export type AuthContextType = {
   register: (data: RegisterData) => Promise<void>;
   confirm: (username: string) => Promise<void>;
   loading: boolean;
+  profileSetupComplete: boolean;
 };
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType);

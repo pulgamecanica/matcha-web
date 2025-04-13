@@ -1,3 +1,4 @@
+import { showApiErrorToast } from '@/utils/showApiErrorToast';
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 
 /**
@@ -42,6 +43,7 @@ axiosInstance.interceptors.response.use(
   },
   async (error: AxiosError) => {
     if (error.response) {
+      showApiErrorToast(error);
       const status = error.response.status;
 
       // Unauthorized or Forbidden – your Sinatra API might use 401 or 403

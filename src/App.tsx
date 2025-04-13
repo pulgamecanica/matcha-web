@@ -9,9 +9,39 @@ import { Dashboard } from '@pages/Dashboard';
 import { NotFoundPage } from '@pages/NotFoundPage';
 import { ProtectedRoute } from '@components/ProtectedRoute';
 import ThemeToggle from '@components/ThemeToggle';
+import { Toaster } from 'react-hot-toast';
+import { SetupProfilePage } from '@pages/SetupProfilePage';
+import { EditProfilePage } from './pages/EditProfilePage';
 
 function App() {
   return (
+    <>
+    <Toaster
+      position="top-right"
+      toastOptions={{
+        className: `
+          border
+          shadow-lg
+          px-4 py-3 rounded-md
+          text-sm font-medium
+          bg-white text-gray-800 border-gray-300
+          dark:bg-gray-800 dark:text-white dark:border-gray-600
+        `,
+        duration: 5000,
+        success: {
+          className: `
+            bg-green-500 text-white border-green-700
+            dark:bg-green-600 dark:border-green-400 dark:text-white
+          `,
+        },
+        error: {
+          className: `
+            bg-red-500 text-white border-red-700
+            dark:bg-gray-600 dark:border-red-400 dark:text-white
+          `,
+        },
+      }}
+    />
     <ThemeProvider>
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
         <div className="fixed bottom-4 right-4 z-50">
@@ -23,6 +53,8 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
+              <Route path="/setup" element={<ProtectedRoute><SetupProfilePage /></ProtectedRoute>} />
+              <Route path="/profile/edit" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
               <Route path="/match" element={<ProtectedRoute><MatchingPage/></ProtectedRoute>}/>
               <Route path="/profile" element={<ProtectedRoute><ProfilePage/></ProtectedRoute>}/>
               <Route path="*" element={<NotFoundPage />} />
@@ -31,7 +63,7 @@ function App() {
         </AuthProvider>
       </div>
     </ThemeProvider>
-
+    </>
   );
 }
 
