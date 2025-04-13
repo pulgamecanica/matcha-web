@@ -4,6 +4,7 @@ import { useAuth } from '@hooks/useAuth';
 import LoadingScreen from '@components/LoadingScreen';
 import { useNavigate } from 'react-router-dom';
 import { isAxiosError } from 'axios';
+import { showApiErrorToast } from '@/utils/showApiErrorToast';
 
 export function LoginPage() {
   const [username, setUsername] = useState('');
@@ -38,7 +39,7 @@ export function LoginPage() {
           setError('Login failed. Please try again.');
         }
       } else {
-        setError('An unexpected error occurred.');
+        showApiErrorToast(err);
       }
     }
   }

@@ -77,6 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     confirm,
     loading,
     user,
+    profileSetupComplete: !!(user?.gender && user?.sexual_preferences),
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

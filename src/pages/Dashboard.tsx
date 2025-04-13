@@ -1,5 +1,5 @@
 import { DashboardCard } from '@components/DashboardCard';
-import { Heart, LogOut, User } from 'lucide-react';
+import { Heart, LogOut, User, Pencil } from 'lucide-react';
 import { useAuth } from '@hooks/useAuth';
 import LoadingScreen from '@components/LoadingScreen';
 import { useNavigate } from 'react-router-dom';
@@ -27,14 +27,20 @@ export function Dashboard() {
           description="Manage and update your personal profile."
         />
         <DashboardCard
+          title="Edit Profile"
+          icon={<Pencil className="text-blue-400" />}
+          to="/profile/edit"
+          description="Update your personal information and preferences."
+        />
+        <DashboardCard
           title="Matching"
-          icon={<Heart className="text-red-500" />}
+          icon={<Heart className="text-pink-500" />}
           to="/match"
           description="Find and match with others."
         />
         <DashboardCard
           title="Log Out"
-          icon={<LogOut className="text-blue-400" />}
+          icon={<LogOut className="text-red-400" />}
           description="Log out from your account."
           onClick={handleLogout}
         />

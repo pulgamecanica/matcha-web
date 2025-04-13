@@ -48,7 +48,7 @@ export function RegisterPage() {
     } catch (err: unknown) {
       if (isAxiosError(err)) {
         if (err.response?.status === 422) {
-          setError('Validation error. Check your data or if username/email is taken.');
+          setError('Check your data or if username/email is taken.');
         } else {
           setError('Registration failed. Please try again.');
         }
