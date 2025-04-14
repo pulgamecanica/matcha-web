@@ -3,13 +3,10 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '@hooks/useAuth';
 import LoadingScreen from '@components/LoadingScreen';
 import { useNavigate } from 'react-router-dom';
-import { isAxiosError } from 'axios';
-import { showApiErrorToast } from '@/utils/showApiErrorToast';
 
 export function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
   const { isAuthenticated, loading, login } = useAuth();
   const navigate = useNavigate();
 
@@ -25,24 +22,9 @@ export function LoginPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
-
-    try {
-      await login(username, password);
-    } catch (err: unknown) {
-      if (isAxiosError(err)) {
-        if (err.response?.status === 401) {
-          setError('Invalid credentials.');
-        } else if (err.response?.status === 403) {
-          setError('User not confirmed or banned.');
-        } else {
-          setError('Login failed. Please try again.');
-        }
-      } else {
-        showApiErrorToast(err);
-      }
-    }
+    await login(username, password);
   }
+  
 
   return (
     <div className="flex justify-center items-center min-h-screen px-4">
@@ -85,12 +67,6 @@ export function LoginPage() {
             Login
           </button>
         </form>
-
-        {error && (
-          <p className="mt-4 text-center text-sm text-red-600 dark:text-red-400">
-            {error}
-          </p>
-        )}
 
         <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-300">
           Don't have an account?{' '}
