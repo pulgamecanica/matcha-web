@@ -1,20 +1,19 @@
 import { DashboardCard } from '@components/DashboardCard';
 import { Heart, LogOut, User, Pencil } from 'lucide-react';
-import { useAuth } from '@hooks/useAuth';
+import { useUserContext } from '@/context/UserProvider'
 import LoadingScreen from '@components/LoadingScreen';
 import { useNavigate } from 'react-router-dom';
 
 export function Dashboard() {
-  const { loading, logout } = useAuth();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading, error } = useUserContext();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+  // const handleLogout = () => {
+  //   logout();
+  //   navigate('/login');
+  // };
   if (loading || !user) return <LoadingScreen />;
-
+  console.log(user)
   return (
     <div className="p-8 min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
       <h1 className="text-3xl font-bold mb-6">Welcome {user?.username}👋</h1>
@@ -38,12 +37,12 @@ export function Dashboard() {
           to="/match"
           description="Find and match with others."
         />
-        <DashboardCard
+        {/* <DashboardCard
           title="Log Out"
           icon={<LogOut className="text-red-400" />}
           description="Log out from your account."
           onClick={handleLogout}
-        />
+        /> */}
       </div>
     </div>
   );

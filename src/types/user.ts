@@ -1,31 +1,42 @@
-export type User = {
-  id: string;
-  username: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  gender: 'male' | 'female' | 'other';
-  sexual_preferences: 'male' | 'female' | 'both';
-  biography: string | null;
-  is_email_verified: 't' | 'f';
-  is_banned: 't' | 'f';
-  fame_rating: string;
-  birth_year: number | null;
-  latitude: number | null;
-  longitude: number | null;
-  online_status: 't' | 'f';
-  last_seen_at: string | null;
-  created_at: string;
-  updated_at: string;
-  profile_picture_id: string | null;
-};
+export type Gender = 'male' | 'female' | 'other'
+export type SexualPreferences = 'male' | 'female' | 'non_binary' | 'everyone'
 
-export type UpdateUserProfilePayload = {
-  username?: string;
-  first_name?: string;
-  last_name?: string;
-  gender?: 'male' | 'female' | 'other';
-  sexual_preferences?: 'male' | 'female' | 'non_binary' | 'everyone';
-  biography?: string;
-  birth_year?: number;
-};
+export type Picture = {
+  id: number
+  url: string
+  is_profile: boolean
+}
+
+export type Tag = {
+  id: number
+  name: string
+}
+
+export type PublicUser = {
+  id: number
+  username: string
+  first_name: string
+  last_name: string
+  biography: string
+  pictures: Picture[]
+}
+
+export type User = {
+  id: number
+  username: string
+  email: string
+  first_name: string
+  last_name: string
+  gender: Gender
+  sexual_preferences: SexualPreferences
+  biography: string
+  latitude: number
+  longitude: number
+  confirmed: boolean
+  pictures: Picture[]
+  tags: Tag[]
+  liked: PublicUser[]
+  liked_by: PublicUser[]
+  matches: PublicUser[]
+}
+

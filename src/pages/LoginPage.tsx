@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'
-import { useAuth } from '@hooks/useAuth';
 import LoadingScreen from '@components/LoadingScreen';
 import { useNavigate } from 'react-router-dom';
 import { isAxiosError } from 'axios';
 import { showApiErrorToast } from '@/utils/showApiErrorToast';
+import { useLogin } from '@/hooks/useLogin';
 
 export function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const { isAuthenticated, loading, login } = useAuth();
+  const { loading, login } = useLogin();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/');
-    }
-  }, [isAuthenticated, loading, navigate]);
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+  //     navigate('/');
+  //   }
+  // }, [isAuthenticated, loading, navigate]);
 
   if (loading) {
     return <LoadingScreen />;
@@ -28,7 +28,8 @@ export function LoginPage() {
     setError(null);
 
     try {
-      await login(username, password);
+      await login({ username, password });
+      navigate('/');
     } catch (err: unknown) {
       if (isAxiosError(err)) {
         if (err.response?.status === 401) {

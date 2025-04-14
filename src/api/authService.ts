@@ -1,4 +1,4 @@
-import axiosInstance from './axios';
+import axiosInstance from './axiosInstance';
 
 export type AuthCredentials = {
   username: string;
