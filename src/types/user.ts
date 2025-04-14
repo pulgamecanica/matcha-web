@@ -1,24 +1,42 @@
+export type Gender = 'male' | 'female' | 'other';
+export type SexualPreference = 'male' | 'female' | 'non_binary' | 'everyone';
+
 export type User = {
-  id: string;
+  id: number;
   username: string;
   email: string;
   first_name: string;
   last_name: string;
-  gender: 'male' | 'female' | 'other';
-  sexual_preferences: 'male' | 'female' | 'both';
+  gender: Gender;
+  sexual_preferences: SexualPreference;
   biography: string | null;
-  is_email_verified: 't' | 'f';
-  is_banned: 't' | 'f';
-  fame_rating: string;
-  birth_year: number | null;
+  is_email_verified: boolean;
+  is_banned: boolean;
+  fame_rating: number;
+  birth_year: number;
   latitude: number | null;
   longitude: number | null;
-  online_status: 't' | 'f';
+  online_status: boolean;
   last_seen_at: string | null;
   created_at: string;
   updated_at: string;
-  profile_picture_id: string | null;
+  profile_picture_id: number | null;
 };
+
+export type PublicUser = {
+  id: number;
+  username: string;
+  first_name: string;
+  last_name: string;
+  biography: string | null;
+  gender: Gender;
+  sexual_preferences: SexualPreference;
+  birth_year: number;
+  profile_picture_id: number | null;
+  online_status: boolean;
+  last_seen_at: string | null;
+};
+
 
 export type UpdateUserProfilePayload = {
   username?: string;

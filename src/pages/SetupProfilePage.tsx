@@ -1,24 +1,27 @@
 import { useNavigate } from 'react-router-dom';
-import { updateUserProfile } from '@api/userService';
 import { ProfileForm } from '@components/form/ProfileForm';
 import toast from 'react-hot-toast';
-import { useAuth } from '@/hooks/useAuth';
+import { useUser } from '@/hooks/useUser';
+import { useEffect } from 'react';
+import { UpdateUserProfilePayload } from '@/types/user';
 
 export const SetupProfilePage = () => {
-  const { profileSetupComplete } = useAuth();
+  const { profileSetupComplete, updateUser } = useUser();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (profileSetupComplete) {
+      toast.success('Profile is already setup, redirecting to /profile/edit');
+      navigate('/profile/edit');
+    }
+  }, [profileSetupComplete, navigate]);
 
-  if (profileSetupComplete) {
-    toast.success('Profile is already setup, redirecting to /profile/edit');
-    navigate('/profile/edit');
-  }
-
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: UpdateUserProfilePayload) => {
     try {
-      await updateUserProfile(data);
+      await updateUser(data);
       toast.success('Profile successfully setup!');
-      navigate('/');
+      window.location.href = '/';
+      return;
     } catch (error) {
       toast.error(`Profile setup failed. ${error}`);
     }

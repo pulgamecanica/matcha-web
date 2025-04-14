@@ -1,14 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import { ProfileForm } from '@components/form/ProfileForm';
-import { updateUserProfile } from '@api/userService';
 import toast from 'react-hot-toast';
+import { useUser } from '@/hooks/useUser';
+import { UpdateUserProfilePayload } from '@/types/user';
 
 export const EditProfilePage = () => {
+  const { updateUser } = useUser()
   const navigate = useNavigate();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: UpdateUserProfilePayload) => {
     try {
-      await updateUserProfile(data);
+      await updateUser(data);
       toast.success('Profile updated successfully!');
       navigate('/profile');
     } catch (error) {

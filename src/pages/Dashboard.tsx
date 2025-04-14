@@ -1,19 +1,18 @@
 import { DashboardCard } from '@components/DashboardCard';
 import { Heart, LogOut, User, Pencil } from 'lucide-react';
 import { useAuth } from '@hooks/useAuth';
-import LoadingScreen from '@components/LoadingScreen';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '@/hooks/useUser';
 
 export function Dashboard() {
-  const { loading, logout } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user } = useUser();
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
-  if (loading || !user) return <LoadingScreen />;
 
   return (
     <div className="p-8 min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">

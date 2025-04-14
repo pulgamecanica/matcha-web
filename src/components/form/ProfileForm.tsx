@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { useAuth } from '@hooks/useAuth';
+import React, { useEffect, useState } from 'react';
 import FormInput from '@components/form/FormInput';
 import FormSelect from '@components/form/FormSelect';
 import FormYear from '@components/form/FormYear';
+import { useUser } from '@/hooks/useUser';
+import { Gender, SexualPreference } from '@/types/user';
 
 type ProfileFormProps = {
   onSubmit: (data: {
@@ -18,15 +19,26 @@ type ProfileFormProps = {
 };
 
 export const ProfileForm = ({ onSubmit, buttonText = 'Save' }: ProfileFormProps) => {
-  const { user } = useAuth();
+  const { user } = useUser();
+  const [username, setUsername] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [gender, setGender] = useState<Gender | ''>('');
+  const [sexualPreferences, setSexualPreferences] = useState<SexualPreference | ''>('');
+  const [biography, setBiography] = useState('');
+  const [birthYear, setBirthYear] = useState<number | ''>('');
 
-  const [username, setUsername] = useState(user?.username || '');
-  const [firstName, setFirstName] = useState(user?.first_name || '');
-  const [lastName, setLastName] = useState(user?.last_name || '');
-  const [gender, setGender] = useState(user?.gender || '');
-  const [sexualPreferences, setSexualPreferences] = useState(user?.sexual_preferences || '');
-  const [biography, setBiography] = useState(user?.biography || '');
-  const [birthYear, setBirthYear] = useState<number | ''>(user?.birth_year || '');
+  useEffect(() => {
+    if (user) {
+      setUsername(user.username);
+      setFirstName(user.first_name);
+      setLastName(user.last_name);
+      setGender(user.gender);
+      setSexualPreferences(user.sexual_preferences);
+      setBiography(user.biography || '');
+      setBirthYear(user.birth_year || '');
+    }
+  }, [user])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,7 +78,7 @@ export const ProfileForm = ({ onSubmit, buttonText = 'Save' }: ProfileFormProps)
         label="Gender"
         name="gender"
         value={gender}
-        onChange={(e) => setGender(e.target.value)}
+        onChange={(e) => setGender(e.target.value as Gender)}
         options={['male', 'female', 'other']}
         required
       />
@@ -74,7 +86,7 @@ export const ProfileForm = ({ onSubmit, buttonText = 'Save' }: ProfileFormProps)
         label="Sexual Preferences"
         name="sexual_preferences"
         value={sexualPreferences}
-        onChange={(e) => setSexualPreferences(e.target.value)}
+        onChange={(e) => setSexualPreferences(e.target.value as SexualPreference)}
         options={['male', 'female', 'non_binary', 'everyone']}
         required
       />
