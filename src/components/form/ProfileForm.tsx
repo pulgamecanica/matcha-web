@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import FormInput from '@components/form/FormInput';
 import FormSelect from '@components/form/FormSelect';
 import FormYear from '@components/form/FormYear';
-import { useUser } from '@/hooks/useUser';
+import { useUserMe } from '@/hooks/useUserMe';
 import { Gender, SexualPreference } from '@/types/user';
 
 type ProfileFormProps = {
@@ -19,7 +19,7 @@ type ProfileFormProps = {
 };
 
 export const ProfileForm = ({ onSubmit, buttonText = 'Save' }: ProfileFormProps) => {
-  const { user } = useUser();
+  const { user } = useUserMe();
   const [username, setUsername] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');

@@ -7,7 +7,7 @@ import { Location } from '@/types/location';
 import { useAuth } from './useAuth';
 import toast from 'react-hot-toast';
 
-export function useUser() {
+export function useUserMe() {
   const [user, setUser] = useState<User | null>(null);
   const [tags, setTags] = useState<Tag[]>([]);
   const [pictures, setPictures] = useState<Picture[]>([]);

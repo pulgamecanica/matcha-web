@@ -5,13 +5,14 @@ import { LoginPage } from '@pages/LoginPage';
 import { RegisterPage } from '@pages/RegisterPage';
 import { MatchingPage } from '@pages/MatchingPage';
 import { ProfilePage } from '@pages/ProfilePage';
-import { Dashboard } from '@pages/Dashboard';
+import { Dashboard } from '@/pages/DashboardPage';
 import { NotFoundPage } from '@pages/NotFoundPage';
 import { ProtectedRoute } from '@components/ProtectedRoute';
 import ThemeToggle from '@components/ThemeToggle';
 import { Toaster } from 'react-hot-toast';
 import { SetupProfilePage } from '@pages/SetupProfilePage';
 import { EditProfilePage } from './pages/EditProfilePage';
+import { MatchesPage } from './pages/SeeMatchPage';
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
               <Route path="/profile/edit" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
               <Route path="/match" element={<ProtectedRoute><MatchingPage/></ProtectedRoute>}/>
               <Route path="/profile" element={<ProtectedRoute><ProfilePage/></ProtectedRoute>}/>
+              <Route path="/matches" element={<ProtectedRoute><MatchesPage/></ProtectedRoute>}/>
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </BrowserRouter>
