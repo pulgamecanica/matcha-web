@@ -23,6 +23,14 @@ export type User = {
   profile_picture_id: number | null;
 };
 
+export type Picture = {
+  id: number;
+  user_id: number;
+  url: string;
+  is_profile: "t" | "f";
+  created_at: string;
+};
+
 export type PublicUser = {
   id: number;
   username: string;
@@ -35,6 +43,7 @@ export type PublicUser = {
   profile_picture_id: number | null;
   online_status: boolean;
   last_seen_at: string | null;
+  pictures: Picture[];
 };
 
 

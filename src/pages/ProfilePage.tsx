@@ -21,7 +21,7 @@ export function ProfilePage() {
   if (loading || !user) return <LoadingScreen />;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col items-center justify-center h-screen">
+    <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col items-center justify-center min-h-screen">
       <ProfileHeader user={user} profilePicture={profilePicture} />
       <LocationCard location={location} />
       <TagList tags={tags} />

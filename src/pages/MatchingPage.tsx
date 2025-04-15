@@ -86,7 +86,6 @@ export function MatchingPage() {
                     Find Matches
                 </Typography>
 
-                {/* Distance */}
                 <Box sx={{ mb: 3 }}>
                     <FormControlLabel
                         control={<Checkbox checked={useDistance} onChange={(e) => setUseDistance(e.target.checked)} />}

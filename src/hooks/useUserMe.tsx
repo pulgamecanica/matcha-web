@@ -21,7 +21,8 @@ export function useUserMe() {
 
   useEffect(() => {
     async function fetchAll() {
-      if (!isAuthenticated) return
+      if (!isAuthenticated) return;
+
       try {
         const [
           userRes,
@@ -43,8 +44,8 @@ export function useUserMe() {
 
         setUser(userRes);
         setTags(tagsRes);
-        setPictures(picsRes.filter((pic: Picture) => !pic.is_profile) || null);
-        setProfilePicture(picsRes.find((pic: Picture) => pic.is_profile) || null);
+        setPictures(picsRes.filter((pic: Picture) => pic.is_profile !== 't') || null);
+        setProfilePicture(picsRes.find((pic: Picture) => pic.is_profile === 't') || null);
         setLocation(locRes);
         setLocationHistory(locsRes);
         setViews(viewsRes);
@@ -69,6 +70,79 @@ export function useUserMe() {
     }
   };
 
+  const addTag = async (name: string) => {
+    try {
+      const newTag = await axiosInstance.post<Tag>('/me/tags', { name });
+      setTags(prev => [...prev, newTag as unknown as Tag]);
+    } catch (err) {
+      toast.error('Failed to add tag');
+      throw err;
+    }
+  };
+
+  const removeTag = async (name: string) => {
+    try {
+      await axiosInstance.delete('/me/tags', {
+        data: { name },
+      });
+      setTags((prev) => prev.filter((tag) => tag.name !== name));
+    } catch (err) {
+      toast.error('Failed to remove tag');
+      throw err;
+    }
+  };
+
+  const uploadPicture = async (url: string, isProfile = false) => {
+    try {
+      const res = await axiosInstance.post<Picture>('/me/pictures', { url, is_profile: isProfile });
+      const newPic = res as unknown as Picture;
+      if (isProfile) {
+        setProfilePicture(newPic);
+        setPictures(prev => prev.filter(p => p.id !== newPic.id));
+      } else {
+        setPictures(prev => [...prev, newPic]);
+      }
+    } catch (err) {
+      toast.error('Failed to upload picture');
+      throw err;
+    }
+  };
+
+  const setProfilePictureById = async (pictureId: number) => {
+    try {
+      const res = await axiosInstance.patch<Picture>(`/me/pictures/${pictureId}`, {
+        is_profile: true,
+      });
+
+      const newProfile = res as unknown as Picture;
+      
+      if (profilePicture) {
+        setPictures(prev => [...prev, { ...profilePicture, is_profile: 'f' }]);
+      }
+
+      setPictures(prev => prev.filter(p => p.id !== newProfile.id));
+
+      setProfilePicture({ ...newProfile, is_profile: 't' });
+    } catch (err) {
+      toast.error('Failed to set profile picture');
+      throw err;
+    }
+  };
+
+  const deletePicture = async (pictureId: number) => {
+    try {
+      await axiosInstance.delete(`/me/pictures/${pictureId}`);
+      setPictures(prev => prev.filter(p => p.id !== pictureId));
+      if (profilePicture?.id === pictureId) {
+        setProfilePicture(null);
+      }
+    } catch (err) {
+      toast.error('Failed to delete picture');
+      throw err;
+    }
+  };
+
+
   return {
     user,
     tags,
@@ -80,6 +154,11 @@ export function useUserMe() {
     viewers,
     loading,
     updateUser,
+    addTag,
+    removeTag,
+    uploadPicture,
+    setProfilePicture: setProfilePictureById,
+    deletePicture,
     profileSetupComplete: !!(user?.gender && user?.sexual_preferences)
   };
 }

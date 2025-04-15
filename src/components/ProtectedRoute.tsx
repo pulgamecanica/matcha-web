@@ -24,7 +24,7 @@ export function ProtectedRoute({ children }: { children: JSX.Element }) {
     return <ErrorBlockerMessage message="Session expired. Please log in again. ⚠️" locationMessage="Go to Login" />;
   }
 
-  if (loading || !user) {
+  if (loading || !user || !profileSetupComplete && location.pathname !== '/setup') {
     return <LoadingScreen />;
   }
 
