@@ -50,8 +50,8 @@ axiosInstance.interceptors.response.use(
       // for invalid/expired tokens. Decide how to handle:
       if (status === 401) {
         // Option A: Force logout:
-        // localStorage.removeItem('token');
-        // window.location.href = '/login'; // or set some global state
+        localStorage.removeItem('token');
+        window.location.href = '/login'; // or set some global state
 
         // Option B: Attempt token refresh if your API supports refresh tokens.
         // (Not shown here; you'd do a separate call to refresh, then retry.)

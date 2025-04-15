@@ -17,7 +17,7 @@ export function PictureGallery({ pictures }: Props) {
           src={pic.url}
           alt="User picture"
           className={`rounded-md border shadow-sm ${
-            pic.is_profile ? 'border-green-400' : 'border-gray-300 dark:border-gray-700'
+            pic.is_profile === 't' ? 'border-green-400' : 'border-gray-300 dark:border-gray-700'
           }`}
         />
       ))}
