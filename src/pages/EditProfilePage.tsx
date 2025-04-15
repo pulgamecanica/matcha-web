@@ -19,7 +19,7 @@ export const EditProfilePage = () => {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="container max-w-2xl mx-auto px-4 py-8">
         <div className="p-6 bg-white dark:bg-gray-800 rounded-md shadow-md">
           <h2 className="text-2xl font-semibold text-center text-gray-900 dark:text-white">
