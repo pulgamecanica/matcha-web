@@ -39,7 +39,7 @@ export function MatchesPage() {
 
             <Grid container spacing={3}>
                 {matches.map((match) => (
-                    <Grid item xs={12} sm={6} md={4} key={match.user.username}>
+                    <Grid key={match.user.username}>
                         <Card>
                             {match.user.pictures[0]?.url && (
                                 <CardMedia
