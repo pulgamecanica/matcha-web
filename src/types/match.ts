@@ -13,7 +13,7 @@ export type MatchFilters = {
 export type MatchScore = {
   location_score: number;
   tag_score: number;
-  fame_score: number;
+  fame_score: string;
   total: number;
 }
 
