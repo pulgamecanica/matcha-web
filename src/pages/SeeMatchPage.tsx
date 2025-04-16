@@ -87,7 +87,7 @@ export function MatchesPage() {
                                         @{user.username}
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }} className="text-gray-900 dark:text-white">
-                                        Age: {age} | Fame:
+                                        Age: {age}
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }} className="text-gray-900 dark:text-white">
                                         Popularity:
