@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useUser } from '@/hooks/useUser';
+import { useUserMe } from '@/hooks/useUserMe';
 import toast from 'react-hot-toast';
 
 export const PictureManager = () => {
@@ -9,7 +9,7 @@ export const PictureManager = () => {
     uploadPicture,
     setProfilePicture,
     deletePicture,
-  } = useUser();
+  } = useUserMe();
 
   const [newPicUrl, setNewPicUrl] = useState('');
   const [submitting, setSubmitting] = useState(false);

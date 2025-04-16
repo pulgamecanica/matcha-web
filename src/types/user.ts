@@ -23,6 +23,19 @@ export type User = {
   profile_picture_id: number | null;
 };
 
+export type Picture = {
+  id: number;
+  user_id: number;
+  url: string;
+  is_profile: "t" | "f";
+  created_at: string;
+};
+
+export type Tags = {
+  id: string,
+  name: string;
+};
+
 export type PublicUser = {
   id: number;
   username: string;
@@ -31,10 +44,12 @@ export type PublicUser = {
   biography: string | null;
   gender: Gender;
   sexual_preferences: SexualPreference;
-  birth_year: number;
+  birth_year: string;
   profile_picture_id: number | null;
   online_status: boolean;
   last_seen_at: string | null;
+  pictures: Picture[];
+  tags: Tags[];
 };
 
 

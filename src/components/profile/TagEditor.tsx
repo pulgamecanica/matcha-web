@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useUser } from '@/hooks/useUser';
+import { useState } from 'react';
+import { useUserMe } from '@/hooks/useUserMe';
 import { Tag } from '@/types/tag';
 import toast from 'react-hot-toast';
 
 export const TagEditor = () => {
-  const { tags, addTag, removeTag } = useUser();
+  const { tags, addTag, removeTag } = useUserMe();
   const [newTag, setNewTag] = useState('');
   const [submitting, setSubmitting] = useState(false);
 

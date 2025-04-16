@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '@hooks/useAuth';
 import LoadingScreen from '@components/LoadingScreen';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 export function LoginPage() {
   const [username, setUsername] = useState('');
@@ -11,7 +12,7 @@ export function LoginPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && !loading) {
       navigate('/');
     }
   }, [isAuthenticated, loading, navigate]);
@@ -24,7 +25,6 @@ export function LoginPage() {
     e.preventDefault();
     await login(username, password);
   }
-  
 
   return (
     <div className="flex justify-center items-center min-h-screen px-4">

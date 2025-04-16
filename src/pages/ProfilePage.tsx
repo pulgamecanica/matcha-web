@@ -1,4 +1,4 @@
-import { useUser } from '@/hooks/useUser';
+import { useUserMe } from '@/hooks/useUserMe';
 import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { TagList } from '@/components/profile/TagList';
 import { LocationCard } from '@/components/profile/LocationCard';
@@ -16,7 +16,7 @@ export function ProfilePage() {
     views,
     viewers,
     loading,
-  } = useUser();
+  } = useUserMe();
 
   if (loading || !user) return <LoadingScreen />;
 

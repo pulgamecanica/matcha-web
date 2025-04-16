@@ -3,11 +3,11 @@ import LoadingScreen from '@components/LoadingScreen';
 import { JSX, useEffect } from 'react';
 import { ErrorBlockerMessage } from '@components/ErrorBlockerMessage';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '@/hooks/useUser';
+import { useUserMe } from '@/hooks/useUserMe';
 
 export function ProtectedRoute({ children }: { children: JSX.Element }) {
   const { token, isAuthenticated, loading } = useAuth();
-  const { profileSetupComplete, user } = useUser();
+  const { profileSetupComplete, user } = useUserMe();
   const navigate = useNavigate();
 
   useEffect(() => {

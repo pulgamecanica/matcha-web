@@ -2,12 +2,12 @@ import { DashboardCard } from '@components/DashboardCard';
 import { Heart, LogOut, User, Pencil } from 'lucide-react';
 import { useAuth } from '@hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '@/hooks/useUser';
+import { useUserMe } from '@/hooks/useUserMe';
 
 export function Dashboard() {
   const { logout } = useAuth();
   const navigate = useNavigate();
-  const { user } = useUser();
+  const { user } = useUserMe();
 
   const handleLogout = () => {
     logout();
