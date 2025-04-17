@@ -34,7 +34,7 @@ export function Dashboard() {
         <DashboardCard
           title="Matching"
           icon={<Heart className="text-pink-500" />}
-          to="/match"
+          to="/discover"
           description="Find and match with others."
         />
         <DashboardCard

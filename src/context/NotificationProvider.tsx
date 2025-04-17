@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useWebSocket } from '@/context/WebSocketProvider';
+import { useWebSocket } from '@/hooks/useWebSocket';
 import { Notification } from '@/types/notification';
 import { getNotifications, markAsRead, deleteNotification } from '@/api/notificationService';
 import toast from 'react-hot-toast';
@@ -42,8 +42,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
   useEffect(() => {
     if (!user) return;
     setHasUnread(notifications.some((n) => n.read !== 't'));
-
-  }, [notifications]);
+  }, [notifications, user]);
 
   const markNotificationAsRead = async (id: number) => {
     await markAsRead(id);

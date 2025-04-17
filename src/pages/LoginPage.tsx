@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '@hooks/useAuth';
 import LoadingScreen from '@components/LoadingScreen';
 import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
 
 export function LoginPage() {
   const [username, setUsername] = useState('');

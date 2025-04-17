@@ -12,7 +12,6 @@ import { ProtectedRoute } from '@components/ProtectedRoute';
 import ThemeToggle from '@components/ThemeToggle';
 import { SetupProfilePage } from '@pages/SetupProfilePage';
 import { EditProfilePage } from '@/pages/EditProfilePage';
-import { MatchesPage } from '@/pages/SeeMatchPage';
 import { WebSocketProvider } from '@/context/WebSocketProvider';
 import { NotificationProvider } from '@/context/NotificationProvider';
 import { NotificationDropdown } from '@/components/NotificationDropdown';
@@ -62,9 +61,8 @@ function App() {
                   <Route path="/" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
                   <Route path="/setup" element={<ProtectedRoute><SetupProfilePage /></ProtectedRoute>} />
                   <Route path="/profile/edit" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
-                  <Route path="/match" element={<ProtectedRoute><MatchingPage/></ProtectedRoute>}/>
+                  <Route path="/discover" element={<ProtectedRoute><MatchingPage/></ProtectedRoute>}/>
                   <Route path="/profile" element={<ProtectedRoute><ProfilePage/></ProtectedRoute>}/>
-                  <Route path="/matches" element={<ProtectedRoute><MatchesPage/></ProtectedRoute>}/>
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </BrowserRouter>
