@@ -19,6 +19,23 @@ export function useUserMe() {
   const [loading, setLoading] = useState(true);
   const { isAuthenticated } = useAuth();
 
+  const fallbackToBrowserLocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          setLocation(axiosInstance.post<Location>('/me/location', {latitude: pos.coords.latitude,
+            longitude: pos.coords.longitude,}) as unknown as Location);
+        } catch (err) {
+          toast.error('Failed to update user location.');
+        }
+      },
+      (err) => {
+        console.error("Location error:", err);
+        setLocation(null);
+      }
+    );
+  };
+
   useEffect(() => {
     async function fetchAll() {
       if (!isAuthenticated) return;
@@ -46,10 +63,14 @@ export function useUserMe() {
         setTags(tagsRes);
         setPictures(picsRes.filter((pic: Picture) => pic.is_profile !== 't') || null);
         setProfilePicture(picsRes.find((pic: Picture) => pic.is_profile === 't') || null);
-        setLocation(locRes);
         setLocationHistory(locsRes);
         setViews(viewsRes);
         setViewers(viewersRes);
+        if (locRes && locRes.latitude && locRes.longitude) {
+          setLocation(locRes);
+        } else {
+          fallbackToBrowserLocation();
+        }
       } catch (err) {
         toast.error(`Failed to fetch user profile: ${err}`);
       } finally {
