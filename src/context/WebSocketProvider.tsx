@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {
-  createContext,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -9,18 +9,7 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { WSOutgoingMessage } from '@/types/websocket';
 import { useUserMe } from '@/hooks/useUserMe';
-
-type WebSocketContextType = {
-  sendMessage: (msg: WSOutgoingMessage) => void;
-  registerHandler: (type: string, handler: (data: any) => void) => void;
-  ready: boolean;
-};
-
-const WebSocketContext = createContext<WebSocketContextType>({
-  sendMessage: () => {},
-  registerHandler: () => {},
-  ready: false,
-});
+import { WebSocketContext } from '@/context/WebSocketContext';
 
 const handlers: Record<string, ((payload: any) => void)[]> = {};
 
@@ -73,5 +62,3 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
     </WebSocketContext.Provider>
   );
 }
-
-export const useWebSocket = () => useContext(WebSocketContext);

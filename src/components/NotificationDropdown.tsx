@@ -24,10 +24,9 @@ export function NotificationDropdown() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Mark as read when opening
   useEffect(() => {
     if (open) markAllAsRead();
-  }, [open]);
+  }, [open, markAllAsRead]);
 
   if (['/login', '/register', '/setup'].includes(location.pathname)) return;
 

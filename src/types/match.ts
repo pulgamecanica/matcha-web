@@ -1,14 +1,17 @@
 import { PublicUser } from "./user";
 
 export type MatchFilters = {
-  latitude?: number;
-  longitude?: number;
-  max_distance_km?: number;
+  location?: {
+    latitude: number;
+    longitude: number;
+    max_distance_km?: number;
+  };
   min_age?: number;
   max_age?: number;
   min_fame?: number;
   tags?: string[];
-}
+};
+
 
 export type MatchScore = {
   location_score: number;
