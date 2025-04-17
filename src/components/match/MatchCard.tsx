@@ -31,19 +31,19 @@ export function MatchCard({ match }: MatchCardProps) {
           mt: 0.5,
           height: 8,
           borderRadius: 4,
-          backgroundColor: "gray",
+          background: "linear-gradient(to right, #fdba74, #93c5fd, #86eeac)",
           position: "relative",
           overflow: "hidden",
         }}
       >
         <Box
           sx={{
-            width: `${score}%`, // assuming max = 20
+            width: `${100 - score}%`,
             height: "100%",
-            background: "linear-gradient(to right, #93c5fd, #fdba74, #86efac)",
+            background: "gray",
             position: "absolute",
             top: 0,
-            left: 0,
+            right: 0,
           }}
         />
       </Box>

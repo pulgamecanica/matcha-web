@@ -19,7 +19,6 @@ export function ProfilePage() {
   } = useUserMe();
 
   if (loading || !user) return <LoadingScreen />;
-
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col items-center justify-center min-h-screen">
       <ProfileHeader user={user} profilePicture={profilePicture} />
