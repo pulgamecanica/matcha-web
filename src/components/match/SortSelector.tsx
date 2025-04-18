@@ -39,12 +39,12 @@ export function SortSelector({ value, onChange }: SortSelectorProps) {
           </ToggleButton>
         </Tooltip>
         <Tooltip title="Distance" arrow>
-          <ToggleButton value="distance_score" className="dark:text-white text-sm">
+          <ToggleButton value="location_score" className="dark:text-white text-sm">
             <LocationOnIcon fontSize="small" />
           </ToggleButton>
         </Tooltip>
         <Tooltip title="Tags Match" arrow>
-          <ToggleButton value="tags_score" className="dark:text-white text-sm">
+          <ToggleButton value="tag_score" className="dark:text-white text-sm">
             <TagIcon fontSize="small" />
           </ToggleButton>
         </Tooltip>

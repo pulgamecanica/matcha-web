@@ -14,6 +14,7 @@ import {
 import { MatchFilters } from "@/types/match";
 import toast from "react-hot-toast";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { useUserMe } from "@/hooks/useUserMe";
 
 type FilterPanelProps = {
   onSearch: (filters: MatchFilters) => void;
@@ -21,11 +22,12 @@ type FilterPanelProps = {
 };
 
 export function FilterPanel({ onSearch, initialFilters }: FilterPanelProps) {
+  const { location } = useUserMe();
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
 
   const [useDistance, setUseDistance] = useState(false);
-  const [maxDistance, setMaxDistance] = useState(0);
+  const [maxDistance, setMaxDistance] = useState(1);
 
   const [useAgeRange, setUseAgeRange] = useState(true);
   const [ageRange, setAgeRange] = useState<[number, number]>([18, 35]);
@@ -50,20 +52,28 @@ export function FilterPanel({ onSearch, initialFilters }: FilterPanelProps) {
 
   useEffect(() => {
     if (initialFilters) {
-      setMaxDistance(initialFilters.location?.max_distance_km || 0);
+      setMaxDistance(initialFilters.location?.max_distance_km || 1);
       setAgeRange([initialFilters.min_age || 18, initialFilters.max_age || 35]);
       setFameRating(initialFilters.min_fame || 0);
       setTags(initialFilters.tags || []);
     }
-
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setLatitude(pos.coords.latitude);
-        setLongitude(pos.coords.longitude);
-      },
-      (err) => console.error("Location error:", err)
-    );
   }, [initialFilters]);
+
+  useEffect(() => {
+    if (!useDistance) return;
+    if (!location || !location.latitude || !location.longitude) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setLatitude(pos.coords.latitude);
+          setLongitude(pos.coords.longitude);
+        },
+        (err) => console.error("Location error:", err)
+      );
+    } else {
+      setLatitude(parseFloat(location.latitude as string));
+      setLongitude(parseFloat(location.longitude as string));
+    }
+  }, [useDistance, location]);
 
   const handleSubmit = () => {
     const filters: MatchFilters = {};
