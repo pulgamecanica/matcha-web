@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useWebSocket } from '@/hooks/useWebSocket';
 
-export function MessageInput({ connectionId }: { connectionId: number }) {
+export function MessageInput({ connectionId, senderId }: { connectionId: number, senderId: number }) {
   const { sendMessage } = useWebSocket();
   const [text, setText] = useState('');
 
@@ -12,7 +12,7 @@ export function MessageInput({ connectionId }: { connectionId: number }) {
   };
 
   const handleTyping = () => {
-    sendMessage({ type: 'typing', payload: { connection_id: connectionId } });
+    sendMessage({ type: 'typing', payload: { connection_id: connectionId, to_user_id: senderId} });
   };
 
   return (

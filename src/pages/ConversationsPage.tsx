@@ -30,7 +30,7 @@ export default function ConversationsPage() {
           <ChatWindow
             conversation={activeConversation}
             currentUser={user}
-            isTyping={isUserTyping(activeConversation.user.username)}
+            isTyping={isUserTyping(activeConversation.user.id)}
           />
         ) : (
           <div className="flex items-center justify-center h-full text-gray-400">Select a conversation</div>

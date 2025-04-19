@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { fetchAllMessages, fetchMessagesFrom } from '@/api/message';
-import { Message } from '@/types/message';
 import { Conversation } from '@/types/conversation';
 import toast from 'react-hot-toast';
 
@@ -23,7 +22,7 @@ export function useMessages(activeUsername?: string) {
 
     load();
   }, []);
-  
+
   useEffect(() => {
     const load = async () => {
       if (!activeUsername) return;
@@ -38,20 +37,19 @@ export function useMessages(activeUsername?: string) {
     load();
   }, [activeUsername]);
 
-  // WebSocket handlers
   useEffect(() => {
-    registerHandler('message', (msg: Message) => {
+    registerHandler('message', (msg) => {
       setConversations((prev) => {
         const updated = [...prev];
         const convo = updated.find(c => c.user.username === msg.sender_username);
         if (convo) {
           convo.messages.push(msg);
         } else {
-          // optionally, fetchMessagesFrom(msg.sender_username) here
+          // optionally: fetchMessagesFrom(msg.sender_username) and add a new conversation
         }
         return updated.sort((a, b) => {
-          const aTime = new Date(a.messages[a.messages.length - 1]?.created_at || 0).getTime();
-          const bTime = new Date(b.messages[b.messages.length - 1]?.created_at || 0).getTime();
+          const aTime = new Date(a.messages[a.messages.length -1]?.created_at || 0).getTime();
+          const bTime = new Date(b.messages[b.messages.length -1]?.created_at || 0).getTime();
           return bTime - aTime;
         });
       });
@@ -63,12 +61,18 @@ export function useMessages(activeUsername?: string) {
       }
     });
 
-    registerHandler('typing', ({ username }: { username: string }) => {
-      setTypingUsers(prev => ({ ...prev, [username]: true }));
+    registerHandler('typing', (payload) => {
+      const userId = Number(payload.from);
+
+      setTypingUsers((prev) => ({
+        ...prev,
+        [userId]: true
+      }));
+
       setTimeout(() => {
-        setTypingUsers(prev => {
+        setTypingUsers((prev) => {
           const updated = { ...prev };
-          delete updated[username];
+          delete updated[userId];
           return updated;
         });
       }, 1500);
@@ -76,7 +80,7 @@ export function useMessages(activeUsername?: string) {
   }, [activeConversation, registerHandler]);
 
   const isUserTyping = useMemo(() => {
-    return (username: string) => Boolean(typingUsers[username]);
+    return (id: number) => Boolean(typingUsers[id]);
   }, [typingUsers]);
 
   return {

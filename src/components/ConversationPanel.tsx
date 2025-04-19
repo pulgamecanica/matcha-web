@@ -13,7 +13,7 @@ export function ConversationPanel({
   conversations: any[];
   onSelectUser: (username: string) => void;
   activeUsername: string | null;
-  isUserTyping: (username: string) => boolean;
+  isUserTyping: (id: number) => boolean;
 }) {
   const [search, setSearch] = useState('');
 
@@ -51,7 +51,7 @@ export function ConversationPanel({
             user={conv.user}
             lastMessage={conv.messages.at(-1)}
             isActive={conv.user.username === activeUsername}
-            isTyping={isUserTyping(conv.user.username)}
+            isTyping={isUserTyping(conv.user.id)}
             onClick={() => onSelectUser(conv.user.username)}
           />
         ))}

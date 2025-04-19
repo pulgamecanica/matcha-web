@@ -1,5 +1,5 @@
-import { Notification } from '@/types/notification';
-import { Message } from '@/types/message';
+import { Notification } from './notification';
+import { Message } from './message';
 
 export type WSIncomingMessage =
   | { type: 'notification'; payload: Notification }
@@ -7,6 +7,12 @@ export type WSIncomingMessage =
   | { type: 'typing'; payload: { from: number; connection_id: number } };
 
 export type WSOutgoingMessage =
-  | { type: 'typing'; payload: { connection_id: number; } }
+  | { type: 'typing'; payload: { connection_id: number; to_user_id: number } }
   | { type: 'message'; payload: { connection_id: number; content: string } }
   | { type: 'ping' };
+
+export type WSIncomingPayloadMap = {
+  notification: Notification;
+  message: Message;
+  typing: { from: number; connection_id: number };
+};

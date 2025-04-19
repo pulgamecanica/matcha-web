@@ -38,7 +38,7 @@ export function ChatWindow({
         })}
         {isTyping && <TypingIndicator />}
       </div>
-      <MessageInput connectionId={conversation.messages.at(-1)?.connection_id} />
+      <MessageInput connectionId={conversation.messages.at(-1)?.connection_id} senderId={conversation.user.id} />
     </div>
   );
 }
