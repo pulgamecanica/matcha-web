@@ -46,6 +46,8 @@ export type PublicUser = {
   sexual_preferences: SexualPreference;
   birth_year: string;
   profile_picture_id: number | null;
+  latitude: number | null;
+  longitude: number | null;
   online_status: boolean;
   last_seen_at: string | null;
   pictures: Picture[];

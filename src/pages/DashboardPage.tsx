@@ -1,5 +1,5 @@
 import { DashboardCard } from '@components/DashboardCard';
-import { Heart, LogOut, User, Pencil } from 'lucide-react';
+import { Heart, MessageCircle, LogOut, User, Pencil } from 'lucide-react';
 import { useAuth } from '@hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useUserMe } from '@/hooks/useUserMe';
@@ -36,6 +36,12 @@ export function Dashboard() {
           icon={<Heart className="text-pink-500" />}
           to="/discover"
           description="Find and match with others."
+        />
+        <DashboardCard
+          title="Conversations"
+          icon={<MessageCircle className="text-orange-300" />}
+          to="/conversations"
+          description="See all your conversations."
         />
         <DashboardCard
           title="Log Out"
