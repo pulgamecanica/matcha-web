@@ -15,6 +15,7 @@ import { MatchFilters } from "@/types/match";
 import toast from "react-hot-toast";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useUserMe } from "@/hooks/useUserMe";
+import { DistanceMap } from "@/components/location/DistanceMap";
 
 type FilterPanelProps = {
   onSearch: (filters: MatchFilters) => void;
@@ -26,7 +27,7 @@ export function FilterPanel({ onSearch, initialFilters }: FilterPanelProps) {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
 
-  const [useDistance, setUseDistance] = useState(false);
+  const [useDistance, setUseDistance] = useState(true);
   const [maxDistance, setMaxDistance] = useState(1);
 
   const [useAgeRange, setUseAgeRange] = useState(true);
@@ -129,6 +130,10 @@ export function FilterPanel({ onSearch, initialFilters }: FilterPanelProps) {
         <Slider value={maxDistance} onChange={(_, val) => setMaxDistance(val as number)} min={1} max={500} disabled={!useDistance} valueLabelDisplay="auto" />
         <Typography>Max Distance: {maxDistance} km</Typography>
 
+        {useDistance && latitude !== null && longitude !== null && (
+          <DistanceMap latitude={latitude} longitude={longitude} radiusKm={maxDistance} />
+        )}
+        
         <FormControlLabel
           control={<Checkbox checked={useAgeRange} onChange={(e) => setUseAgeRange(e.target.checked)} />}
           label="Filter by Age Range"

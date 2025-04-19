@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ProfileForm } from '@components/form/ProfileForm';
+import { ProfileForm } from '@components/forms/ProfileForm';
 import toast from 'react-hot-toast';
 import { useUserMe } from '@/hooks/useUserMe';
 import { UpdateUserProfilePayload } from '@/types/user';
