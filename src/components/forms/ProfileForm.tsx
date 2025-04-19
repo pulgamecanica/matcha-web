@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import FormInput from '@components/form/FormInput';
-import FormSelect from '@components/form/FormSelect';
-import FormYear from '@components/form/FormYear';
+import FormInput from '@components/forms/FormInput';
+import FormSelect from '@components/forms/FormSelect';
+import FormYear from '@components/forms/FormYear';
 import { useUserMe } from '@/hooks/useUserMe';
 import { Gender, SexualPreference } from '@/types/user';
 import { TagEditor } from '@components/profile/TagEditor';
