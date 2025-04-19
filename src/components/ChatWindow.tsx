@@ -1,19 +1,58 @@
-import { MessageInput } from '@/components/MessageInput';
-import { TypingIndicator } from '@/components/TypingIndicator';
+import { Conversation } from '@/types/conversation';
+import { Message } from '@/types/message';
+import { User } from '@/types/user';
+import { MessageInput } from '@components/MessageInput';
+import { TypingIndicator } from '@components/TypingIndicator';
+import { useEffect, useRef, useState } from 'react';
 
-export function ChatWindow({
-  conversation,
-  currentUser,
-  isTyping
-}: {
-  conversation: any;
-  currentUser: any;
+type Props = {
+  conversation: Conversation;
+  currentUser: User;
   isTyping: boolean;
-}) {
+  onSendLocalMessage: (content: string) => void;
+};
+
+export function ChatWindow({ conversation, currentUser, isTyping, onSendLocalMessage }: Props) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [showScrollButton, setShowScrollButton] = useState(false);
+
+  const scrollToBottom = () => {
+    containerRef.current?.scrollTo({
+      top: containerRef.current.scrollHeight,
+      behavior: 'smooth',
+    });
+  };
+
+  const handleScroll = () => {
+    if (!containerRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+    const nearBottom = scrollHeight - scrollTop - clientHeight < 100;
+    setShowScrollButton(!nearBottom);
+  };
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const { scrollTop, scrollHeight, clientHeight } = el;
+    const nearBottom = scrollHeight - scrollTop - clientHeight < 100;
+
+    if (nearBottom) scrollToBottom();
+  }, [conversation.messages]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [conversation.user]);
+
+
   return (
-    <div className="flex flex-col h-full border-e  dark:border-gray-500">
-      <div className="flex-1 p-4 overflow-y-auto space-y-2">
-        {conversation.messages.map((msg: any) => {
+    <div className="flex flex-col h-full border-e dark:border-gray-500 relative">
+      <div
+        ref={containerRef}
+        onScroll={handleScroll}
+        className="flex-1 p-4 overflow-y-auto space-y-2"
+      >
+        {conversation.messages.map((msg: Message) => {
           const isMine = msg.sender_id === currentUser.id;
           return (
             <div
@@ -38,7 +77,19 @@ export function ChatWindow({
         })}
         {isTyping && <TypingIndicator />}
       </div>
-      <MessageInput connectionId={conversation.messages.at(-1)?.connection_id} senderId={conversation.user.id} />
+
+      {showScrollButton && (
+        <button
+          onClick={scrollToBottom}
+          className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-3 py-1.5 text-xs rounded shadow hover:bg-blue-600 transition"        >
+          ↓ Go to bottom ↓
+        </button>
+      )}
+
+      <MessageInput
+        senderId={conversation.user.id}
+        onSendLocalMessage={onSendLocalMessage}
+      />
     </div>
   );
 }

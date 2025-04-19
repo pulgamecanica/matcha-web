@@ -1,18 +1,42 @@
-import { useState } from 'react';
+import { useState, KeyboardEvent } from 'react';
 import { useWebSocket } from '@/hooks/useWebSocket';
 
-export function MessageInput({ connectionId, senderId }: { connectionId: number, senderId: number }) {
+type MessageInputProps = {
+  senderId: number;
+  onSendLocalMessage: (content: string) => void;
+};
+
+export function MessageInput({ senderId, onSendLocalMessage }: MessageInputProps) {
   const { sendMessage } = useWebSocket();
   const [text, setText] = useState('');
 
   const handleSend = () => {
     if (!text.trim()) return;
-    sendMessage({ type: 'message', payload: { connection_id: connectionId, content: text } });
+
+    sendMessage({
+      type: 'message',
+      payload: {
+        to_user_id: senderId,
+        content: text,
+      },
+    });
+
+    onSendLocalMessage(text);
     setText('');
   };
 
-  const handleTyping = () => {
-    sendMessage({ type: 'typing', payload: { connection_id: connectionId, to_user_id: senderId} });
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    sendMessage({
+      type: 'typing',
+      payload: {
+        to_user_id: senderId,
+      },
+    });
+
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
   };
 
   return (
@@ -22,7 +46,7 @@ export function MessageInput({ connectionId, senderId }: { connectionId: number,
         placeholder="Type a message..."
         value={text}
         onChange={(e) => setText(e.target.value)}
-        onKeyDown={handleTyping}
+        onKeyDown={handleKeyDown}
         className="flex-1 px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 dark:text-white"
       />
       <button

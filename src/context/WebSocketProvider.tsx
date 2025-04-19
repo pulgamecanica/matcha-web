@@ -70,7 +70,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
     return () => {
       ws.close();
     };
-  }, [token, isAuthenticated, user]);
+  }, [token, isAuthenticated, user, handlers.message, handlers.notification, handlers.typing]);
 
   return (
     <WebSocketContext.Provider value={{ sendMessage, registerHandler, ready }}>

@@ -1,13 +1,32 @@
 import { useMessages } from '@/hooks/useMessages';
 import { useUserMe } from '@/hooks/useUserMe';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChatWindow } from '@/components/ChatWindow';
 import { ConversationPanel } from '@/components/ConversationPanel';
+import { Conversation } from '@/types/conversation';
 
 export default function ConversationsPage() {
   const { user } = useUserMe();
+  const { conversations, isUserTyping, appendMessageToConversation } = useMessages();
   const [selectedUsername, setSelectedUsername] = useState<string | null>(null);
-  const { conversations, activeConversation, isUserTyping } = useMessages(selectedUsername ?? undefined);
+  const [ activeConversation, setActiveConversation] = useState<Conversation | null>(null);
+  
+  useEffect(() => {
+    setActiveConversation(conversations.find((c) => c.user.username === selectedUsername) || null);
+  }, [conversations, selectedUsername]);
+
+  const handleSendLocalMessage = (content: string) => {
+    if (!activeConversation || !user) return;
+
+    appendMessageToConversation(activeConversation.user.username, {
+      id: Date.now(),
+      connection_id: activeConversation.messages[activeConversation.messages.length -1]?.connection_id ?? -1,
+      sender_id: user.id,
+      sender_username: user.username,
+      content,
+      created_at: new Date().toISOString(),
+    });
+  };
 
   if (!user) {
     return (
@@ -31,6 +50,7 @@ export default function ConversationsPage() {
             conversation={activeConversation}
             currentUser={user}
             isTyping={isUserTyping(activeConversation.user.id)}
+            onSendLocalMessage={handleSendLocalMessage}
           />
         ) : (
           <div className="flex items-center justify-center h-full text-gray-400">Select a conversation</div>

@@ -1,4 +1,4 @@
-// src/lib/leaflet.ts
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 

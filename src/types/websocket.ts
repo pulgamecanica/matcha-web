@@ -7,8 +7,8 @@ export type WSIncomingMessage =
   | { type: 'typing'; payload: { from: number; connection_id: number } };
 
 export type WSOutgoingMessage =
-  | { type: 'typing'; payload: { connection_id: number; to_user_id: number } }
-  | { type: 'message'; payload: { connection_id: number; content: string } }
+  | { type: 'typing'; payload: { to_user_id: number } }
+  | { type: 'message'; payload: { to_user_id: number; content: string } }
   | { type: 'ping' };
 
 export type WSIncomingPayloadMap = {

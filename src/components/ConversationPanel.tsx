@@ -1,4 +1,6 @@
 import { ConversationItem } from '@/components/ConversationItem';
+import { Conversation } from '@/types/conversation';
+import { PublicUser } from '@/types/user';
 import { LucideSearch } from 'lucide-react';
 import { useState } from 'react';
 
@@ -9,8 +11,8 @@ export function ConversationPanel({
   activeUsername,
   isUserTyping
 }: {
-  user: any;
-  conversations: any[];
+  user: PublicUser;
+  conversations: Conversation[];
   onSelectUser: (username: string) => void;
   activeUsername: string | null;
   isUserTyping: (id: number) => boolean;
@@ -25,7 +27,7 @@ export function ConversationPanel({
     <div className="w-72 border-r dark:border-gray-500 bg-gray-100 dark:bg-gray-800 flex flex-col">
       <div className="p-4 flex items-center gap-2 border-b dark:border-gray-500">
         <img
-          src={user.profile_picture_url || '/default.png'}
+          src={String(user.profile_picture_id) || '/default.png'}
           className="h-10 w-10 rounded-full object-cover"
         />
         <div className="text-sm font-semibold">{user.username}</div>
@@ -49,7 +51,7 @@ export function ConversationPanel({
           <ConversationItem
             key={conv.user.username}
             user={conv.user}
-            lastMessage={conv.messages.at(-1)}
+            lastMessage={conv.messages[conv.messages.length -1]}
             isActive={conv.user.username === activeUsername}
             isTyping={isUserTyping(conv.user.id)}
             onClick={() => onSelectUser(conv.user.username)}

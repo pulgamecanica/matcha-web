@@ -1,3 +1,6 @@
+import { Message } from "@/types/message";
+import { PublicUser } from "@/types/user";
+
 export function ConversationItem({
   user,
   lastMessage,
@@ -5,8 +8,8 @@ export function ConversationItem({
   isTyping,
   onClick
 }: {
-  user: any;
-  lastMessage: any;
+  user: PublicUser;
+  lastMessage: Message;
   isActive: boolean;
   isTyping: boolean;
   onClick: () => void;
@@ -19,7 +22,7 @@ export function ConversationItem({
       }`}
     >
       <div className="flex items-center gap-3">
-        <img src={user.profile_picture_url || '/default.png'} className="w-8 h-8 rounded-full object-cover" />
+        <img src={String(user.profile_picture_id) || '/default.png'} className="w-8 h-8 rounded-full object-cover" />
         <div className="flex-1">
           <div className="font-medium">{user.username}</div>
           <div className="max-w-[180px] truncate text-xs text-gray-500 dark:text-gray-400">

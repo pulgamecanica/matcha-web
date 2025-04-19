@@ -26,7 +26,7 @@ export function useUserMe() {
           setLocation(axiosInstance.post<Location>('/me/location', {latitude: pos.coords.latitude,
             longitude: pos.coords.longitude,}) as unknown as Location);
         } catch (err) {
-          toast.error('Failed to update user location.');
+          toast.error(`Failed to update user location: ${err}`);
         }
       },
       (err) => {

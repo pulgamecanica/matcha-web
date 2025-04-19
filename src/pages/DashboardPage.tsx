@@ -1,17 +1,15 @@
 import { DashboardCard } from '@components/DashboardCard';
 import { Heart, MessageCircle, LogOut, User, Pencil } from 'lucide-react';
 import { useAuth } from '@hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
 import { useUserMe } from '@/hooks/useUserMe';
 
 export function Dashboard() {
   const { logout } = useAuth();
-  const navigate = useNavigate();
   const { user } = useUserMe();
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    window.location.href = '/login';
   };
 
   return (
