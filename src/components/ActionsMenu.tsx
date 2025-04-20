@@ -33,9 +33,14 @@ export function ActionsMenu() {
     },
   ];
 
+  const toggleExpand = () => {
+    setExpanded(!expanded);
+  }
+
   return (
     <div
-      className="fixed bottom-6 left-6 z-50 group"
+      className="fixed bottom-4 left-4 z-50 group"
+      onClick={toggleExpand}
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
     >
@@ -61,7 +66,7 @@ export function ActionsMenu() {
         {/* Main FAB */}
         <div
           className={clsx(
-            'flex items-center justify-center w-12 h-12 rounded-full dark:bg-gray-600 dark:text-white bg-gray-300 text-black cursor-pointer shadow-lg transition-transform',
+            'flex items-center justify-center w-10 h-10 rounded-full dark:bg-gray-600 dark:text-white bg-gray-300 text-black cursor-pointer shadow-lg transition-transform',
             expanded ? 'rotate-90' : ''
           )}
         >

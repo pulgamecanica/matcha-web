@@ -38,11 +38,8 @@ export function ConversationsPage() {
   return (
     <div className="flex h-screen rounded-lg shadow-md overflow-hidden bg-white dark:bg-gray-900">
       <ConversationPanel
-        user={user}
-        conversations={conversations}
         onSelectUser={setSelectedUsername}
         activeUsername={selectedUsername}
-        isUserTyping={isUserTyping}
       />
       <div className="flex-1 flex flex-col me-20">
         {activeConversation ? (
