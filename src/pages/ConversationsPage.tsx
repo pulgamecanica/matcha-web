@@ -13,6 +13,11 @@ export function ConversationsPage() {
   const [ activeConversation, setActiveConversation] = useState<Conversation | null>(null);
   const [searchParams] = useSearchParams();
   const initialUsername = searchParams.get('user');
+  const { refetchAllMessages } = useMessages();
+
+  useEffect(() => {
+    refetchAllMessages();
+  }, [refetchAllMessages]);
 
   useEffect(() => {
     if (initialUsername) {

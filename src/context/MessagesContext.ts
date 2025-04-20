@@ -11,6 +11,7 @@ type MessagesContextType = {
   isUserTyping: (id: number) => boolean;
   appendMessageToConversation: (username: string, msg: Message) => void;
   startConversationWith: (user: PublicUser) => void;
+  refetchAllMessages: () => Promise<void>;
 };
 
 export const MessagesContext = createContext<MessagesContextType | undefined>(undefined);

@@ -56,10 +56,10 @@ function App() {
         </div>
         <AuthProvider>
           <WebSocketProvider>
-            <NotificationProvider>
-              <MessagesProvider>
-                <NotificationDropdown />
-                <BrowserRouter>
+            <MessagesProvider>
+              <BrowserRouter>
+                <NotificationProvider>
+                  <NotificationDropdown />
                   <ActionsMenu />
                   <Routes>
                     <Route path="/login" element={<LoginPage />} />
@@ -73,9 +73,9 @@ function App() {
                     <Route path="/profile/:username" element={<ProtectedRoute><PublicProfilePage /></ProtectedRoute>} />
                     <Route path="*" element={<NotFoundPage />} />
                   </Routes>
-                </BrowserRouter>
-              </MessagesProvider>
-            </NotificationProvider>
+                </NotificationProvider>
+              </BrowserRouter>
+            </MessagesProvider>
           </WebSocketProvider>
         </AuthProvider>
       </div>

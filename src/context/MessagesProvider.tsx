@@ -37,7 +37,6 @@ export function MessagesProvider({ children }: { children: ReactNode }) {
     fetchAllMessages()
       .then(enrichConversations)
       .catch((e) => toast.error(`Failed to load messages: ${e}`));
-    
   }, []);
 
   useEffect(() => {
@@ -96,7 +95,15 @@ export function MessagesProvider({ children }: { children: ReactNode }) {
       return [newConvo, ...prev];
     });
   };
-  
+
+  const refetchAllMessages = async () => {
+    try {
+      const conversations = await fetchAllMessages();
+      await enrichConversations(conversations);
+    } catch (e) {
+      toast.error(`Failed to reload conversations: ${e}`);
+    }
+  };
 
   return (
     <MessagesContext.Provider
@@ -104,7 +111,8 @@ export function MessagesProvider({ children }: { children: ReactNode }) {
         conversations,
         isUserTyping,
         appendMessageToConversation,
-        startConversationWith
+        startConversationWith,
+        refetchAllMessages
       }}
     >
       {children}
