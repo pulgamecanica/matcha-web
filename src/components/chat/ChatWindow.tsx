@@ -4,6 +4,7 @@ import { User } from '@/types/user';
 import { MessageInput } from '@components/MessageInput';
 import { TypingIndicator } from '@/components/chat/TypingIndicator';
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   conversation: Conversation;
@@ -15,6 +16,8 @@ type Props = {
 export function ChatWindow({ conversation, currentUser, isTyping, onSendLocalMessage }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const navigate = useNavigate();
+  const profilePic = (conversation?.user?.pictures || []).find((p) => p.is_profile === "t")?.url;
 
   const scrollToBottom = () => {
     containerRef.current?.scrollTo({
@@ -47,6 +50,27 @@ export function ChatWindow({ conversation, currentUser, isTyping, onSendLocalMes
 
   return (
     <div className="flex flex-col h-full border-e dark:border-gray-500 relative">
+      <div
+        onClick={() => navigate(`/profile/${conversation.user.username}`)}
+        className="cursor-pointer px-4 py-4 border-b dark:border-gray-500 flex items-center justify-center gap-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+      >
+        <img
+          src={
+            profilePic || '/default-avatar.png'
+          }
+          alt="avatar"
+          className="w-10 h-10 rounded-full object-cover"
+        />
+        <div className="flex flex-col">
+          <span className="font-medium text-sm text-gray-900 dark:text-white">
+            {conversation.user.username}
+          </span>
+          <span className={`text-xs ${conversation.user.online_status ? 'text-green-500' : 'text-gray-400'}`}>
+            {conversation.user.online_status ? 'Online' : `Last seen: ${conversation.user.last_seen_at ? new Date(conversation.user.last_seen_at).toLocaleString() : 'N/A'}`}
+          </span>
+        </div>
+      </div>
+
       <div
         ref={containerRef}
         onScroll={handleScroll}

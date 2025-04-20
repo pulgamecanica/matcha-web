@@ -3,7 +3,7 @@ import { useMessages } from '@/hooks/useMessages';
 import { useUserMe } from '@/hooks/useUserMe';
 import { LucideSearch } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export function ConversationPanel({
   onSelectUser,
@@ -15,6 +15,7 @@ export function ConversationPanel({
   const [search, setSearch] = useState('');
   const { conversations, isUserTyping } = useMessages();
   const { user, profilePicture } = useUserMe();
+  const navigate = useNavigate();
 
   return (
     <div className="w-72 border-r dark:border-gray-500 bg-gray-100 dark:bg-gray-800 flex flex-col">
@@ -54,7 +55,10 @@ export function ConversationPanel({
             lastMessage={conv.messages[conv.messages.length - 1]}
             isActive={conv.user.username === activeUsername}
             isTyping={isUserTyping(conv.user.id)}
-            onClick={() => onSelectUser(conv.user.username)}
+            onClick={() => {
+              onSelectUser(conv.user.username);
+              navigate(`?user=${conv.user.username}`, { replace: true });
+            }}
           />
         ))}
       </div>
