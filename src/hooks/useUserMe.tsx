@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axiosInstance from '@api/axios';
-import { User, PublicUser, UpdateUserProfilePayload } from '@/types/user';
+import { User, PublicUser, UpdateUserProfilePayload, Visitor } from '@/types/user';
 import { Tag } from '@/types/tag';
 import { Picture } from '@/types/picture';
 import { Location } from '@/types/location';
@@ -17,6 +17,8 @@ export function useUserMe() {
   const [views, setViews] = useState<PublicUser[]>([]);
   const [viewers, setViewers] = useState<PublicUser[]>([]);
   const [loading, setLoading] = useState(true);
+  const [likes, setLikes] = useState<Visitor[]>([]);
+  const [likedBy, setlikedBy] = useState<Visitor[]>([]);
   const { isAuthenticated } = useAuth();
 
   const fallbackToBrowserLocation = () => {
@@ -48,7 +50,9 @@ export function useUserMe() {
           locRes,
           locsRes,
           viewsRes,
-          viewersRes
+          viewersRes,
+          likesRes,
+          likedByRes
         ] = await Promise.all([
           axiosInstance.get<User>('/me') as unknown as User,
           axiosInstance.get('/me/tags') as unknown as Tag[],
@@ -57,6 +61,8 @@ export function useUserMe() {
           axiosInstance.get('/me/location/history') as unknown as Location[],
           axiosInstance.get('/me/views') as unknown as PublicUser[],
           axiosInstance.get('/me/visits') as unknown as PublicUser[],
+          axiosInstance.get('/me/likes') as unknown as Visitor[],
+          axiosInstance.get('/me/liked_by') as unknown as Visitor[],
         ]);
 
         setUser(userRes);
@@ -66,6 +72,8 @@ export function useUserMe() {
         setLocationHistory(locsRes);
         setViews(viewsRes);
         setViewers(viewersRes);
+        setLikes(likesRes);
+        setlikedBy(likedByRes);
         if (locRes && locRes.latitude && locRes.longitude) {
           setLocation(locRes);
         } else {
@@ -174,6 +182,8 @@ export function useUserMe() {
     views,
     viewers,
     loading,
+    likes,
+    likedBy,
     updateUser,
     addTag,
     removeTag,

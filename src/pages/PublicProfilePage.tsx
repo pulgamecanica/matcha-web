@@ -7,12 +7,16 @@ import { PictureGallery } from '@/components/profile/PictureGallery';
 import LoadingScreen from '@/components/LoadingScreen';
 import { NotFoundPage } from './NotFoundPage';
 import { fetchPublicProfile } from '@/api/publicProfile';
+import { PublicProfileActions } from '@/components/profile/PublicProfileActions';
+import { useUserMe } from '@/hooks/useUserMe';
+import { ProfileStats } from '@/components/profile/ProfileStats';
 
 export function PublicProfilePage() {
   const { username } = useParams();
   const [user, setUser] = useState<PublicUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const { user: currentUser } = useUserMe();
 
   useEffect(() => {
     if (!username) return;
@@ -32,7 +36,7 @@ export function PublicProfilePage() {
     fetchUser();
   }, [username]);
 
-  if (loading) return <LoadingScreen />;
+  if (loading || !currentUser) return <LoadingScreen />;
   if (notFound || !user) return <NotFoundPage />;
 
   const profilePicture = user.pictures.find((pic) => pic.is_profile === 't') || null;
@@ -40,7 +44,11 @@ export function PublicProfilePage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col items-center justify-center min-h-screen">
       <ProfileHeader user={user} profilePicture={profilePicture} />
+      <ProfileStats user={user} />
       <TagList tags={user.tags || []} />
+      {user.username !== currentUser?.username && (
+        <PublicProfileActions username={user.username} currentUsername={currentUser.username} />
+      )}
       <h3 className="font-bold mt-6 text-lg">📷 Pictures</h3>
       <PictureGallery
         pictures={(user.pictures || []).filter((pic) => pic.is_profile !== "t")}

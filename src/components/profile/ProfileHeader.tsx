@@ -7,6 +7,9 @@ type Props = {
 };
 
 export function ProfileHeader({ user, profilePicture }: Props) {
+  const isOnline = user.online_status;
+  const lastSeen = user.last_seen_at ? new Date(user.last_seen_at).toLocaleString() : null;
+
   return (
     <div className="flex items-center gap-4">
       <img
@@ -14,11 +17,30 @@ export function ProfileHeader({ user, profilePicture }: Props) {
         alt="Profile"
         className="w-24 h-24 rounded-full object-cover border-2 border-gray-300 dark:border-gray-700"
       />
+
       <div>
-        <h2 className="text-xl font-bold">{user.first_name} {user.last_name}</h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-xl font-bold">
+            {user.first_name} {user.last_name}
+          </h2>
+
+          {/* Online Status Badge */}
+          <span
+            className={`inline-block w-3 h-3 rounded-full ${
+              isOnline ? 'bg-green-500' : 'bg-gray-400'
+            }`}
+            title={isOnline ? 'Online' : lastSeen ? `Last seen: ${lastSeen}` : 'Offline'}
+          />
+        </div>
+
         <p className="text-sm text-gray-500">@{user.username}</p>
+
         {user.biography && (
           <p className="mt-1 text-sm text-gray-400 italic">"{user.biography}"</p>
+        )}
+
+        {!isOnline && lastSeen && (
+          <p className="text-xs text-gray-400 mt-1">Last seen: {lastSeen}</p>
         )}
       </div>
     </div>

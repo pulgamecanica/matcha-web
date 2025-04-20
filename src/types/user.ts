@@ -43,7 +43,7 @@ export type PublicUser = {
   last_seen_at: string | null;
   pictures: Picture[];
   tags: Tag[];
-  views: number;
+  views: Visitor[];
   visitors: Visitor[];
   total_likes_sent: number;
   total_likes_received: number;
@@ -52,7 +52,6 @@ export type PublicUser = {
 export type Visitor = {
   id: number;
   username: string;
-  profile_picture_url: string;
   viewed_at: string;
 };
 
