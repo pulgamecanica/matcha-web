@@ -6,34 +6,43 @@ import {
 } from 'react';
 import { useWebSocket } from '@hooks/useWebSocket';
 import { fetchAllMessages } from '@api/messages';
-import { fetchConnections } from '@api/connections';
 import { Conversation } from '@/types/conversation';
 import { Message } from '@/types/message';
 import { PublicUser } from '@/types/user';
 import { MessagesContext } from '@context/MessagesContext';
 import toast from 'react-hot-toast';
-
+import { fetchPublicProfile } from '@/api/publicProfile';
 
 export function MessagesProvider({ children }: { children: ReactNode }) {
   const { registerHandler } = useWebSocket();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [typingUsers, setTypingUsers] = useState<Record<number, boolean>>({});
-  const [connections, setConnections] = useState<PublicUser[]>([]);
+
+  const enrichConversations = async (convos: Conversation[]) => {
+    const enriched = await Promise.all(
+      convos.map(async (c) => {
+        try {
+          const fullUser = await fetchPublicProfile(c.user.username);
+          return { ...c, user: fullUser };
+        } catch (e) {
+          toast.error(`Failed to load full profile for ${c.user.username}: ${e}`);
+          return c; // fallback to partial
+        }
+      })
+    );
+    setConversations(enriched);
+  };
 
   useEffect(() => {
     fetchAllMessages()
-      .then(setConversations)
+      .then(enrichConversations)
       .catch((e) => toast.error(`Failed to load messages: ${e}`));
-    fetchConnections()
-      .then(setConnections)
-      .catch((e) => toast.error(`Failed to load connections: ${e}`));
+    
   }, []);
 
   useEffect(() => {
     registerHandler('message', (msg: Message) => {
-      fetchAllMessages()
-        .then(setConversations)
-        .catch(() => toast.error(`Failed to reload on new message ${msg}`));
+      appendMessageToConversationById(msg.sender_id, msg);
     });
 
     registerHandler('typing', ({ from }: { from: number }) => {
@@ -52,6 +61,17 @@ export function MessagesProvider({ children }: { children: ReactNode }) {
     setConversations((prev) => {
       const updated = [...prev];
       const convo = updated.find((c) => c.user.username === username);
+      if (convo && !convo.messages.some((m) => m.id === msg.id)) {
+        convo.messages = [...convo.messages, msg];
+      }
+      return updated;
+    });
+  };
+
+  const appendMessageToConversationById = (id: number, msg: Message) => {
+    setConversations((prev) => {
+      const updated = [...prev];
+      const convo = updated.find((c) => c.user.id === id);
       if (convo && !convo.messages.some((m) => m.id === msg.id)) {
         convo.messages = [...convo.messages, msg];
       }
@@ -82,7 +102,6 @@ export function MessagesProvider({ children }: { children: ReactNode }) {
     <MessagesContext.Provider
       value={{
         conversations,
-        connections,
         isUserTyping,
         appendMessageToConversation,
         startConversationWith
