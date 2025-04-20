@@ -9,12 +9,14 @@ import { useAuth } from '@hooks/useAuth';
 import { useUserMe } from '@hooks/useUserMe';
 import { Handler, WebSocketContext } from '@context/WebSocketContext';
 
+const baseURL = import.meta.env.VITE_API_BASE || 'localhost:9292';
 
 export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   const { token, isAuthenticated } = useAuth();
   const { user } = useUserMe();
   const wsRef = useRef<WebSocket | null>(null);
   const [ready, setReady] = useState(false);
+
 
   const handlers: Partial<{
     [K in keyof WSIncomingPayloadMap]: Handler<WSIncomingPayloadMap[K]>[];
@@ -37,7 +39,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!token || !isAuthenticated || !user) return;
 
-    const ws = new WebSocket(`ws://localhost:9292/ws?token=${token}`);
+    const ws = new WebSocket(`ws://${baseURL}/ws?token=${token}`);
     wsRef.current = ws;
 
     ws.onopen = () => {
