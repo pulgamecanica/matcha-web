@@ -2,7 +2,7 @@ import { Conversation } from '@/types/conversation';
 import { Message } from '@/types/message';
 import { User } from '@/types/user';
 import { MessageInput } from '@components/MessageInput';
-import { TypingIndicator } from '@components/TypingIndicator';
+import { TypingIndicator } from '@/components/chat/TypingIndicator';
 import { useEffect, useRef, useState } from 'react';
 
 type Props = {

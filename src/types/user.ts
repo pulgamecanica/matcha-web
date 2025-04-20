@@ -1,3 +1,6 @@
+import { Picture } from "./picture";
+import { Tag } from "./tag";
+
 export type Gender = 'male' | 'female' | 'other';
 export type SexualPreference = 'male' | 'female' | 'non_binary' | 'everyone';
 
@@ -23,18 +26,6 @@ export type User = {
   profile_picture_id: number | null;
 };
 
-export type Picture = {
-  id: number;
-  user_id: number;
-  url: string;
-  is_profile: "t" | "f";
-  created_at: string;
-};
-
-export type Tags = {
-  id: string,
-  name: string;
-};
 
 export type PublicUser = {
   id: number;
@@ -51,7 +42,18 @@ export type PublicUser = {
   online_status: boolean;
   last_seen_at: string | null;
   pictures: Picture[];
-  tags: Tags[];
+  tags: Tag[];
+  views: number;
+  visitors: Visitor[];
+  total_likes_sent: number;
+  total_likes_received: number;
+};
+
+export type Visitor = {
+  id: number;
+  username: string;
+  profile_picture_url: string;
+  viewed_at: string;
 };
 
 

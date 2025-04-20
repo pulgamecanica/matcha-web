@@ -1,8 +1,8 @@
-import { User } from '@/types/user';
+import { PublicUser } from '@/types/user';
 import { Picture } from '@/types/picture';
 
 type Props = {
-  user: User;
+  user: PublicUser;
   profilePicture: Picture | null;
 };
 

@@ -1,6 +1,6 @@
-import { ConversationItem } from '@/components/ConversationItem';
+import { ConversationItem } from '@/components/chat/ConversationItem';
 import { Conversation } from '@/types/conversation';
-import { PublicUser } from '@/types/user';
+import { User } from '@/types/user';
 import { LucideSearch } from 'lucide-react';
 import { useState } from 'react';
 
@@ -11,7 +11,7 @@ export function ConversationPanel({
   activeUsername,
   isUserTyping
 }: {
-  user: PublicUser;
+  user: User;
   conversations: Conversation[];
   onSelectUser: (username: string) => void;
   activeUsername: string | null;

@@ -1,11 +1,11 @@
 import { useMessages } from '@/hooks/useMessages';
 import { useUserMe } from '@/hooks/useUserMe';
 import { useEffect, useState } from 'react';
-import { ChatWindow } from '@/components/ChatWindow';
-import { ConversationPanel } from '@/components/ConversationPanel';
+import { ChatWindow } from '@/components/chat/ChatWindow';
+import { ConversationPanel } from '@/components/chat/ConversationPanel';
 import { Conversation } from '@/types/conversation';
 
-export default function ConversationsPage() {
+export function ConversationsPage() {
   const { user } = useUserMe();
   const { conversations, isUserTyping, appendMessageToConversation } = useMessages();
   const [selectedUsername, setSelectedUsername] = useState<string | null>(null);
