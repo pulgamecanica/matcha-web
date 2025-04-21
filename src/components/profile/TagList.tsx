@@ -5,6 +5,13 @@ type Props = {
 };
 
 export function TagList({ tags }: Props) {
+  const tagColors = ['pink', 'blue', 'green', 'purple', 'yellow'];
+
+  function getTagColor(tag: string) {
+    const index = tag.charCodeAt(0) % tagColors.length;
+    return tagColors[index];
+  }
+  
   if (!tags.length) return null;
 
   return (
@@ -12,7 +19,7 @@ export function TagList({ tags }: Props) {
       {tags.map(tag => (
         <span
           key={tag.id}
-          className="px-3 py-1 rounded-full bg-purple-200 text-purple-800 text-xs font-medium dark:bg-purple-900 dark:text-purple-100"
+          className={`px-3 py-1 rounded-full bg-${getTagColor(tag.name)}-200 text-purple-800 text-xs font-medium dark:bg-${getTagColor(tag.name)}-900 dark:text-purple-100`}
         >
           #{tag.name}
         </span>

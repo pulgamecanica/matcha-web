@@ -8,6 +8,9 @@ import LoadingScreen from '@/components/LoadingScreen';
 import { LocationEditorModal } from '@/components/LocationEditorModal';
 import { useState } from 'react';
 import { Pencil } from 'lucide-react';
+import { toPublicUser } from '@/utils/toPublicUser';
+import { Visitor } from '@/types/user';
+import { ProfileStats } from '@/components/profile/ProfileStats';
 
 export function ProfilePage() {
   const {
@@ -19,14 +22,26 @@ export function ProfilePage() {
     views,
     viewers,
     loading,
+    likes,
+    likedBy
   } = useUserMe();
   const [showModal, setShowModal] = useState(false);
 
   if (loading || !user) return <LoadingScreen />;
 
+  const publicUser = toPublicUser(
+    user,
+    tags,
+    pictures,
+    views as unknown as Visitor[],
+    viewers as unknown as Visitor[],
+    likes.length,
+    likedBy.length
+  );
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col items-center justify-center min-h-screen">
-      <ProfileHeader user={user} profilePicture={profilePicture} />
+      <ProfileHeader user={publicUser} profilePicture={profilePicture} />
       <div className="flex gap-2">
         <LocationCard location={location} />
         <button
@@ -43,6 +58,8 @@ export function ProfilePage() {
           />
         )}
       </div>
+      <ProfileStats user={publicUser} />
+      
       <TagList tags={tags} />
       <h3 className="font-bold mt-6 text-lg">📷 Pictures</h3>
       <PictureGallery pictures={pictures} />

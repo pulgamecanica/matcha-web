@@ -6,15 +6,19 @@ import { LoginPage } from '@pages/LoginPage';
 import { RegisterPage } from '@pages/RegisterPage';
 import { MatchingPage } from '@pages/MatchingPage';
 import { ProfilePage } from '@pages/ProfilePage';
-import { Dashboard } from '@/pages/DashboardPage';
+import { Dashboard } from '@pages/DashboardPage';
 import { NotFoundPage } from '@pages/NotFoundPage';
 import { ProtectedRoute } from '@components/ProtectedRoute';
-import ThemeToggle from '@components/ThemeToggle';
+import { ThemeToggle } from '@components/ThemeToggle';
 import { SetupProfilePage } from '@pages/SetupProfilePage';
-import { EditProfilePage } from '@/pages/EditProfilePage';
-import { WebSocketProvider } from '@/context/WebSocketProvider';
-import { NotificationProvider } from '@/context/NotificationProvider';
-import { NotificationDropdown } from '@/components/NotificationDropdown';
+import { EditProfilePage } from '@pages/EditProfilePage';
+import { WebSocketProvider } from '@context/WebSocketProvider';
+import { NotificationProvider } from '@context/NotificationProvider';
+import { NotificationDropdown } from '@components/NotificationDropdown';
+import { ConversationsPage } from '@pages/ConversationsPage';
+import { ActionsMenu }  from '@components/ActionsMenu';
+import { PublicProfilePage } from '@pages/PublicProfilePage';
+import { MessagesProvider } from '@context/MessagesProvider';
 
 function App() {
   return (
@@ -52,21 +56,26 @@ function App() {
         </div>
         <AuthProvider>
           <WebSocketProvider>
-            <NotificationProvider>
-              <NotificationDropdown />
+            <MessagesProvider>
               <BrowserRouter>
-                <Routes>
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/register" element={<RegisterPage />} />
-                  <Route path="/" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
-                  <Route path="/setup" element={<ProtectedRoute><SetupProfilePage /></ProtectedRoute>} />
-                  <Route path="/profile/edit" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
-                  <Route path="/discover" element={<ProtectedRoute><MatchingPage/></ProtectedRoute>}/>
-                  <Route path="/profile" element={<ProtectedRoute><ProfilePage/></ProtectedRoute>}/>
-                  <Route path="*" element={<NotFoundPage />} />
-                </Routes>
+                <NotificationProvider>
+                  <NotificationDropdown />
+                  <ActionsMenu />
+                  <Routes>
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
+                    <Route path="/setup" element={<ProtectedRoute><SetupProfilePage /></ProtectedRoute>} />
+                    <Route path="/profile/edit" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
+                    <Route path="/discover" element={<ProtectedRoute><MatchingPage/></ProtectedRoute>}/>
+                    <Route path="/profile" element={<ProtectedRoute><ProfilePage/></ProtectedRoute>}/>
+                    <Route path="/conversations" element={<ProtectedRoute><ConversationsPage /></ProtectedRoute>} />
+                    <Route path="/profile/:username" element={<ProtectedRoute><PublicProfilePage /></ProtectedRoute>} />
+                    <Route path="*" element={<NotFoundPage />} />
+                  </Routes>
+                </NotificationProvider>
               </BrowserRouter>
-            </NotificationProvider>
+            </MessagesProvider>
           </WebSocketProvider>
         </AuthProvider>
       </div>

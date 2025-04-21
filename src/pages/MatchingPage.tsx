@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { discoverMatches } from '@/api/match';
+import { discoverMatches } from '@/api/discover';
 import { FilterPanel } from '@/components/match/FilterPanel';
 import { MatchResults } from '@/components/match/MatchResults';
 import { MatchFilters, MatchResult } from '@/types/match';

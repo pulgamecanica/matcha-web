@@ -2,17 +2,18 @@ import { useState, useRef, useEffect } from 'react';
 import { Bell, MailOpen, MailPlus } from 'lucide-react';
 import { useNotifications } from '@/hooks/useNotifications';
 import clsx from 'clsx';
+import { useNavigate } from 'react-router-dom';
 
 export function NotificationDropdown() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-
   const {
     notifications,
     markAllAsRead,
     hasUnread,
   } = useNotifications();
-
+  
+  const navigate = useNavigate();
   // Close dropdown on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -52,6 +53,24 @@ export function NotificationDropdown() {
             {notifications.map((n) => (
               <li
                 key={n.id}
+                onClick={() => {
+                  switch (n.type) {
+                    case 'like':
+                    case 'unlike':
+                    case 'match':
+                    case 'connection':
+                    case 'view':
+                    case 'other':
+                      navigate(`/profile/${n.from_username}`);
+                      break;
+                    case 'message':
+                    case 'date':
+                        navigate(`/conversations?user=${n.from_username}`);
+                      break;
+                    default:
+                      break;
+                  }
+                }}
                 className={clsx(
                   'px-4 py-3 hover:bg-gray-300 hover:dark:bg-gray-700 transition cursor-pointer',
                   n.read !== 't' && 'bg-gray-300 dark:bg-gray-700'
