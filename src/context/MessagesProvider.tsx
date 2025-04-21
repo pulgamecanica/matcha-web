@@ -12,11 +12,13 @@ import { PublicUser } from '@/types/user';
 import { MessagesContext } from '@context/MessagesContext';
 import toast from 'react-hot-toast';
 import { fetchPublicProfile } from '@/api/publicProfile';
+import { useUserMe } from '@/hooks/useUserMe';
 
 export function MessagesProvider({ children }: { children: ReactNode }) {
   const { registerHandler } = useWebSocket();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [typingUsers, setTypingUsers] = useState<Record<number, boolean>>({});
+  const { user } = useUserMe();
 
   const enrichConversations = async (convos: Conversation[]) => {
     const enriched = await Promise.all(
@@ -34,10 +36,12 @@ export function MessagesProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
+    if (!user) return;
+
     fetchAllMessages()
       .then(enrichConversations)
       .catch((e) => toast.error(`Failed to load messages: ${e}`));
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     registerHandler('message', (msg: Message) => {

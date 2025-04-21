@@ -22,7 +22,11 @@ export function LoginPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    await login(username, password);
+    try {
+      await login(username, password);
+    } catch {
+      setPassword('')
+    }
   }
 
   return (

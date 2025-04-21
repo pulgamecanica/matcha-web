@@ -13,11 +13,6 @@ export function ConversationsPage() {
   const [ activeConversation, setActiveConversation] = useState<Conversation | null>(null);
   const [searchParams] = useSearchParams();
   const initialUsername = searchParams.get('user');
-  const { refetchAllMessages } = useMessages();
-
-  useEffect(() => {
-    refetchAllMessages();
-  }, [refetchAllMessages]);
 
   useEffect(() => {
     if (initialUsername) {
@@ -50,7 +45,7 @@ export function ConversationsPage() {
     )
   }
   return (
-    <div className="flex h-screen rounded-lg shadow-md overflow-hidden bg-gray-200 dark:bg-gray-800">
+    <div className="flex h-screen shadow-md overflow-hidden bg-gray-200 dark:bg-gray-800">
       <ConversationPanel
         onSelectUser={setSelectedUsername}
         activeUsername={selectedUsername}
