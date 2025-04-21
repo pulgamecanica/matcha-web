@@ -24,7 +24,7 @@ export function MessagesProvider({ children }: { children: ReactNode }) {
     const enriched = await Promise.all(
       convos.map(async (c) => {
         try {
-          const fullUser = await fetchPublicProfile(c.user.username);
+          const fullUser = await fetchPublicProfile(c.user.username, false);
           return { ...c, user: fullUser };
         } catch (e) {
           toast.error(`Failed to load full profile for ${c.user.username}: ${e}`);

@@ -7,15 +7,6 @@ import { useMessages } from '@/hooks/useMessages';
 export function PublicProfileActions({ username, currentUsername }: { username: string; currentUsername: string }) {
   const { liked, matched, connected, blocked, refresh } = RelationshipStatus(username, currentUsername);
   const [isLoading, setIsLoading] = useState(false);
-  const [refetchedMessages, setRefetchedMessages] = useState(false);
-  const { refetchAllMessages } = useMessages();
-
-  useEffect(() => {
-    if (!refetchedMessages) {
-      refetchAllMessages();
-      setRefetchedMessages(true);
-    }
-  }, [refetchAllMessages, connected, refetchedMessages, setRefetchedMessages]);
 
   const handleLikeToggle = async () => {
     setIsLoading(true);
