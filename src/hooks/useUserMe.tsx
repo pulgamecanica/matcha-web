@@ -25,8 +25,10 @@ export function useUserMe() {
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         try {
-          setLocation(axiosInstance.post<Location>('/me/location', {latitude: pos.coords.latitude,
-            longitude: pos.coords.longitude,}) as unknown as Location);
+          setLocation(axiosInstance.post<Location>('/me/location', {
+            latitude: pos.coords.latitude,
+            longitude: pos.coords.longitude,
+          }) as unknown as Location);
         } catch (err) {
           toast.error(`Failed to update user location: ${err}`);
         }
@@ -37,6 +39,26 @@ export function useUserMe() {
       }
     );
   };
+
+
+  async function reverseGeocodeCity(latitude: number, longitude: number): Promise<{ country: string; city: string }> {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`
+      );
+      const data = await response.json();
+      return {
+        country: data.address?.country || 'Unknown',
+        city:
+          data.address?.county || 'Unknown'
+      };
+    } catch (err) {
+      console.error('Reverse geocoding failed:', err);
+      return { country: 'Unknown', city: 'Unknown' };
+    }
+  }
+  
+
 
   useEffect(() => {
     async function fetchAll() {
@@ -75,7 +97,14 @@ export function useUserMe() {
         setLikes(likesRes);
         setlikedBy(likedByRes);
         if (locRes && locRes.latitude && locRes.longitude) {
-          setLocation(locRes);
+          const lat = parseFloat(locRes.latitude as unknown as string);
+          const lon = parseFloat(locRes.longitude as unknown as string);
+          const { city, country } = await reverseGeocodeCity(lat, lon);
+          setLocation({
+            ...locRes,
+            city,
+            country,
+          });
         } else {
           fallbackToBrowserLocation();
         }
@@ -144,7 +173,7 @@ export function useUserMe() {
       });
 
       const newProfile = res as unknown as Picture;
-      
+
       if (profilePicture) {
         setPictures(prev => [...prev, { ...profilePicture, is_profile: 'f' }]);
       }
