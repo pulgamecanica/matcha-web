@@ -23,25 +23,31 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
 
   const fallbackToBrowserLocation = () => {
-    // If  user doesn't allow location,
-    // call post without params : Ex: {} the backend will know the location by IP
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         try {
-          setLocationManually(await axiosInstance.post<Location>('/me/location', {
+          const response = await axiosInstance.post<Location>('/me/location', {
             latitude: pos.coords.latitude,
             longitude: pos.coords.longitude,
-          }) as unknown as Location);
+          });
+          setLocationManually(response.data);
         } catch (err) {
           toast.error(`Failed to update user location: ${err}`);
         }
       },
-      (err) => {
-        toast.error(`Location error: ${err}`);
-        setLocation(null);
+      async (err) => {
+        toast.error(`Location error: ${err.message}`);
+        try {
+          const response = await axiosInstance.post<Location>('/me/location',{});
+          setLocationManually(response.data);
+        } catch (ipErr) {
+          toast.error(`Failed to get location by IP: ${ipErr}`);
+          setLocation(null);
+        }
       }
     );
   };
+  
 
   const reverseGeocodeCity = async (latitude: number, longitude: number): Promise<{ country: string; city: string }>  => {
     try {
@@ -50,9 +56,9 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
       );
       const data = await response.json();
       return {
-        country: data.address?.country || 'Unknown',
+        country: data.address?.country || 'Moon',
         city:
-          data.address?.county || 'Unknown'
+          data.address?.county || 'Moonlight'
       };
     } catch (err) {
       toast.error(`Reverse geocoding failed: ${err}`);
