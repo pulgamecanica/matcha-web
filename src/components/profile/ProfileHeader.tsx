@@ -22,7 +22,7 @@ export function ProfileHeader({ user, profilePicture, location }: Props) {
       <div>
         <div className="flex items-center gap-2">
           <h2 className="text-xl font-bold">
-            {user.first_name} {user.last_name}
+            {user.last_name}
           </h2>
 
           {/* Online Status Badge */}

@@ -3,7 +3,6 @@ import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { TagList } from '@/components/profile/TagList';
 import { LocationCard } from '@/components/profile/LocationCard';
 import { PictureGallery } from '@/components/profile/PictureGallery';
-import { ProfileViews } from '@/components/profile/ProfileViews';
 import LoadingScreen from '@/components/LoadingScreen';
 import { LocationEditorModal } from '@/components/LocationEditorModal';
 import { useState } from 'react';
@@ -62,7 +61,6 @@ export function ProfilePage() {
       <TagList tags={tags} />
       <h3 className="font-bold mt-6 text-lg">📷 Pictures</h3>
       <PictureGallery pictures={pictures} />
-      <ProfileViews viewers={viewers} views={views} />
     </div>
   );
 }
