@@ -38,10 +38,15 @@ export function LocationForm({ initialLocation, onSuccess }: Props) {
     setLoading(false);
   }, [location, loading]);
   
+  const normalizeLoc = (lon: string): string => {
+    const numLon = parseFloat(lon);
+    return String(((numLon + 180) % 360 + 360) % 360 - 180);
+  };
+
+  
   const handleSubmit = async () => {
     try {
-      console.log(lat, lng)
-      setLocationManually({latitude: lat, longitude: lng} as unknown as Location);
+      setLocationManually({latitude: normalizeLoc(lat as string), longitude: normalizeLoc(lng as string)} as unknown as Location);
       setLoading(true)
     } catch {
       toast.error('Failed to update location');
