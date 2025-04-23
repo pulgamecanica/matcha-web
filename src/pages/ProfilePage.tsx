@@ -41,7 +41,7 @@ export function ProfilePage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col items-center justify-center min-h-screen">
-      <ProfileHeader user={publicUser} profilePicture={profilePicture} />
+      <ProfileHeader user={publicUser} profilePicture={profilePicture} location={location} />
       <div className="flex gap-2">
         <LocationCard location={location} />
         <button
@@ -54,7 +54,6 @@ export function ProfilePage() {
           <LocationEditorModal
             initialLocation={location}
             onClose={() => setShowModal(false)}
-            onUpdated={() => window.location.reload()}
           />
         )}
       </div>

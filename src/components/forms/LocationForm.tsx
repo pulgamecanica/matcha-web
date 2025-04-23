@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Location } from '@/types/location';
 import axiosInstance from '@/api/axios';
 import { LocationEditor } from '@/components/location/LocationEditor';
+import { useUserMe } from '@/hooks/useUserMe';
 
 type Props = {
   initialLocation: Location | null;
@@ -12,19 +13,36 @@ type Props = {
 export function LocationForm({ initialLocation, onSuccess }: Props) {
   const [lat, setLat] = useState(initialLocation?.latitude || 48.8566);
   const [lng, setLng] = useState(initialLocation?.longitude || 2.3522);
-  const [city, setCity] = useState(initialLocation?.city || '');
-  const [country, setCountry] = useState(initialLocation?.country || '');
+  const [loading, setLoading] = useState(false);
+  const { setLocationManually, location } = useUserMe();
 
+  useEffect(() => {
+    if (!location || !loading) return;
+  
+    const updateLocation = async () => {
+      try {
+        await axiosInstance.post<Location>('/me/location', {
+          latitude: location.latitude,
+          longitude: location.longitude,
+          city: location.city,
+          country: location.country,
+        });
+        toast.success('Location updated!');
+        onSuccess();
+      } catch (err) {
+        toast.error('Failed to update location');
+      }
+    };
+  
+    updateLocation();
+    setLoading(false);
+  }, [location, loading]);
+  
   const handleSubmit = async () => {
     try {
-      await axiosInstance.post('/me/location', {
-        latitude: lat,
-        longitude: lng,
-        city,
-        country,
-      });
-      toast.success('Location updated!');
-      onSuccess();
+      console.log(lat, lng)
+      setLocationManually({latitude: lat, longitude: lng} as unknown as Location);
+      setLoading(true)
     } catch {
       toast.error('Failed to update location');
     }
@@ -37,25 +55,6 @@ export function LocationForm({ initialLocation, onSuccess }: Props) {
           setLat(lat);
           setLng(lng);
         }} />
-      </div>
-
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <div>
-          <label className="block text-sm text-gray-700 dark:text-gray-200">City</label>
-          <input
-            className="w-full mt-1 p-2 rounded border dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-          />
-        </div>
-        <div>
-          <label className="block text-sm text-gray-700 dark:text-gray-200">Country</label>
-          <input
-            className="w-full mt-1 p-2 rounded border dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            value={country}
-            onChange={(e) => setCountry(e.target.value)}
-          />
-        </div>
       </div>
 
       <div className="flex justify-end gap-2">

@@ -8,7 +8,7 @@ type Props = {
   location: Location | null;
 };
 
-export function ProfileHeader({ user, profilePicture }: Props) {
+export function ProfileHeader({ user, profilePicture, location }: Props) {
   const isOnline = user.online_status;
   const lastSeen = location?.city || location?.country || null;
   return (

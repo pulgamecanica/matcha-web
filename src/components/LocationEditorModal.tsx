@@ -4,10 +4,9 @@ import { LocationForm } from '@/components/forms/LocationForm';
 type Props = {
   initialLocation: Location | null;
   onClose: () => void;
-  onUpdated: () => void;
 };
 
-export function LocationEditorModal({ initialLocation, onClose, onUpdated }: Props) {
+export function LocationEditorModal({ initialLocation, onClose }: Props) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-lg shadow-lg">
@@ -24,7 +23,6 @@ export function LocationEditorModal({ initialLocation, onClose, onUpdated }: Pro
         <LocationForm
           initialLocation={initialLocation}
           onSuccess={() => {
-            onUpdated();
             onClose();
           }}
         />
