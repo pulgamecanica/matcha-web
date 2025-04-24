@@ -3,14 +3,13 @@ import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { TagList } from '@/components/profile/TagList';
 import { LocationCard } from '@/components/profile/LocationCard';
 import { PictureGallery } from '@/components/profile/PictureGallery';
-import { ProfileViews } from '@/components/profile/ProfileViews';
 import LoadingScreen from '@/components/LoadingScreen';
 import { LocationEditorModal } from '@/components/LocationEditorModal';
 import { useState } from 'react';
 import { Pencil } from 'lucide-react';
 import { toPublicUser } from '@/utils/toPublicUser';
-import { Visitor } from '@/types/user';
 import { ProfileStats } from '@/components/profile/ProfileStats';
+import { PublicUser } from '@/types/user';
 
 export function ProfilePage() {
   const {
@@ -33,15 +32,15 @@ export function ProfilePage() {
     user,
     tags,
     pictures,
-    views as unknown as Visitor[],
-    viewers as unknown as Visitor[],
-    likes.length,
-    likedBy.length
+    views as unknown as PublicUser[],
+    viewers as unknown as PublicUser[],
+    likes as unknown as PublicUser[],
+    likedBy as unknown as PublicUser[],
   );
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col items-center justify-center min-h-screen">
-      <ProfileHeader user={publicUser} profilePicture={profilePicture} />
+      <ProfileHeader user={publicUser} profilePicture={profilePicture} location={location} />
       <div className="flex gap-2">
         <LocationCard location={location} />
         <button
@@ -54,16 +53,14 @@ export function ProfilePage() {
           <LocationEditorModal
             initialLocation={location}
             onClose={() => setShowModal(false)}
-            onUpdated={() => window.location.reload()}
           />
         )}
       </div>
-      <ProfileStats user={publicUser} />
+      <ProfileStats showMessage user={publicUser} />
       
       <TagList tags={tags} />
       <h3 className="font-bold mt-6 text-lg">📷 Pictures</h3>
       <PictureGallery pictures={pictures} />
-      <ProfileViews viewers={viewers} views={views} />
     </div>
   );
 }

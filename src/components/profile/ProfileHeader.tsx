@@ -1,15 +1,16 @@
 import { PublicUser } from '@/types/user';
 import { Picture } from '@/types/picture';
+import { Location } from '@/types/location';
 
 type Props = {
   user: PublicUser;
   profilePicture: Picture | null;
+  location?: Location | null;
 };
 
-export function ProfileHeader({ user, profilePicture }: Props) {
+export function ProfileHeader({ user, profilePicture, location }: Props) {
   const isOnline = user.online_status;
-  const lastSeen = user.last_seen_at ? new Date(user.last_seen_at).toLocaleString() : null;
-
+  const lastSeen = location?.city || location?.country || null;
   return (
     <div className="flex items-center gap-4">
       <img
@@ -21,7 +22,7 @@ export function ProfileHeader({ user, profilePicture }: Props) {
       <div>
         <div className="flex items-center gap-2">
           <h2 className="text-xl font-bold">
-            {user.first_name} {user.last_name}
+            {user.last_name}
           </h2>
 
           {/* Online Status Badge */}

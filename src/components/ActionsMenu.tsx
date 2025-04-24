@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LogOut, Home, User } from 'lucide-react';
+import { LogOut, Home, Menu, User } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import clsx from 'clsx';
@@ -70,7 +70,7 @@ export function ActionsMenu() {
             expanded ? 'rotate-90' : ''
           )}
         >
-          <span className="text-xl">+</span>
+           <Menu className="w-6 h-6" />
         </div>
       </div>
     </div>

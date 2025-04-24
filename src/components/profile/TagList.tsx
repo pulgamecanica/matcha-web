@@ -19,7 +19,7 @@ export function TagList({ tags }: Props) {
       {tags.map(tag => (
         <span
           key={tag.id}
-          className={`px-3 py-1 rounded-full bg-${getTagColor(tag.name)}-200 text-purple-800 text-xs font-medium dark:bg-${getTagColor(tag.name)}-900 dark:text-purple-100`}
+          className={`border px-3 py-2 rounded-full bg-${getTagColor(tag.name)}-200 text-purple-800 text-xs font-medium dark:bg-${getTagColor(tag.name)}-900 dark:text-purple-100`}
         >
           #{tag.name}
         </span>

@@ -1,4 +1,4 @@
-import { User, PublicUser, Visitor } from '@/types/user';
+import { User, PublicUser } from '@/types/user';
 import { Picture } from '@/types/picture';
 import { Tag } from '@/types/tag';
 
@@ -6,10 +6,10 @@ export function toPublicUser(
   user: User,
   tags: Tag[],
   pictures: Picture[],
-  views: Visitor[],
-  viewers: Visitor[],
-  likes: number,
-  liked_by: number
+  views: PublicUser[],
+  viewers: PublicUser[],
+  likes: PublicUser[],
+  liked_by: PublicUser[]
 ): PublicUser {
   return {
     id: user.id,
@@ -29,7 +29,7 @@ export function toPublicUser(
     tags,
     views: views,
     visitors: viewers,
-    total_likes_sent: likes,
-    total_likes_received: liked_by,
+    likes: likes,
+    liked_by: liked_by,
   };
 }

@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import axios from '@/api/axios';
 import toast from 'react-hot-toast';
 import { RelationshipStatus } from '@api/relationshipStatus';
-import { useMessages } from '@/hooks/useMessages';
 
 export function PublicProfileActions({ username, currentUsername }: { username: string; currentUsername: string }) {
   const { liked, matched, connected, blocked, refresh } = RelationshipStatus(username, currentUsername);

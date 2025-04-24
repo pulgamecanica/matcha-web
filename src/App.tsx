@@ -19,6 +19,7 @@ import { ConversationsPage } from '@pages/ConversationsPage';
 import { ActionsMenu }  from '@components/ActionsMenu';
 import { PublicProfilePage } from '@pages/PublicProfilePage';
 import { MessagesProvider } from '@context/MessagesProvider';
+import { UserMeProvider } from '@context/UserMeProvider';
 
 function App() {
   return (
@@ -55,28 +56,30 @@ function App() {
           <ThemeToggle/>
         </div>
         <AuthProvider>
-          <WebSocketProvider>
-            <MessagesProvider>
-              <BrowserRouter>
-                <NotificationProvider>
-                  <NotificationDropdown />
-                  <ActionsMenu />
-                  <Routes>
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/register" element={<RegisterPage />} />
-                    <Route path="/" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
-                    <Route path="/setup" element={<ProtectedRoute><SetupProfilePage /></ProtectedRoute>} />
-                    <Route path="/profile/edit" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
-                    <Route path="/discover" element={<ProtectedRoute><MatchingPage/></ProtectedRoute>}/>
-                    <Route path="/profile" element={<ProtectedRoute><ProfilePage/></ProtectedRoute>}/>
-                    <Route path="/conversations" element={<ProtectedRoute><ConversationsPage /></ProtectedRoute>} />
-                    <Route path="/profile/:username" element={<ProtectedRoute><PublicProfilePage /></ProtectedRoute>} />
-                    <Route path="*" element={<NotFoundPage />} />
-                  </Routes>
-                </NotificationProvider>
-              </BrowserRouter>
-            </MessagesProvider>
-          </WebSocketProvider>
+          <UserMeProvider>
+            <WebSocketProvider>
+              <MessagesProvider>
+                <BrowserRouter>
+                  <NotificationProvider>
+                    <NotificationDropdown />
+                    <ActionsMenu />
+                    <Routes>
+                      <Route path="/login" element={<LoginPage />} />
+                      <Route path="/register" element={<RegisterPage />} />
+                      <Route path="/" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
+                      <Route path="/setup" element={<ProtectedRoute><SetupProfilePage /></ProtectedRoute>} />
+                      <Route path="/profile/edit" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
+                      <Route path="/discover" element={<ProtectedRoute><MatchingPage/></ProtectedRoute>}/>
+                      <Route path="/profile" element={<ProtectedRoute><ProfilePage/></ProtectedRoute>}/>
+                      <Route path="/conversations" element={<ProtectedRoute><ConversationsPage /></ProtectedRoute>} />
+                      <Route path="/profile/:username" element={<ProtectedRoute><PublicProfilePage /></ProtectedRoute>} />
+                      <Route path="*" element={<NotFoundPage />} />
+                    </Routes>
+                  </NotificationProvider>
+                </BrowserRouter>
+              </MessagesProvider>
+            </WebSocketProvider>
+          </UserMeProvider>
         </AuthProvider>
       </div>
     </ThemeProvider>
