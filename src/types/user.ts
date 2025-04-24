@@ -26,7 +26,6 @@ export type User = {
   profile_picture_id: number | null;
 };
 
-
 export type PublicUser = {
   id: number;
   username: string;
@@ -48,13 +47,6 @@ export type PublicUser = {
   likes: PublicUser[];  
   liked_by: PublicUser[];
 };
-
-// export type Visitor = {
-//   id: number;
-//   username: string;
-//   viewed_at: string;
-// };
-
 
 export type UpdateUserProfilePayload = {
   username?: string;

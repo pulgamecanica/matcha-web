@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import axiosInstance from '@api/axios';
-import { User, PublicUser, UpdateUserProfilePayload, Visitor } from '@/types/user';
+import { User, PublicUser, UpdateUserProfilePayload } from '@/types/user';
 import { Tag } from '@/types/tag';
 import { Picture } from '@/types/picture';
 import { Location } from '@/types/location';
@@ -18,11 +18,23 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
   const [views, setViews] = useState<PublicUser[]>([]);
   const [viewers, setViewers] = useState<PublicUser[]>([]);
   const [loading, setLoading] = useState(true);
-  const [likes, setLikes] = useState<Visitor[]>([]);
-  const [likedBy, setlikedBy] = useState<Visitor[]>([]);
+  const [likes, setLikes] = useState<PublicUser[]>([]);
+  const [likedBy, setlikedBy] = useState<PublicUser[]>([]);
   const { isAuthenticated } = useAuth();
+  
+  const setLocationManually = useCallback(async (loc: Location) => {
+    const { city, country } = await reverseGeocodeCity(
+      parseFloat(loc.latitude), 
+      parseFloat(loc.longitude));
+    
+    setLocation({
+      ...loc,
+      city,
+      country,
+    });
+  }, []);;
 
-  const fallbackToBrowserLocation = () => {
+  const fallbackToBrowserLocation = useCallback(() => {
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         try {
@@ -38,7 +50,7 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
       async (err) => {
         toast.error(`Location error: ${err.message}`);
         try {
-          const response = await axiosInstance.post<Location>('/me/location',{});
+          const response = await axiosInstance.post<Location>('/me/location', {});
           setLocationManually(response.data);
         } catch (ipErr) {
           toast.error(`Failed to get location by IP: ${ipErr}`);
@@ -46,8 +58,8 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
         }
       }
     );
-  };
-  
+  }, [setLocationManually]);  
+
 
   const reverseGeocodeCity = async (latitude: number, longitude: number): Promise<{ country: string; city: string }>  => {
     try {
@@ -89,8 +101,8 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
           axiosInstance.get('/me/location/history') as unknown as Location[],
           axiosInstance.get('/me/views') as unknown as PublicUser[],
           axiosInstance.get('/me/visits') as unknown as PublicUser[],
-          axiosInstance.get('/me/likes') as unknown as Visitor[],
-          axiosInstance.get('/me/liked_by') as unknown as Visitor[],
+          axiosInstance.get('/me/likes') as unknown as PublicUser[],
+          axiosInstance.get('/me/liked_by') as unknown as PublicUser[],
         ]);
 
         setUser(userRes);
@@ -114,20 +126,7 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     fetchAll();
-  }, [isAuthenticated]);
-
-
-  const setLocationManually = async (loc: Location) => {
-    const { city, country } = await reverseGeocodeCity(
-      parseFloat(loc.latitude), 
-      parseFloat(loc.longitude));
-    
-    setLocation({
-      ...loc,
-      city,
-      country,
-    });
-  };
+  }, [isAuthenticated, fallbackToBrowserLocation]);
 
   const updateUser = async (data: Partial<UpdateUserProfilePayload>) => {
     try {

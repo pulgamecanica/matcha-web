@@ -30,13 +30,13 @@ export function LocationForm({ initialLocation, onSuccess }: Props) {
         toast.success('Location updated!');
         onSuccess();
       } catch (err) {
-        toast.error('Failed to update location');
+        toast.error(`Failed to update location: ${err}`);
       }
     };
   
     updateLocation();
     setLoading(false);
-  }, [location, loading]);
+  }, [location, loading, onSuccess]);
   
   const normalizeLoc = (lon: string): string => {
     const numLon = parseFloat(lon);
