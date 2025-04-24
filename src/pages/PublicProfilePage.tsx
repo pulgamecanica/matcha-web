@@ -43,8 +43,8 @@ export function PublicProfilePage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col items-center justify-center min-h-screen">
-      <ProfileHeader user={user} profilePicture={profilePicture} />
-      <ProfileStats user={user} />
+      <ProfileHeader  user={user} profilePicture={profilePicture} />
+      <ProfileStats showMessage={false} user={user} />
       <TagList tags={user.tags || []} />
       {user.username !== currentUser?.username && (
         <PublicProfileActions username={user.username} currentUsername={currentUser.username} />

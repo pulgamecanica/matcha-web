@@ -5,7 +5,7 @@ import { Location } from '@/types/location';
 type Props = {
   user: PublicUser;
   profilePicture: Picture | null;
-  location: Location | null;
+  location?: Location | null;
 };
 
 export function ProfileHeader({ user, profilePicture, location }: Props) {

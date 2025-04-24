@@ -8,8 +8,8 @@ import { LocationEditorModal } from '@/components/LocationEditorModal';
 import { useState } from 'react';
 import { Pencil } from 'lucide-react';
 import { toPublicUser } from '@/utils/toPublicUser';
-import { Visitor } from '@/types/user';
 import { ProfileStats } from '@/components/profile/ProfileStats';
+import { PublicUser } from '@/types/user';
 
 export function ProfilePage() {
   const {
@@ -32,10 +32,10 @@ export function ProfilePage() {
     user,
     tags,
     pictures,
-    views as unknown as Visitor[],
-    viewers as unknown as Visitor[],
-    likes.length,
-    likedBy.length
+    views as unknown as PublicUser[],
+    viewers as unknown as PublicUser[],
+    likes as unknown as PublicUser[],
+    likedBy as unknown as PublicUser[],
   );
 
   return (
@@ -56,7 +56,7 @@ export function ProfilePage() {
           />
         )}
       </div>
-      <ProfileStats user={publicUser} />
+      <ProfileStats showMessage user={publicUser} />
       
       <TagList tags={tags} />
       <h3 className="font-bold mt-6 text-lg">📷 Pictures</h3>

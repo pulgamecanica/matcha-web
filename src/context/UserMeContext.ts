@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { User, PublicUser, UpdateUserProfilePayload, Visitor } from '@/types/user';
+import { User, PublicUser, UpdateUserProfilePayload } from '@/types/user';
 import { Tag } from '@/types/tag';
 import { Picture } from '@/types/picture';
 import { Location } from '@/types/location';
@@ -14,8 +14,8 @@ export type UserMeContextType = {
   views: PublicUser[];
   viewers: PublicUser[];
   loading: boolean;
-  likes: Visitor[];
-  likedBy: Visitor[];
+  likes: PublicUser[];
+  likedBy: PublicUser[];
   setLocationManually: (loc: Location) => void;
   updateUser: (data: Partial<UpdateUserProfilePayload>) => Promise<void>;
   addTag: (name: string) => Promise<void>;

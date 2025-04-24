@@ -43,17 +43,17 @@ export type PublicUser = {
   last_seen_at: string | null;
   pictures: Picture[];
   tags: Tag[];
-  views: Visitor[];
-  visitors: Visitor[];
-  total_likes_sent: number;
-  total_likes_received: number;
+  views: PublicUser[];
+  visitors: PublicUser[];  
+  likes: PublicUser[];  
+  liked_by: PublicUser[];
 };
 
-export type Visitor = {
-  id: number;
-  username: string;
-  viewed_at: string;
-};
+// export type Visitor = {
+//   id: number;
+//   username: string;
+//   viewed_at: string;
+// };
 
 
 export type UpdateUserProfilePayload = {
