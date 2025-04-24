@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { PublicUser } from '@/types/user';
 import { StatItem } from '@/components/profile/StatItem';
 import { StatSidebar } from '@/components/profile/StatSidebar';
+import { MailOpen } from 'lucide-react';
 
 type Props = {
   user: PublicUser;
@@ -25,33 +26,56 @@ export function ProfileStats({ user }: Props) {
     likes_received: <p>{user.total_likes_received} Please upgrade to premium to see who like you 🥰</p>,
     matches: <p>{user.total_likes_sent} matches (placeholder) 💘</p>,
     views: (
-      <ul className="text-sm space-y-1">
-        {Array.from(new Map(user.views.map(v => [v.id, v])).values()).map((viewer, i) => (
-          <li
-            key={i}
-            onClick={() => navigate(`/profile/${viewer.username}`)}
-            className="cursor-pointer"
-          >
-            {viewer.username} 👀
-          </li>
-        ))}
-      </ul>
+<ul className="text-sm space-y-1">
+  {Array.from(new Map(user.views.map(v => [v.id, v])).values()).map((viewer, i) => (
+    <li
+      key={i}
+      className="flex items-center gap-2 cursor-pointer"
+    >
+      <span
+        onClick={() => navigate(`/profile/${viewer.username}`)}
+        className="hover:underline"
+      >
+        {viewer.username}
+      </span>
+      <MailOpen
+        className="h-4 w-4 text-blue-500 hover:text-blue-700"
+        onClick={(e) => {
+          e.stopPropagation();
+          navigate(`/conversations?user=${viewer.username}`);
+        }}
+      />
+    </li>
+  ))}
+</ul>
+
     ),
     visitors: (
       <ul className="text-sm space-y-1">
-        {Array.from(new Set(user.visitors.map(v => v.id))).map((id, i) => {
-          const visitor = user.visitors.find(v => v.id === id);
-          return visitor ? (
-            <li
-              key={i}
+      {Array.from(new Set(user.visitors.map(v => v.id))).map((id, i) => {
+        const visitor = user.visitors.find(v => v.id === id);
+        return visitor ? (
+          <li
+            key={i}
+            className="flex items-center gap-2 cursor-pointer"
+          >
+            <span
               onClick={() => navigate(`/profile/${visitor.username}`)}
-              className="cursor-pointer"
+              className="hover:underline"
             >
-              {visitor.username} 🚪
-            </li>
-          ) : null;
-        })}
-      </ul>
+              {visitor.username}
+            </span>
+            <MailOpen
+              className="h-4 w-4 text-blue-500 hover:text-blue-700"
+              onClick={(e) => {
+                e.stopPropagation(); // prevent profile navigation
+                navigate(`/conversations?user=${visitor.username}`);
+              }}
+            />
+          </li>
+        ) : null;
+      })}
+    </ul>    
     )
   };
 
