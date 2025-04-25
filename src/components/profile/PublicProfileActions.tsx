@@ -4,15 +4,18 @@ import toast from 'react-hot-toast';
 import { RelationshipStatusType } from '@api/relationshipStatus';
 import { useMessages } from '@/hooks/useMessages';
 import { PublicUser } from '@/types/user';
+import { useUserMe } from '@/hooks/useUserMe';
 
 type PublicProfileActionsProps = {
   user: PublicUser;
   relationship: RelationshipStatusType;
+  refresh: () => void;
 };
 
-export function PublicProfileActions({ user, relationship}: PublicProfileActionsProps) {
-  const { liked, likedBy, matched, connected, blocked, refresh } = relationship;
+export function PublicProfileActions({ user, relationship, refresh}: PublicProfileActionsProps) {
+  const { liked, likedBy, matched, connected, blocked } = relationship;
   const { startConversationWith, removeConversationWith } = useMessages();
+  const { refreshMatches } = useUserMe();
   const username = user.username;
   const [isLoading, setIsLoading] = useState(false);
 
@@ -26,6 +29,7 @@ export function PublicProfileActions({ user, relationship}: PublicProfileActions
         await axios.post('/me/like', { username });
         toast.success('Liked!');
       }
+      refreshMatches();
     } catch {
       toast.error('Failed to update like');
     } finally {
@@ -38,6 +42,7 @@ export function PublicProfileActions({ user, relationship}: PublicProfileActions
     setIsLoading(true);
     try {
       await axios.post('/me/block', { username });
+      refreshMatches();
       toast.success('User blocked');
     } catch {
       toast.error('Failed to block');

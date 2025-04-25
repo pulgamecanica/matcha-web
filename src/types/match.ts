@@ -18,6 +18,7 @@ export type MatchScore = {
   tag_score: number;
   fame_score: string;
   total: number;
+  age: number;
 }
 
 export type MatchResult = {

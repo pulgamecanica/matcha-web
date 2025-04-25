@@ -20,6 +20,7 @@ export type UserMeContextType = {
   connections: PublicUser[]
   profileSetupComplete: boolean;
   setLocationManually: (loc: Location) => void;
+  refreshMatches: () => void;
   updateUser: (data: Partial<UpdateUserProfilePayload>) => Promise<void>;
   addTag: (name: string) => Promise<void>;
   removeTag: (name: string) => Promise<void>;
@@ -44,6 +45,7 @@ export const UserMeContext = createContext<UserMeContextType>({
   connections: [],
   profileSetupComplete: false,
   setLocationManually: () => {},
+  refreshMatches: () => {},
   updateUser: async () => {},
   addTag: async () => {},
   removeTag: async () => {},

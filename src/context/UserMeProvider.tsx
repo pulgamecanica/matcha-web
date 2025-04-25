@@ -229,6 +229,15 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const refreshMatches = async () => {
+    try {
+      setMatches(await axiosInstance.get('/me/matches') as unknown as PublicUser[]);
+    } catch (err) {
+      toast.error('Failed to delete picture');
+      throw err;
+    }
+  };
+
   return (
       <UserMeContext.Provider
         value={{
@@ -244,6 +253,7 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
             likes,
             likedBy,
             setLocationManually,
+            refreshMatches,
             updateUser,
             addTag,
             removeTag,
