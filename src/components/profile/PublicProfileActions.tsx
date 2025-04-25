@@ -1,10 +1,22 @@
 import { useState } from 'react';
 import axios from '@/api/axios';
 import toast from 'react-hot-toast';
-import { RelationshipStatus } from '@api/relationshipStatus';
+import { RelationshipStatusType } from '@api/relationshipStatus';
+import { useMessages } from '@/hooks/useMessages';
+import { PublicUser } from '@/types/user';
+import { useUserMe } from '@/hooks/useUserMe';
 
-export function PublicProfileActions({ username, currentUsername }: { username: string; currentUsername: string }) {
-  const { liked, matched, connected, blocked, refresh } = RelationshipStatus(username, currentUsername);
+type PublicProfileActionsProps = {
+  user: PublicUser;
+  relationship: RelationshipStatusType;
+  refresh: () => void;
+};
+
+export function PublicProfileActions({ user, relationship, refresh}: PublicProfileActionsProps) {
+  const { liked, likedBy, matched, connected, blocked } = relationship;
+  const { startConversationWith, removeConversationWith } = useMessages();
+  const { refreshMatches } = useUserMe();
+  const username = user.username;
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLikeToggle = async () => {
@@ -17,6 +29,7 @@ export function PublicProfileActions({ username, currentUsername }: { username: 
         await axios.post('/me/like', { username });
         toast.success('Liked!');
       }
+      refreshMatches();
     } catch {
       toast.error('Failed to update like');
     } finally {
@@ -29,6 +42,7 @@ export function PublicProfileActions({ username, currentUsername }: { username: 
     setIsLoading(true);
     try {
       await axios.post('/me/block', { username });
+      refreshMatches();
       toast.success('User blocked');
     } catch {
       toast.error('Failed to block');
@@ -42,6 +56,7 @@ export function PublicProfileActions({ username, currentUsername }: { username: 
     setIsLoading(true);
     try {
       await axios.post('/me/connect', { username });
+      startConversationWith(user);
       toast.success('Connected!');
     } catch {
       toast.error('Failed to connect');
@@ -55,6 +70,7 @@ export function PublicProfileActions({ username, currentUsername }: { username: 
     setIsLoading(true);
     try {
       await axios.delete('/me/connect', { data: { username } });
+      removeConversationWith(user);
       toast.success('Disconnected');
     } catch {
       toast.error('Failed to disconnect');
@@ -63,17 +79,23 @@ export function PublicProfileActions({ username, currentUsername }: { username: 
       setIsLoading(false);
     }
   };
-
   return (
     <div className="w-full mt-6 space-y-4">
       {/* 🩷 Match Label */}
-      {matched && (
+      {matched ? (
         <div className="text-center">
           <span className="text-pink-500 font-semibold text-lg animate-bounce">
             💖 It's a Match!
           </span>
         </div>
-      )}
+      ) :
+        (likedBy && (
+          <div className="text-center">
+            <span className="text-pink-500 font-semibold text-lg animate-bounce">
+              ❤️ likes you!
+            </span>
+          </div>
+        ))}
 
       {/* 🤝 Core Actions */}
       <div className="flex flex-wrap justify-center gap-3">

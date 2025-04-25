@@ -46,6 +46,8 @@ export type PublicUser = {
   visitors: PublicUser[];  
   likes: PublicUser[];  
   liked_by: PublicUser[];
+  matches: PublicUser[];
+  connections: PublicUser[];
 };
 
 export type UpdateUserProfilePayload = {

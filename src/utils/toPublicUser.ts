@@ -9,7 +9,9 @@ export function toPublicUser(
   views: PublicUser[],
   viewers: PublicUser[],
   likes: PublicUser[],
-  liked_by: PublicUser[]
+  liked_by: PublicUser[],
+  matches: PublicUser[],
+  connections: PublicUser[]
 ): PublicUser {
   return {
     id: user.id,
@@ -31,5 +33,7 @@ export function toPublicUser(
     visitors: viewers,
     likes: likes,
     liked_by: liked_by,
+    matches: matches,
+    connections : connections,
   };
 }

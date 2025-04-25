@@ -10,13 +10,25 @@ import { fetchPublicProfile } from '@/api/publicProfile';
 import { PublicProfileActions } from '@/components/profile/PublicProfileActions';
 import { useUserMe } from '@/hooks/useUserMe';
 import { ProfileStats } from '@/components/profile/ProfileStats';
+import { getRelationshipStatus, RelationshipStatusType } from '@/api/relationshipStatus';
 
 export function PublicProfilePage() {
   const { username } = useParams();
+  const { user: currentUser } = useUserMe();
   const [user, setUser] = useState<PublicUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-  const { user: currentUser } = useUserMe();
+  const [status, setStatus] = useState<RelationshipStatusType | null>(null);
+  const [reloadTrigger, setReloadTrigger] = useState(0);
+
+  const reloadRelationships = () => setReloadTrigger((n) => n + 1);
+
+  useEffect(() => {
+  if (!username || !currentUser) return;
+    getRelationshipStatus(username, currentUser.username).then((result) => {
+      if (result) setStatus(result);
+  });
+}, [reloadTrigger, username, currentUser]);
 
   useEffect(() => {
     if (!username) return;
@@ -37,17 +49,18 @@ export function PublicProfilePage() {
   }, [username]);
 
   if (loading || !currentUser) return <LoadingScreen />;
-  if (notFound || !user) return <NotFoundPage />;
+  if (notFound || !username || !user) return <NotFoundPage />;
+  if (!status) return <LoadingScreen />;
 
   const profilePicture = user.pictures.find((pic) => pic.is_profile === 't') || null;
-
+  
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col items-center justify-center min-h-screen">
       <ProfileHeader  user={user} profilePicture={profilePicture} />
-      <ProfileStats showMessage={false} user={user} />
+      <ProfileStats showMessage={false} user={user} relationship={status}/>
       <TagList tags={user.tags || []} />
       {user.username !== currentUser?.username && (
-        <PublicProfileActions username={user.username} currentUsername={currentUser.username} />
+        <PublicProfileActions user={user} relationship={status} refresh={reloadRelationships} />
       )}
       <h3 className="font-bold mt-6 text-lg">📷 Pictures</h3>
       <PictureGallery

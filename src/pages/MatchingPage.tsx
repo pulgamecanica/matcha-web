@@ -11,7 +11,7 @@ import {
 } from '@/utils/filterStorage';
 import { Container, CircularProgress } from '@mui/material';
 
-export type SortType = 'total' | 'location_score' | 'tag_score' | 'fame_score';
+export type SortType = 'total' | 'location_score' | 'tag_score' | 'fame_score' | 'age';
 
 export function MatchingPage() {
   const [filters, setFilters] = useState<MatchFilters | null>(null);
@@ -68,9 +68,25 @@ export function MatchingPage() {
   );
 }
 
+const calcAge = (birthdate: string) => {
+  const birth = new Date(birthdate);
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  return age;
+};
+
+
 function sortMatches(matches: MatchResult[], sort: SortType): MatchResult[] {
-  return [...matches].sort(
-    (a, b) =>
-      parseFloat(b.score[sort] as string) - parseFloat(a.score[sort] as string),
-  );
+  return [...matches].sort((a, b) => {
+    if (sort === 'age') {
+      const ageA = calcAge(a.user.birth_year)
+      const ageB = calcAge(b.user.birth_year)
+      return ageA - ageB;
+    }
+
+    return parseFloat(b.score[sort] as string) - parseFloat(a.score[sort] as string);
+  });
 }
+

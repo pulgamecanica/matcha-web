@@ -8,6 +8,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import TagIcon from "@mui/icons-material/Tag";
 import StarIcon from "@mui/icons-material/Star";
 import ScoreIcon from "@mui/icons-material/Score";
+import CakeIcon from '@mui/icons-material/Cake';
 import { SortType } from "@/pages/MatchingPage";
 
 type SortSelectorProps = {
@@ -51,6 +52,12 @@ export function SortSelector({ value, onChange }: SortSelectorProps) {
         <Tooltip title="Fame Score" arrow>
           <ToggleButton value="fame_score" className="dark:text-white text-sm">
             <StarIcon fontSize="small" />
+          </ToggleButton>
+        </Tooltip>
+
+        <Tooltip title="Age" arrow>
+          <ToggleButton value="age" className="dark:text-white text-sm">
+            <CakeIcon fontSize="small" />
           </ToggleButton>
         </Tooltip>
       </ToggleButtonGroup>
