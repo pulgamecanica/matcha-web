@@ -8,24 +8,27 @@ export function RelationshipStatus(username: string, currentUsername: string) {
   const [matched, setMatched] = useState(false);
   const [connected, setConnected] = useState(false);
   const [blocked, setBlocked] = useState(false);
+  const [matches, setMatchList] = useState<PublicUser[]>([]);
 
   const refresh = useCallback(async () => {
     if (!username || username === currentUsername) return;
 
     try {
-      const [likes, likedByList, matches, connections, blockedUsers] = await Promise.all([
+      const [likes, likedByList, matches, connections, blockedUsers, matchList] = await Promise.all([
         axios.get('/me/likes'),
         axios.get('/me/liked_by'),
         axios.get('/me/matches'),
         axios.get('/me/connections'),
         axios.get('/me/blocked'),
-      ]);
+        axios.get('/me/matches'),
 
+      ]);
       setLiked((likes as unknown as PublicUser[]).some((u) => u.username === username));
       setLikedBy((likedByList as unknown as PublicUser[]).some((u) => u.username === username));
       setMatched((matches as unknown as PublicUser[]).some((u) => u.username === username));
       setConnected((connections as unknown as PublicUser[]).some((u) => u.username === username));
       setBlocked((blockedUsers as unknown as string[]).some((u) => u === username));
+      setMatchList(matchList as unknown as PublicUser[]);
     } catch (e) {
       console.error('Failed to fetch relationship status', e);
     }
@@ -35,5 +38,5 @@ export function RelationshipStatus(username: string, currentUsername: string) {
     refresh();
   }, [refresh]);
 
-  return { liked, likedBy, matched, connected, blocked, refresh };
+  return { liked, likedBy, matched, connected, blocked, refresh, matches };
 }

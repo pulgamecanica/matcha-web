@@ -22,7 +22,9 @@ export function ProfilePage() {
     viewers,
     loading,
     likes,
-    likedBy
+    likedBy,
+    matches,
+    connections
   } = useUserMe();
   const [showModal, setShowModal] = useState(false);
 
@@ -36,8 +38,10 @@ export function ProfilePage() {
     viewers as unknown as PublicUser[],
     likes as unknown as PublicUser[],
     likedBy as unknown as PublicUser[],
+    matches as unknown as PublicUser[],
+    connections as unknown as PublicUser[],
   );
-
+  console.log(connections)
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col items-center justify-center min-h-screen">
       <ProfileHeader user={publicUser} profilePicture={profilePicture} location={location} />
@@ -56,7 +60,7 @@ export function ProfilePage() {
           />
         )}
       </div>
-      <ProfileStats showMessage user={publicUser} />
+      <ProfileStats showMatches showMessage user={publicUser} />
       
       <TagList tags={tags} />
       <h3 className="font-bold mt-6 text-lg">📷 Pictures</h3>

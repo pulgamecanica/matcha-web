@@ -25,7 +25,6 @@ export function ProfileHeader({ user, profilePicture, location }: Props) {
             {user.last_name}
           </h2>
 
-          {/* Online Status Badge */}
           <span
             className={`inline-block w-3 h-3 rounded-full ${
               isOnline ? 'bg-green-500' : 'bg-gray-400'

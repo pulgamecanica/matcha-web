@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { RelationshipStatus } from '@api/relationshipStatus';
 
 export function PublicProfileActions({ username, currentUsername }: { username: string; currentUsername: string }) {
-  const { liked, matched, connected, blocked, refresh } = RelationshipStatus(username, currentUsername);
+  const { liked, likedBy, matched, connected, blocked, refresh } = RelationshipStatus(username, currentUsername);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLikeToggle = async () => {
@@ -63,17 +63,23 @@ export function PublicProfileActions({ username, currentUsername }: { username: 
       setIsLoading(false);
     }
   };
-
   return (
     <div className="w-full mt-6 space-y-4">
       {/* 🩷 Match Label */}
-      {matched && (
+      {matched ? (
         <div className="text-center">
           <span className="text-pink-500 font-semibold text-lg animate-bounce">
             💖 It's a Match!
           </span>
         </div>
-      )}
+      ) :
+        (likedBy && (
+          <div className="text-center">
+            <span className="text-pink-500 font-semibold text-lg animate-bounce">
+              ❤️ likes you!
+            </span>
+          </div>
+        ))}
 
       {/* 🤝 Core Actions */}
       <div className="flex flex-wrap justify-center gap-3">

@@ -16,6 +16,9 @@ export type UserMeContextType = {
   loading: boolean;
   likes: PublicUser[];
   likedBy: PublicUser[];
+  matches: PublicUser[];
+  connections: PublicUser[]
+  profileSetupComplete: boolean;
   setLocationManually: (loc: Location) => void;
   updateUser: (data: Partial<UpdateUserProfilePayload>) => Promise<void>;
   addTag: (name: string) => Promise<void>;
@@ -23,7 +26,6 @@ export type UserMeContextType = {
   uploadPicture: (url: string, isProfile?: boolean) => Promise<void>;
   setProfilePicture: (pictureId: number) => Promise<void>;
   deletePicture: (pictureId: number) => Promise<void>;
-  profileSetupComplete: boolean;
 };
 
 export const UserMeContext = createContext<UserMeContextType>({
@@ -38,6 +40,9 @@ export const UserMeContext = createContext<UserMeContextType>({
   loading: true,
   likes: [],
   likedBy: [],
+  matches: [],
+  connections: [],
+  profileSetupComplete: false,
   setLocationManually: () => {},
   updateUser: async () => {},
   addTag: async () => {},
@@ -45,5 +50,4 @@ export const UserMeContext = createContext<UserMeContextType>({
   uploadPicture: async () => {},
   setProfilePicture: async () => {},
   deletePicture: async () => {},
-  profileSetupComplete: false,
 });

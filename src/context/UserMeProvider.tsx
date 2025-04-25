@@ -19,7 +19,9 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
   const [viewers, setViewers] = useState<PublicUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [likes, setLikes] = useState<PublicUser[]>([]);
-  const [likedBy, setlikedBy] = useState<PublicUser[]>([]);
+  const [likedBy, setLikedBy] = useState<PublicUser[]>([]);
+  const [matches, setMatches] = useState<PublicUser[]>([]);
+  const [connections, setConnections] = useState<PublicUser[]>([]);
   const { isAuthenticated } = useAuth();
   
   const setLocationManually = useCallback(async (loc: Location) => {
@@ -92,7 +94,9 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
           viewsRes,
           viewersRes,
           likesRes,
-          likedByRes
+          likedByRes,
+          matchesRes,
+          connectionsRes
         ] = await Promise.all([
           axiosInstance.get<User>('/me') as unknown as User,
           axiosInstance.get('/me/tags') as unknown as Tag[],
@@ -103,6 +107,8 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
           axiosInstance.get('/me/visits') as unknown as PublicUser[],
           axiosInstance.get('/me/likes') as unknown as PublicUser[],
           axiosInstance.get('/me/liked_by') as unknown as PublicUser[],
+          axiosInstance.get('/me/matches') as unknown as PublicUser[],
+          axiosInstance.get('/me/connections') as unknown as PublicUser[],
         ]);
 
         setUser(userRes);
@@ -114,7 +120,9 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
         setViews(viewsRes);
         setViewers(viewersRes);
         setLikes(likesRes);
-        setlikedBy(likedByRes);
+        setLikedBy(likedByRes);
+        setMatches(matchesRes);
+        setConnections(connectionsRes);
         if (!userRes?.longitude || !userRes?.latitude || !locRes || !locRes.latitude || !locRes.longitude) {
           fallbackToBrowserLocation();
         }
@@ -231,7 +239,9 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
             uploadPicture,
             setProfilePicture: setProfilePictureById,
             deletePicture,
-            profileSetupComplete: !!(user?.gender && user?.sexual_preferences)
+            profileSetupComplete: !!(user?.gender && user?.sexual_preferences),
+            matches,
+            connections,
         }}
       >
         {children}
