@@ -24,6 +24,7 @@ export function PublicProfileActions({ user, relationship, refresh}: PublicProfi
     try {
       if (liked) {
         await axios.delete('/me/like', { data: { username } });
+        removeConversationWith(user);
         toast.success('Unliked');
       } else {
         await axios.post('/me/like', { username });
