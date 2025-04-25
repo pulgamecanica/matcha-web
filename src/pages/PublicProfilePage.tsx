@@ -10,6 +10,7 @@ import { fetchPublicProfile } from '@/api/publicProfile';
 import { PublicProfileActions } from '@/components/profile/PublicProfileActions';
 import { useUserMe } from '@/hooks/useUserMe';
 import { ProfileStats } from '@/components/profile/ProfileStats';
+import { relationshipStatus } from '@/api/relationshipStatus';
 
 export function PublicProfilePage() {
   const { username } = useParams();
@@ -17,6 +18,9 @@ export function PublicProfilePage() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const { user: currentUser } = useUserMe();
+  const relationship = username && currentUser
+  ? relationshipStatus(username, currentUser.username)
+  : undefined;
 
   useEffect(() => {
     if (!username) return;
@@ -37,17 +41,18 @@ export function PublicProfilePage() {
   }, [username]);
 
   if (loading || !currentUser) return <LoadingScreen />;
-  if (notFound || !user) return <NotFoundPage />;
+  if (notFound || !username || !user) return <NotFoundPage />;
+  if (!relationship) return <LoadingScreen />;
 
   const profilePicture = user.pictures.find((pic) => pic.is_profile === 't') || null;
-
+  
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col items-center justify-center min-h-screen">
       <ProfileHeader  user={user} profilePicture={profilePicture} />
-      <ProfileStats showMessage={false} user={user} />
+      <ProfileStats showMessage={false} user={user} relationship={relationship}/>
       <TagList tags={user.tags || []} />
       {user.username !== currentUser?.username && (
-        <PublicProfileActions username={user.username} currentUsername={currentUser.username} />
+        <PublicProfileActions user={user} relationship={relationship} />
       )}
       <h3 className="font-bold mt-6 text-lg">📷 Pictures</h3>
       <PictureGallery

@@ -1,10 +1,19 @@
 import { useState } from 'react';
 import axios from '@/api/axios';
 import toast from 'react-hot-toast';
-import { RelationshipStatus } from '@api/relationshipStatus';
+import { RelationshipStatusType } from '@api/relationshipStatus';
+import { useMessages } from '@/hooks/useMessages';
+import { PublicUser } from '@/types/user';
 
-export function PublicProfileActions({ username, currentUsername }: { username: string; currentUsername: string }) {
-  const { liked, likedBy, matched, connected, blocked, refresh } = RelationshipStatus(username, currentUsername);
+type PublicProfileActionsProps = {
+  user: PublicUser;
+  relationship: RelationshipStatusType;
+};
+
+export function PublicProfileActions({ user, relationship}: PublicProfileActionsProps) {
+  const { liked, likedBy, matched, connected, blocked, refresh } = relationship;
+  const { startConversationWith, removeConversationWith } = useMessages();
+  const username = user.username;
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLikeToggle = async () => {
@@ -42,6 +51,7 @@ export function PublicProfileActions({ username, currentUsername }: { username: 
     setIsLoading(true);
     try {
       await axios.post('/me/connect', { username });
+      startConversationWith(user);
       toast.success('Connected!');
     } catch {
       toast.error('Failed to connect');
@@ -55,6 +65,7 @@ export function PublicProfileActions({ username, currentUsername }: { username: 
     setIsLoading(true);
     try {
       await axios.delete('/me/connect', { data: { username } });
+      removeConversationWith(user);
       toast.success('Disconnected');
     } catch {
       toast.error('Failed to disconnect');

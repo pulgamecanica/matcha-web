@@ -3,18 +3,22 @@ import { PublicUser } from '@/types/user';
 import { StatItem } from '@/components/profile/StatItem';
 import { StatSidebar } from '@/components/profile/StatSidebar';
 import { UserListStat } from '@/components/profile/UserListStat';
+import { RelationshipStatusType } from '@/api/relationshipStatus';
 
 type Props = {
   user: PublicUser;
   showMessage?: boolean;
   showMatches?: boolean;
+  relationship?: RelationshipStatusType;
 };
 
 type StatType = 'likes' | 'liked_by' | 'views' | 'visitors' | 'matches';
 
-export function ProfileStats({ user, showMessage = false, showMatches = false }: Props) {
+export function ProfileStats({ user, relationship, showMessage = false, showMatches = false }: Props) {
   const [showSidebar, setShowSidebar] = useState(false);
   const [activeStat, setActiveStat] = useState<StatType | null>(null);
+  const hasLiked = relationship?.liked ?? false;
+  const likesReceived = user.liked_by.length + (hasLiked ? 1 : 0);
 
   const handleClick = (stat: StatType) => {
     setActiveStat(stat);
@@ -62,7 +66,7 @@ export function ProfileStats({ user, showMessage = false, showMatches = false }:
         />
         <StatItem
           label="Likes Received"
-          value={user.liked_by.length}
+          value={likesReceived}
           color="text-pink-600 dark:text-pink-400"
           onClick={() => handleClick('liked_by')}
         />

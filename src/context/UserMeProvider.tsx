@@ -28,12 +28,24 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
     const { city, country } = await reverseGeocodeCity(
       parseFloat(loc.latitude), 
       parseFloat(loc.longitude));
-    
+
     setLocation({
       ...loc,
       city,
       country,
     });
+
+    try {
+      await axiosInstance.post<Location>('/me/location', {
+        latitude: loc.latitude,
+        longitude: loc.longitude,
+        city: city,
+        country: country,
+      });
+      toast.success('Location updated!');
+    } catch (err) {
+      toast.error(`Failed to update location: ${err}`);
+    }
   }, []);;
 
   const fallbackToBrowserLocation = useCallback(() => {
@@ -71,8 +83,7 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
       const data = await response.json();
       return {
         country: data.address?.country || 'Moon',
-        city:
-          data.address?.county || 'Moonlight'
+        city: data.address?.city || data.address?.city_district ||	data.address?.suburb || data.address?.county || 'Moonlight'
       };
     } catch (err) {
       toast.error(`Reverse geocoding failed: ${err}`);

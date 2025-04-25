@@ -2,7 +2,17 @@ import { useCallback, useEffect, useState } from 'react';
 import axios from '@/api/axios';
 import { PublicUser } from '@/types/user';
 
-export function RelationshipStatus(username: string, currentUsername: string) {
+export type RelationshipStatusType = {
+  liked: boolean;
+  likedBy: boolean;
+  matched: boolean;
+  connected: boolean;
+  blocked: boolean;
+  refresh: () => Promise<void>;
+  matches: PublicUser[];
+};
+
+export function relationshipStatus(username: string, currentUsername: string): RelationshipStatusType {
   const [liked, setLiked] = useState(false);
   const [likedBy, setLikedBy] = useState(false);
   const [matched, setMatched] = useState(false);

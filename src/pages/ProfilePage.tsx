@@ -41,7 +41,6 @@ export function ProfilePage() {
     matches as unknown as PublicUser[],
     connections as unknown as PublicUser[],
   );
-  console.log(connections)
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col items-center justify-center min-h-screen">
       <ProfileHeader user={publicUser} profilePicture={profilePicture} location={location} />

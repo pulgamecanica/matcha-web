@@ -100,6 +100,10 @@ export function MessagesProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const removeConversationWith = (user: PublicUser) => {
+    setConversations(conversations.filter((c) => c.user.username !== user.username));
+  };
+
   const refetchAllMessages = async () => {
     try {
       const conversations = await fetchAllMessages();
@@ -116,6 +120,7 @@ export function MessagesProvider({ children }: { children: ReactNode }) {
         isUserTyping,
         appendMessageToConversation,
         startConversationWith,
+        removeConversationWith,
         refetchAllMessages
       }}
     >
