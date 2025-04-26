@@ -15,7 +15,7 @@ export type User = {
   biography: string | null;
   is_email_verified: boolean;
   is_banned: boolean;
-  fame_rating: number;
+  fame_rating: string;
   birth_year: number;
   latitude: number | null;
   longitude: number | null;
@@ -34,6 +34,7 @@ export type PublicUser = {
   biography: string | null;
   gender: Gender;
   sexual_preferences: SexualPreference;
+  fame_rating: string;
   birth_year: string;
   profile_picture_id: number | null;
   latitude: number | null;

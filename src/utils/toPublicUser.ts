@@ -35,5 +35,6 @@ export function toPublicUser(
     liked_by: liked_by,
     matches: matches,
     connections : connections,
+    fame_rating: user.fame_rating,
   };
 }

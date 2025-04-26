@@ -24,7 +24,7 @@ export function ProfilePage() {
     likes,
     likedBy,
     matches,
-    connections
+    connections,
   } = useUserMe();
   const [showModal, setShowModal] = useState(false);
 
