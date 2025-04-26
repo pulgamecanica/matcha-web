@@ -6,7 +6,6 @@ import {
   Box,
   Chip,
   Collapse,
-  Tooltip,
   IconButton,
 } from "@mui/material";
 import { Circle, ExpandMore, ExpandLess } from "@mui/icons-material";
@@ -14,6 +13,7 @@ import { green, red } from "@mui/material/colors";
 import { MatchResult } from "@/types/match";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { renderGradientBar } from "@/components/FameGradiant";
 
 type MatchCardProps = {
   match: MatchResult;
@@ -24,32 +24,6 @@ export function MatchCard({ match }: MatchCardProps) {
   const profilePic = user.pictures.find((p) => p.is_profile === "t")?.url;
   const age = new Date().getFullYear() - parseInt(user.birth_year, 10);
   const [showDetails, setShowDetails] = useState(false);
-
-  const renderGradientBar = (label: string, score: number) => (
-    <Tooltip title={`${label}: ${score.toFixed(2)}`} arrow>
-      <Box
-        sx={{
-          mt: 0.5,
-          height: 8,
-          borderRadius: 4,
-          background: "linear-gradient(to right, #fdba74, #93c5fd, #86eeac)",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        <Box
-          sx={{
-            width: `${100 - score}%`,
-            height: "100%",
-            background: "gray",
-            position: "absolute",
-            top: 0,
-            right: 0,
-          }}
-        />
-      </Box>
-    </Tooltip>
-  );
 
   return (
     <Link to={`/profile/${user.username}`} className="no-underline">
