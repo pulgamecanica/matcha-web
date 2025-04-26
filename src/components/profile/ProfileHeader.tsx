@@ -1,11 +1,7 @@
 import { PublicUser } from '@/types/user';
 import { Picture } from '@/types/picture';
 import { Location } from '@/types/location';
-import {
-  Typography,
-  Box,
-} from "@mui/material";
-import { renderGradientBar } from '@components/FameGradiant';
+
 type Props = {
   user: PublicUser;
   profilePicture: Picture | null;

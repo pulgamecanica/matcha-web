@@ -53,7 +53,6 @@ export function PublicProfilePage() {
   if (!status) return <LoadingScreen />;
 
   const profilePicture = user.pictures.find((pic) => pic.is_profile === 't') || null;
-  console.log(currentUser.fame_rating)
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col items-center justify-center min-h-screen">
       <ProfileHeader  user={user} profilePicture={profilePicture} />
