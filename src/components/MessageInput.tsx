@@ -1,5 +1,6 @@
 import { useState, KeyboardEvent } from 'react';
 import { useWebSocket } from '@/hooks/useWebSocket';
+import { VoiceCall } from './chat/VoiceChat';
 
 type MessageInputProps = {
   senderId: number;
@@ -55,6 +56,7 @@ export function MessageInput({ senderId, onSendLocalMessage }: MessageInputProps
       >
         Send
       </button>
+      <div><VoiceCall/></div>
     </div>
   );
 }
