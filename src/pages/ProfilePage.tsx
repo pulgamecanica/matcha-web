@@ -28,6 +28,7 @@ export function ProfilePage() {
   } = useUserMe();
   const [showModal, setShowModal] = useState(false);
 
+
   if (loading || !user) return <LoadingScreen />;
 
   const publicUser = toPublicUser(
@@ -60,8 +61,14 @@ export function ProfilePage() {
         )}
       </div>
       <ProfileStats showMatches showMessage user={publicUser} />
-      
+
       <TagList tags={tags} />
+      <button
+        
+        className="mt-4 px-4 py-2 rounded-md text-white bg-green-600 hover:bg-green-700 disabled:opacity-50"
+      >
+        📅 See My Dates
+      </button>
       <h3 className="font-bold mt-6 text-lg">📷 Pictures</h3>
       <PictureGallery pictures={pictures} />
     </div>

@@ -5,6 +5,7 @@ import { RelationshipStatusType } from '@api/relationshipStatus';
 import { useMessages } from '@/hooks/useMessages';
 import { PublicUser } from '@/types/user';
 import { useUserMe } from '@/hooks/useUserMe';
+import { DatesModal } from '@/components/ScheduledDateModal';
 
 type PublicProfileActionsProps = {
   user: PublicUser;
@@ -18,6 +19,7 @@ export function PublicProfileActions({ user, relationship, refresh}: PublicProfi
   const { refreshMatches } = useUserMe();
   const username = user.username;
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleLikeToggle = async () => {
     setIsLoading(true);
@@ -131,14 +133,19 @@ export function PublicProfileActions({ user, relationship, refresh}: PublicProfi
 
       {/* 🔒 Secondary Actions */}
       <div className="flex flex-wrap justify-center gap-3">
-        {connected && (
-          <button
-            onClick={() => toast('📅 Date modal coming soon')}
-            className="px-4 py-2 rounded-md text-white bg-green-600 hover:bg-green-700 disabled:opacity-50"
-          >
-            📅 Propose Date
-          </button>
-        )}
+      {connected && (
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="px-4 py-2 rounded-md text-white bg-green-600 hover:bg-green-700 disabled:opacity-50"
+        >
+          📅 Propose Date
+        </button>
+      )}
+      
+      {/* Render modal only if open */}
+      {isModalOpen && (
+        <DatesModal onClose={() => setIsModalOpen(false)} username={user.username} />
+      )}
 
         {!blocked && (
           <button
