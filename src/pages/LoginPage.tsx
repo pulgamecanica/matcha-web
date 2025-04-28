@@ -31,7 +31,7 @@ export function LoginPage() {
 
   return (
     <div className="flex justify-center items-center min-h-screen px-4">
-      <div className="w-full max-w-md p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+      <div className="w-full max-w-md p-6 pb-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
         <h1 className="text-2xl font-semibold mb-6 text-center text-gray-900 dark:text-white">
           Login
         </h1>
@@ -77,6 +77,14 @@ export function LoginPage() {
             Register
           </Link>
         </p>
+
+        <p className="text-center text-sm text-gray-600 dark:text-gray-300">
+          Forgot your password?{' '}
+          <Link to="/recover-password" className="text-blue-600 dark:text-blue-400 hover:underline">
+            Recover
+          </Link>
+        </p>
+
       </div>
     </div>
   );

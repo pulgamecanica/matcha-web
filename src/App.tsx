@@ -20,6 +20,9 @@ import { ActionsMenu }  from '@components/ActionsMenu';
 import { PublicProfilePage } from '@pages/PublicProfilePage';
 import { MessagesProvider } from '@context/MessagesProvider';
 import { UserMeProvider } from '@context/UserMeProvider';
+import { RecoverPasswordPage } from './pages/RecoverPasswordPage';
+import { NewPasswordPage } from './pages/NewPasswordPage';
+import { ConfirmAccountPage } from './pages/ConfirmAccountPage';
 
 function App() {
   return (
@@ -66,6 +69,9 @@ function App() {
                     <Routes>
                       <Route path="/login" element={<LoginPage />} />
                       <Route path="/register" element={<RegisterPage />} />
+                      <Route path="/recover-password" element={<RecoverPasswordPage />} />
+                      <Route path="/reset-password" element={<NewPasswordPage />} />
+                      <Route path="/confirm" element={<ConfirmAccountPage />} />
                       <Route path="/" element={<ProtectedRoute><Dashboard/></ProtectedRoute>} />
                       <Route path="/setup" element={<ProtectedRoute><SetupProfilePage /></ProtectedRoute>} />
                       <Route path="/profile/edit" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
