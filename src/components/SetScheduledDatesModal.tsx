@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { setDate } from '@/api/ScheduledDate';
-import { Input, TextField, Button } from '@mui/material';
 import { useUserMe } from '@/hooks/useUserMe';
-import { ScheduledDate } from '@/types/scheduledDate';
+import { ScheduledDate } from '@/types/scheduledDates';
 
 type Props = {
   onClose: () => void;
@@ -27,7 +26,7 @@ export function DatesModal({ onClose, username }: Props) {
       note: note || undefined,
     });
 
-    addScheduledDate({...(result as unknown as ScheduledDate), partner_username: username});
+    addScheduledDate({ ...(result as unknown as ScheduledDate), partner_username: username });
 
     setLoading(false);
     if (result) {
@@ -39,7 +38,9 @@ export function DatesModal({ onClose, username }: Props) {
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-lg shadow-lg relative">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-gray-800 dark:text-white text-center w-full">❤️ Set Your Date</h2>
+          <h2 className="text-lg font-bold text-gray-800 dark:text-white text-center w-full">
+            ❤️ Set Your Date
+          </h2>
           <button
             onClick={onClose}
             className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
@@ -49,54 +50,65 @@ export function DatesModal({ onClose, username }: Props) {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Scheduled At */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Scheduled At
             </label>
-            <Input
+            <input
               type="datetime-local"
               value={scheduledAt}
               onChange={(e) => setScheduledAt(e.target.value)}
               required
-              fullWidth
+              className="w-full px-3 py-2 border rounded-md text-gray-800 dark:text-white bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
+          {/* Location */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Location
             </label>
-            <Input
+            <input
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="e.g. Café Luna"
-              fullWidth
               required
+              className="w-full px-3 py-2 border rounded-md text-gray-800 dark:text-white bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
+          {/* Note */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Note (Optional)
             </label>
-            <TextField
-              multiline
-              minRows={3}
+            <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="Any special instructions?"
-              fullWidth
-            />
+              rows={3}
+              className="w-full px-3 py-2 border rounded-md text-gray-800 dark:text-white bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            ></textarea>
           </div>
 
+          {/* Buttons */}
           <div className="flex justify-end gap-2">
-            <Button onClick={onClose} color="secondary" variant="outlined">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
+            >
               Cancel
-            </Button>
-            <Button type="submit" variant="contained" disabled={loading}>
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 disabled:bg-blue-400"
+            >
               {loading ? 'Scheduling...' : 'Schedule Date'}
-            </Button>
+            </button>
           </div>
         </form>
       </div>

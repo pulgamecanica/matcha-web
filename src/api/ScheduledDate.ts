@@ -1,5 +1,5 @@
 import axiosInstance from '@/api/axios';
-import { ScheduledDateResponse, SetDatePayload } from '@/types/scheduledDate';
+import { ScheduledDateResponse, SetDatePayload } from '@/types/scheduledDates';
 import toast from 'react-hot-toast';
 
 export async function setDate(payload: SetDatePayload): Promise<ScheduledDateResponse | null> {

@@ -10,7 +10,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [hasUnread, setHasUnread] = useState(false);
   const { registerHandler } = useWebSocket();
-  const { user, reloadScheduledDates } = useUserMe();
+  const { user, reloadScheduledDates, reloadRelationships } = useUserMe();
   
 
   useEffect(() => {
@@ -31,9 +31,14 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
     console.log("Received notification here!", notif)
     switch (notif.type) {
       case 'date': {
-        reloadScheduledDates();
+        await reloadScheduledDates();
         break
-      } 
+      }
+      case 'message': break;
+      default: {
+        await reloadRelationships();
+        break
+      }
     }
   }
 

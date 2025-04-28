@@ -3,7 +3,8 @@ import { User, PublicUser, UpdateUserProfilePayload } from '@/types/user';
 import { Tag } from '@/types/tag';
 import { Picture } from '@/types/picture';
 import { Location } from '@/types/location';
-import { ScheduledDate } from '@/types/scheduledDate';
+import { ScheduledDate } from '@/types/ScheduledDates';
+
 
 export type UserMeContextType = {
   user: User | null;
@@ -31,6 +32,7 @@ export type UserMeContextType = {
   deletePicture: (pictureId: number) => Promise<void>;
   addScheduledDate: (date: ScheduledDate) => void;
   reloadScheduledDates: () => void;
+  reloadRelationships: () => void;
 };
 
 export const UserMeContext = createContext<UserMeContextType>({
@@ -59,4 +61,5 @@ export const UserMeContext = createContext<UserMeContextType>({
   deletePicture: async () => {},
   addScheduledDate: () => {},
   reloadScheduledDates: () => {},
+  reloadRelationships: () => {},
 });

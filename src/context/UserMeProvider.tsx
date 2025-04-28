@@ -7,7 +7,7 @@ import { Location } from '@/types/location';
 import { useAuth } from '@hooks/useAuth';
 import toast from 'react-hot-toast';
 import { UserMeContext } from '@context/UserMeContext';
-import { ScheduledDate } from '@/types/scheduledDate';
+import { ScheduledDate } from '@/types/scheduledDates';
 
 export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -258,6 +258,17 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }
 
+  const reloadRelationships = async () => {
+    try {
+      setLikedBy(await axiosInstance.get('/me/liked_by') as unknown as PublicUser[])
+      setLikes(await axiosInstance.get('/me/likes') as unknown as PublicUser[])
+      setMatches(await axiosInstance.get('/me/matches') as unknown as PublicUser[]);
+      setViews(await axiosInstance.get('/me/views') as unknown as PublicUser[]);
+    } catch (err) {
+      toast.error('Failed to retrieve your relationship');
+    }
+  }
+
   return (
       <UserMeContext.Provider
         value={{
@@ -286,6 +297,7 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
             connections,
             scheduledDates,
             reloadScheduledDates,
+            reloadRelationships,
         }}
       >
         {children}

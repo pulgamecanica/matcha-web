@@ -5,7 +5,7 @@ import { LocationCard } from '@/components/profile/LocationCard';
 import { PictureGallery } from '@/components/profile/PictureGallery';
 import LoadingScreen from '@/components/LoadingScreen';
 import { LocationEditorModal } from '@/components/LocationEditorModal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pencil } from 'lucide-react';
 import { toPublicUser } from '@/utils/toPublicUser';
 import { ProfileStats } from '@/components/profile/ProfileStats';
@@ -32,21 +32,26 @@ export function ProfilePage() {
   } = useUserMe();
   const [showModal, setShowModal] = useState(false);
   const [showDatesModal, setShowDatesModal] = useState(false);
+  const [publicUser, setPublicUser] = useState<PublicUser | null>(null);
 
 
-  if (loading || !user) return <LoadingScreen />;
+  useEffect(() => {
+    if (!user) return;
+    setPublicUser(toPublicUser(
+      user,
+      tags,
+      pictures,
+      views as unknown as PublicUser[],
+      viewers as unknown as PublicUser[],
+      likes as unknown as PublicUser[],
+      likedBy as unknown as PublicUser[],
+      matches as unknown as PublicUser[],
+      connections as unknown as PublicUser[],
+    ))
+  }, [user, tags, pictures, views, viewers, likes, likedBy, matches, connections]);
+  
+  if (loading || !user || !publicUser) return <LoadingScreen />;
 
-  const publicUser = toPublicUser(
-    user,
-    tags,
-    pictures,
-    views as unknown as PublicUser[],
-    viewers as unknown as PublicUser[],
-    likes as unknown as PublicUser[],
-    likedBy as unknown as PublicUser[],
-    matches as unknown as PublicUser[],
-    connections as unknown as PublicUser[],
-  );
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col items-center justify-center min-h-screen">
       <ProfileHeader user={publicUser} profilePicture={profilePicture} location={location} />
