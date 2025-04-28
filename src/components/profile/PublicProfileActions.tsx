@@ -5,7 +5,7 @@ import { RelationshipStatusType } from '@api/relationshipStatus';
 import { useMessages } from '@/hooks/useMessages';
 import { PublicUser } from '@/types/user';
 import { useUserMe } from '@/hooks/useUserMe';
-import { DatesModal } from '@/components/ScheduledDateModal';
+import { DatesModal } from '@/components/SetScheduledDatesModal';
 
 type PublicProfileActionsProps = {
   user: PublicUser;

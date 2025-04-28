@@ -10,6 +10,9 @@ import { Pencil } from 'lucide-react';
 import { toPublicUser } from '@/utils/toPublicUser';
 import { ProfileStats } from '@/components/profile/ProfileStats';
 import { PublicUser } from '@/types/user';
+import { ScheduledDate } from '@/types/scheduledDate';
+import { ScheduledDatesModal } from '@/components/ScheduledDatesModal';
+
 
 export function ProfilePage() {
   const {
@@ -25,8 +28,10 @@ export function ProfilePage() {
     likedBy,
     matches,
     connections,
+    scheduledDates,
   } = useUserMe();
   const [showModal, setShowModal] = useState(false);
+  const [showDatesModal, setShowDatesModal] = useState(false);
 
 
   if (loading || !user) return <LoadingScreen />;
@@ -51,7 +56,7 @@ export function ProfilePage() {
           onClick={() => setShowModal(true)}
           className="mt-2 text-sm text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-300"
         >
-          <Pencil className='w-4 h-4'/>
+          <Pencil className='w-4 h-4' />
         </button>
         {showModal && (
           <LocationEditorModal
@@ -64,12 +69,18 @@ export function ProfilePage() {
 
       <TagList tags={tags} />
       <button
-        
-        className="mt-4 px-4 py-2 rounded-md text-white bg-green-600 hover:bg-green-700 disabled:opacity-50"
+        className="mt-6 px-4 py-2 rounded-md text-white bg-green-600 hover:bg-green-700 disabled:opacity-50"
+        onClick={() => setShowDatesModal(true)}
       >
         📅 See My Dates
       </button>
-      <h3 className="font-bold mt-6 text-lg">📷 Pictures</h3>
+      {showDatesModal && (
+        <ScheduledDatesModal
+          dates={scheduledDates as ScheduledDate[]}
+          onClose={() => setShowDatesModal(false)}
+        />
+      )}
+      <h3 className="font-bold mt-4 text-lg">📷 Pictures</h3>
       <PictureGallery pictures={pictures} />
     </div>
   );

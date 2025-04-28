@@ -3,6 +3,7 @@ import { User, PublicUser, UpdateUserProfilePayload } from '@/types/user';
 import { Tag } from '@/types/tag';
 import { Picture } from '@/types/picture';
 import { Location } from '@/types/location';
+import { ScheduledDate } from '@/types/scheduledDate';
 
 export type UserMeContextType = {
   user: User | null;
@@ -19,6 +20,7 @@ export type UserMeContextType = {
   matches: PublicUser[];
   connections: PublicUser[]
   profileSetupComplete: boolean;
+  scheduledDates: ScheduledDate[];
   setLocationManually: (loc: Location) => void;
   refreshMatches: () => void;
   updateUser: (data: Partial<UpdateUserProfilePayload>) => Promise<void>;
@@ -27,6 +29,8 @@ export type UserMeContextType = {
   uploadPicture: (url: string, isProfile?: boolean) => Promise<void>;
   setProfilePicture: (pictureId: number) => Promise<void>;
   deletePicture: (pictureId: number) => Promise<void>;
+  addScheduledDate: (date: ScheduledDate) => void;
+  reloadScheduledDates: () => void;
 };
 
 export const UserMeContext = createContext<UserMeContextType>({
@@ -44,6 +48,7 @@ export const UserMeContext = createContext<UserMeContextType>({
   matches: [],
   connections: [],
   profileSetupComplete: false,
+  scheduledDates: [],
   setLocationManually: () => {},
   refreshMatches: () => {},
   updateUser: async () => {},
@@ -52,4 +57,6 @@ export const UserMeContext = createContext<UserMeContextType>({
   uploadPicture: async () => {},
   setProfilePicture: async () => {},
   deletePicture: async () => {},
+  addScheduledDate: () => {},
+  reloadScheduledDates: () => {},
 });

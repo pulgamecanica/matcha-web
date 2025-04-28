@@ -1,8 +1,8 @@
-'use client';
-
 import { useState } from 'react';
 import { setDate } from '@/api/ScheduledDate';
 import { Input, TextField, Button } from '@mui/material';
+import { useUserMe } from '@/hooks/useUserMe';
+import { ScheduledDate } from '@/types/scheduledDate';
 
 type Props = {
   onClose: () => void;
@@ -14,6 +14,7 @@ export function DatesModal({ onClose, username }: Props) {
   const [location, setLocation] = useState('');
   const [note, setNote] = useState('');
   const [loading, setLoading] = useState(false);
+  const { addScheduledDate } = useUserMe();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,6 +26,8 @@ export function DatesModal({ onClose, username }: Props) {
       location: location || undefined,
       note: note || undefined,
     });
+
+    addScheduledDate({...(result as unknown as ScheduledDate), partner_username: username});
 
     setLoading(false);
     if (result) {
@@ -100,4 +103,3 @@ export function DatesModal({ onClose, username }: Props) {
     </div>
   );
 }
-

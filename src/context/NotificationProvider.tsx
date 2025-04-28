@@ -10,7 +10,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [hasUnread, setHasUnread] = useState(false);
   const { registerHandler } = useWebSocket();
-  const { user } = useUserMe();
+  const { user, reloadScheduledDates } = useUserMe();
   
 
   useEffect(() => {
@@ -27,17 +27,28 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
     load();
   }, [user]);
 
+  const updateProfileOnNotification = async (notif: Notification) => {
+    console.log("Received notification here!", notif)
+    switch (notif.type) {
+      case 'date': {
+        reloadScheduledDates();
+        break
+      } 
+    }
+  }
+
   useEffect(() => {
     if (!user) return;
-    registerHandler('notification', (payload: Notification) => {
+    registerHandler('notification', async (payload: Notification) => {
       setNotifications((prev) => {
         const exists = prev.some((n) => n.id === payload.id);
         if (exists) return prev;
   
         return [payload, ...prev];
       });
+      await updateProfileOnNotification(payload);
     });
-  }, [registerHandler, user]);
+  }, [registerHandler, user, updateProfileOnNotification]);
 
   useEffect(() => {
     if (!user) return;
