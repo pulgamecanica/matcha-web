@@ -11,15 +11,40 @@ type PublicProfileActionsProps = {
   user: PublicUser;
   relationship: RelationshipStatusType;
   refresh: () => void;
+  scheduledAt: string;
+  setScheduledAt: (val: string) => void;
+  location: string;
+  setLocation: (val: string) => void;
+  note: string;
+  setNote: (val: string) => void;
 };
 
-export function PublicProfileActions({ user, relationship, refresh}: PublicProfileActionsProps) {
+export function PublicProfileActions({
+  user,
+  relationship,
+  refresh,
+  scheduledAt,
+  setScheduledAt,
+  location,
+  setLocation,
+  note,
+  setNote
+}: PublicProfileActionsProps) {
+  const handleOpenModal = () => {
+    // Reset the fields before opening the modal
+    setScheduledAt('');
+    setLocation('');
+    setNote('');
+    setIsModalOpen(true);
+  };
+
   const { liked, likedBy, matched, connected, blocked } = relationship;
   const { startConversationWith, removeConversationWith } = useMessages();
   const { refreshMatches } = useUserMe();
   const username = user.username;
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   const handleLikeToggle = async () => {
     setIsLoading(true);
@@ -133,19 +158,32 @@ export function PublicProfileActions({ user, relationship, refresh}: PublicProfi
 
       {/* 🔒 Secondary Actions */}
       <div className="flex flex-wrap justify-center gap-3">
-      {connected && (
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="px-4 py-2 rounded-md text-white bg-green-600 hover:bg-green-700 disabled:opacity-50"
-        >
-          📅 Propose Date
-        </button>
-      )}
-      
-      {/* Render modal only if open */}
-      {isModalOpen && (
-        <DatesModal onClose={() => setIsModalOpen(false)} username={user.username} />
-      )}
+        {connected && (
+          <button
+          onClick={() => {
+            handleOpenModal();
+            setIsModalOpen(true);
+          }}
+          
+            className="px-4 py-2 rounded-md text-white bg-green-600 hover:bg-green-700 disabled:opacity-50"
+          >
+            📅 Propose Date
+          </button>
+        )}
+
+        {/* Render modal only if open */}
+        {isModalOpen && (
+          <DatesModal
+            onClose={() => setIsModalOpen(false)}
+            username={user.username}
+            scheduledAt={scheduledAt}
+            setScheduledAt={setScheduledAt}
+            location={location}
+            setLocation={setLocation}
+            note={note}
+            setNote={setNote}
+          />
+        )}
 
         {!blocked && (
           <button
