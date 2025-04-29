@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '@hooks/useAuth';
 import LoadingScreen from '@components/LoadingScreen';
 import { useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
+import toast from 'react-hot-toast';
 
 export function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { isAuthenticated, loading, login } = useAuth();
+  const { isAuthenticated, loading, login, loginSocial } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -70,6 +72,37 @@ export function LoginPage() {
             Login
           </button>
         </form>
+        <hr className='my-2' />
+        <GoogleLogin
+          onSuccess={async (credentialResponse) => {
+            try {
+              const { credential } = credentialResponse;
+              if (!credential) {
+                toast.error('Failed to login with Google');
+                return;
+              }
+          
+              const payload = JSON.parse(atob(credential.split('.')[1]));
+
+              await loginSocial({
+                provider: 'google',
+                provider_user_id: payload.sub,
+                first_name: payload.given_name || '',
+                last_name: payload.family_name || '',
+                email: payload.email || '',
+                picture_url: payload.picture || '',
+              });
+          
+              navigate('/');
+            } catch (err) {
+              toast.error('Google login failed.');
+            }
+          }}
+          
+          onError={() => {
+            toast.error('Google login failed.');
+        }}
+      />
 
         <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-300">
           Don't have an account?{' '}
@@ -84,7 +117,6 @@ export function LoginPage() {
             Recover
           </Link>
         </p>
-
       </div>
     </div>
   );

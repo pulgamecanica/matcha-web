@@ -25,6 +25,7 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
   
   const setLocationManually = useCallback(async (loc: Location) => {
+    if (!loc) return;
     const { city, country } = await reverseGeocodeCity(
       parseFloat(loc.latitude), 
       parseFloat(loc.longitude));

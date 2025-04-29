@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import { loginUser, logoutUser, registerUser, confirmUser, RegisterData } from '@api/authService';
-import { AuthContext } from '@context/AuthContext';
+import { loginUser, logoutUser, registerUser, confirmUser, RegisterData, loginSocialUser } from '@api/authService';
+import { AuthContext, SocialLoginData } from '@context/AuthContext';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
@@ -45,6 +45,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsAuthenticated(true);
   }
   
+  async function loginSocial({
+    provider,
+    provider_user_id,
+    first_name = '',
+    last_name = '',
+    email = '',
+    picture_url = '',
+  }: SocialLoginData): Promise<void> {
+    const newToken = await loginSocialUser({
+      provider,
+      provider_user_id,
+      first_name,
+      last_name,
+      email,
+      picture_url,})
+
+    localStorage.setItem('token', newToken);
+    setToken(newToken);
+    setIsAuthenticated(true);
+  }
+
+  
   function logout() {
     logoutUser();
     setToken(null);
@@ -63,6 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     token,
     isAuthenticated,
     login,
+    loginSocial,
     logout,
     register,
     confirm,

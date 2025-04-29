@@ -1,3 +1,4 @@
+import { SocialLoginData } from '@/context/AuthContext';
 import axiosInstance from './axios';
 
 export type AuthCredentials = {
@@ -27,6 +28,12 @@ export async function confirmUser(username: string): Promise<void> {
 export async function loginUser(credentials: AuthCredentials): Promise<string> {
   const response = await axiosInstance.post('/auth/login', credentials);
   // 200 => { token: string }
+  const { token } = response as unknown as { token: string };
+  return token;
+}
+
+export async function loginSocialUser(data: SocialLoginData): Promise<string> {
+  const response = await axiosInstance.post('/auth/social', data);
   const { token } = response as unknown as { token: string };
   return token;
 }
