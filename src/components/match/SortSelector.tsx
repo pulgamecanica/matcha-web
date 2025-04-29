@@ -25,7 +25,7 @@ export function SortSelector({ value, onChange }: SortSelectorProps) {
   };
 
   return (
-    <Box className="flex justify-end mb-4">
+    <Box className="flex justify-end">
       <ToggleButtonGroup
         value={value}
         exclusive

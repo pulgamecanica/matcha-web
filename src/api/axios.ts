@@ -7,7 +7,7 @@ import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'ax
  * - withCredentials: false by default, only set true if you need cross-site cookie sending.
  */
 const axiosInstance = axios.create({
-  baseURL: `http://${import.meta.env.VITE_API_BASE || 'http://localhost:9292'}`,
+  baseURL: `${import.meta.env.VITE_API_BASE || 'http://localhost:9292'}`,
   timeout: 10000, // optional; sets a 10-second timeout
 });
 

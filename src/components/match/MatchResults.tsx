@@ -1,10 +1,13 @@
-import { Grid } from "@mui/material";
-import { MatchCard } from "./MatchCard";
-import { SortSelector } from "./SortSelector";
-import { MatchResult } from "@/types/match";
-import { SortType } from "@/pages/MatchingPage";
-import { useEffect, useState } from "react";
-import { NoMatches } from "./NoMatches";
+import { Grid } from '@mui/material';
+import { MatchCard } from './MatchCard';
+import { SortSelector } from './SortSelector';
+import { MatchResult } from '@/types/match';
+import { SortType } from '@/pages/MatchingPage';
+import { useEffect, useState } from 'react';
+import { NoMatches } from './NoMatches';
+import { MatchMap } from './MatchMap'; // create this component
+import MapIcon from '@mui/icons-material/Map';
+import ListIcon from '@mui/icons-material/ViewList';
 
 type MatchResultsProps = {
   matches: MatchResult[];
@@ -14,6 +17,10 @@ type MatchResultsProps = {
 };
 
 export function MatchResults({ matches, sort, onSortChange, loading }: MatchResultsProps) {
+  const [view, setView] = useState<'list' | 'map'>(() => {
+    return (localStorage.getItem('matchViewMode') as 'list' | 'map') || 'list';
+  });
+
   const [sortedMatches, setSortedMatches] = useState<MatchResult[]>([]);
 
   useEffect(() => {
@@ -25,20 +32,46 @@ export function MatchResults({ matches, sort, onSortChange, loading }: MatchResu
 
   if (loading) return;
 
-  if (!sortedMatches || sortedMatches.length === 0) {
-    return <NoMatches />;
+  if (!sortedMatches || sortedMatches.length === 0) return <NoMatches />;
+
+  function handleViewToggle(newView: 'list' | 'map') {
+    setView(newView);
+    localStorage.setItem('matchViewMode', newView);
   }
 
   return (
     <>
-      <SortSelector value={sort} onChange={onSortChange} />
-      <Grid container spacing={3}>
-        {sortedMatches.map((match) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={match.user.username}>
-            <MatchCard match={match} />
-          </Grid>
-        ))}
-      </Grid>
+      <div className="flex justify-between items-center mb-4">
+        <button
+          onClick={() => handleViewToggle(view === 'list' ? 'map' : 'list')}
+          className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+        >
+          {view === 'list' ? (
+            <>
+              <MapIcon fontSize="small" /> Map View
+            </>
+          ) : (
+            <>
+              <ListIcon fontSize="small" /> List View
+            </>
+          )}
+        </button>
+        {view === 'list' &&
+          <SortSelector value={sort} onChange={onSortChange} />
+        }
+      </div>
+
+      {view === 'list' ? (
+        <Grid container spacing={3}>
+          {sortedMatches.map((match) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={match.user.username}>
+              <MatchCard match={match} />
+            </Grid>
+          ))}
+        </Grid>
+      ) : (
+        <MatchMap matches={sortedMatches} />
+      )}
     </>
   );
 }

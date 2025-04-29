@@ -9,7 +9,7 @@ import { useAuth } from '@hooks/useAuth';
 import { useUserMe } from '@hooks/useUserMe';
 import { Handler, WebSocketContext } from '@context/WebSocketContext';
 
-const baseURL = import.meta.env.VITE_API_BASE || 'localhost:9292';
+const baseURL = import.meta.env.VITE_WS_API_BASE || 'ws://localhost:9292';
 
 export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   const { token, isAuthenticated } = useAuth();
@@ -39,7 +39,7 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!token || !isAuthenticated || !user) return;
 
-    const ws = new WebSocket(`ws://${baseURL}/ws?token=${token}`);
+    const ws = new WebSocket(`${baseURL}/ws?token=${token}`);
     wsRef.current = ws;
 
     ws.onopen = () => {

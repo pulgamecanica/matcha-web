@@ -5,6 +5,7 @@ import LoadingScreen from '@components/LoadingScreen';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import toast from 'react-hot-toast';
+import { IntraLogin } from '@/components/IntraLogin';
 
 export function LoginPage() {
   const [username, setUsername] = useState('');
@@ -72,7 +73,9 @@ export function LoginPage() {
             Login
           </button>
         </form>
+        
         <hr className='my-2' />
+        
         <GoogleLogin
           onSuccess={async (credentialResponse) => {
             try {
@@ -98,11 +101,13 @@ export function LoginPage() {
               toast.error('Google login failed.');
             }
           }}
-          
+            
           onError={() => {
             toast.error('Google login failed.');
-        }}
-      />
+          }}
+        />
+        
+        <IntraLogin />
 
         <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-300">
           Don't have an account?{' '}

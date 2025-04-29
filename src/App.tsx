@@ -24,6 +24,7 @@ import { RecoverPasswordPage } from './pages/RecoverPasswordPage';
 import { NewPasswordPage } from './pages/NewPasswordPage';
 import { ConfirmAccountPage } from './pages/ConfirmAccountPage';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { IntraCallbackPage } from './pages/IntraCallbackPage';
 
 function App() {
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
@@ -71,6 +72,7 @@ function App() {
                       <ActionsMenu />
                       <Routes>
                         <Route path="/login" element={<LoginPage />} />
+                        <Route path="/intra/callback" element={<IntraCallbackPage />} />
                         <Route path="/register" element={<RegisterPage />} />
                         <Route path="/recover-password" element={<RecoverPasswordPage />} />
                         <Route path="/reset-password" element={<NewPasswordPage />} />
