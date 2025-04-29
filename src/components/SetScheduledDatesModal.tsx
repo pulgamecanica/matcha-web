@@ -6,12 +6,24 @@ import { ScheduledDate } from '@/types/scheduledDates';
 type Props = {
   onClose: () => void;
   username: string;
+  scheduledAt: string;
+  setScheduledAt: (val: string) => void;
+  location: string;
+  setLocation: (val: string) => void;
+  note: string;
+  setNote: (val: string) => void;
 };
 
-export function DatesModal({ onClose, username }: Props) {
-  const [scheduledAt, setScheduledAt] = useState('');
-  const [location, setLocation] = useState('');
-  const [note, setNote] = useState('');
+export function DatesModal({
+  onClose,
+  username,
+  scheduledAt,
+  setScheduledAt,
+  location,
+  setLocation,
+  note,
+  setNote,
+}: Props) {
   const [loading, setLoading] = useState(false);
   const { addScheduledDate } = useUserMe();
 

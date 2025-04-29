@@ -28,7 +28,6 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
   }, [user]);
 
   const updateProfileOnNotification = async (notif: Notification) => {
-    console.log("Received notification here!", notif)
     switch (notif.type) {
       case 'date': {
         await reloadScheduledDates();
