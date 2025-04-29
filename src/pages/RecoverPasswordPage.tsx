@@ -1,4 +1,3 @@
-// src/pages/RecoverPasswordPage.tsx
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -16,9 +15,9 @@ export function RecoverPasswordPage() {
     try {
       await axiosInstance.post('/email/reset-password', { email });
       toast.success('Recovery email sent! Check your inbox.');
-      setEmail(''); // Optional: clear the input
-    } catch (_) {
-      // Error toast handled globally by axios interceptor
+      setEmail('');
+    } catch {
+      // Error handled globally by axios interceptor
     } finally {
       setSubmitting(false);
     }

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { MatchResult } from '@/types/match';
 import L from 'leaflet';

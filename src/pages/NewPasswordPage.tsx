@@ -1,5 +1,3 @@
-// src/pages/NewPasswordPage.tsx
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import axiosInstance from '@/api/axios';
@@ -35,8 +33,8 @@ export function NewPasswordPage() {
       });
       toast.success('Password updated! You can now log in.');
       navigate('/login');
-    } catch (_) {
-      // Error handled by axios globally
+    } catch {
+      // Error handled globally by axios interceptor
     } finally {
       setSubmitting(false);
     }
@@ -65,7 +63,7 @@ export function NewPasswordPage() {
               onChange={(e) => setNewPassword(e.target.value)}
               className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
-              minLength={6} // minimum password security
+              minLength={6}
             />
           </div>
 

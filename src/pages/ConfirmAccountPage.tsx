@@ -1,5 +1,3 @@
-// src/pages/ConfirmAccountPage.tsx
-
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axiosInstance from '@/api/axios';
@@ -28,7 +26,7 @@ export function ConfirmAccountPage() {
         setTimeout(() => {
           navigate('/login');
         }, 3000);
-      } catch (err) {
+      } catch {
         setStatus('error');
         setTimeout(() => {
           navigate('/register');

@@ -97,7 +97,7 @@ export function LoginPage() {
               });
           
               navigate('/');
-            } catch (err) {
+            } catch {
               toast.error('Google login failed.');
             }
           }}
