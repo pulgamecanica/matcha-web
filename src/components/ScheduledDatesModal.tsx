@@ -1,3 +1,4 @@
+import { deleteDate } from '@/api/ScheduledDate';
 import { ScheduledDate } from '@/types/scheduledDate';
 import { X } from 'lucide-react';
 
@@ -7,6 +8,10 @@ type Props = {
 };
 
 export function ScheduledDatesModal({ dates, onClose }: Props) {
+  const handleDelete = async (id: number) => {
+    await deleteDate(id);
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
       <div className="bg-gray-800 md:h-auto h-full dark:bg-gray-900 p-6 rounded-lg w-full max-w-md shadow-lg relative flex flex-col">
@@ -37,7 +42,10 @@ export function ScheduledDatesModal({ dates, onClose }: Props) {
                     <p><strong>Location:</strong> {date.location}</p>
                   </div>
                   {/* Placeholder for Delete Button */}
-                  <button className="text-red-500 hover:text-red-400 font-semibold">
+                  <button
+                    onClick={() => handleDelete(date.id)}
+                    className="text-red-500 hover:text-red-400 font-semibold"
+                  >
                     ❌
                   </button>
                 </div>

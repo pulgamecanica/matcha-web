@@ -13,3 +13,12 @@ export async function setDate(payload: SetDatePayload): Promise<ScheduledDateRes
     return null;
   }
 }
+
+export async function deleteDate(id: number) {
+  try {
+    await axiosInstance.delete(`/me/dates/${id}`);
+    toast.success('Successfully deleted the date');
+  } catch (error) {
+    toast.error('Something went wrong could not delete the dates');
+  }
+}
