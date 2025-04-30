@@ -3,7 +3,7 @@ import { User, PublicUser, UpdateUserProfilePayload } from '@/types/user';
 import { Tag } from '@/types/tag';
 import { Picture } from '@/types/picture';
 import { Location } from '@/types/location';
-import { ScheduledDate } from '@/types/ScheduledDates';
+import { ScheduledDate } from '@/types/scheduledDate';
 
 
 export type UserMeContextType = {
