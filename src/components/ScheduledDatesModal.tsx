@@ -35,6 +35,7 @@ export function ScheduledDatesModal({ dates, onClose }: Props) {
       document.removeEventListener('keydown', handleEscape);
     };
   }, [onClose]);
+  console.log(dates)
 
 
   return (
@@ -65,10 +66,11 @@ export function ScheduledDatesModal({ dates, onClose }: Props) {
                     <p><strong>With:</strong> {date.partner_username || 'Unknown'}</p>
                     <p><strong>When:</strong> {new Date(date.scheduled_at).toLocaleString()}</p>
                     <p><strong>Location:</strong> {date.location}</p>
+                    <p><strong>Note:</strong> {date.note}</p>
                   </div>
                   {/* Placeholder for Delete Button */}
                   <button
-                    onClick={() => handleDelete(date.id)}
+                    onClick={() => handleDelete(parseInt(date.id))}
                     className="text-red-500 hover:text-red-400 font-semibold"
                   >
                     ❌

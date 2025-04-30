@@ -7,7 +7,7 @@ import { Location } from '@/types/location';
 import { useAuth } from '@hooks/useAuth';
 import toast from 'react-hot-toast';
 import { UserMeContext } from '@context/UserMeContext';
-import { ScheduledDate } from '@/types/scheduledDates';
+import { ScheduledDate } from '@/types/scheduledDate';
 
 export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);

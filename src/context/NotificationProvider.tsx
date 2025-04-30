@@ -27,22 +27,25 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
     load();
   }, [user]);
 
-  const updateProfileOnNotification = async (notif: Notification) => {
-    switch (notif.type) {
-      case 'date': {
-        await reloadScheduledDates();
-        break
-      }
-      case 'message': break;
-      default: {
-        await reloadRelationships();
-        break
-      }
-    }
-  }
+  
 
   useEffect(() => {
     if (!user) return;
+
+    const updateProfileOnNotification = async (notif: Notification) => {
+      switch (notif.type) {
+        case 'date': {
+          await reloadScheduledDates();
+          break
+        }
+        case 'message': break;
+        default: {
+          await reloadRelationships();
+          break
+        }
+      }
+    }
+
     registerHandler('notification', async (payload: Notification) => {
       setNotifications((prev) => {
         const exists = prev.some((n) => n.id === payload.id);
@@ -52,7 +55,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
       });
       await updateProfileOnNotification(payload);
     });
-  }, [registerHandler, user, updateProfileOnNotification]);
+  }, [registerHandler, user, reloadRelationships, reloadScheduledDates]);
 
   useEffect(() => {
     if (!user) return;

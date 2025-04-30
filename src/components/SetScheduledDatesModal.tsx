@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { setDate } from '@/api/ScheduledDate';
 import { useUserMe } from '@/hooks/useUserMe';
-import { ScheduledDate } from '@/types/scheduledDates';
+import { ScheduledDate } from '@/types/scheduledDate';
 
 type Props = {
   onClose: () => void;
