@@ -51,6 +51,12 @@ export function PublicProfilePage() {
     fetchUser();
   }, [username]);
 
+  const clearDateForm: () => void = () => {
+    setScheduledAt('');
+    setLocation('');
+    setNote('');
+  };
+
   if (loading || !currentUser) return <LoadingScreen />;
   if (notFound || !username || !user) return <NotFoundPage />;
   if (!status) return <LoadingScreen />;
@@ -72,6 +78,7 @@ export function PublicProfilePage() {
        setLocation={setLocation}
        note={note}
        setNote={setNote}
+       clearForm={clearDateForm}
      />     
       )}
       <h3 className="font-bold mt-6 text-lg">📷 Pictures</h3>

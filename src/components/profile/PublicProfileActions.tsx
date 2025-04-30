@@ -17,6 +17,7 @@ type PublicProfileActionsProps = {
   setLocation: (val: string) => void;
   note: string;
   setNote: (val: string) => void;
+  clearForm: () => void;
 };
 
 export function PublicProfileActions({
@@ -28,15 +29,10 @@ export function PublicProfileActions({
   location,
   setLocation,
   note,
-  setNote
+  setNote,
+  clearForm,
 }: PublicProfileActionsProps) {
-  const handleOpenModal = () => {
-    // Reset the fields before opening the modal
-    setScheduledAt('');
-    setLocation('');
-    setNote('');
-    setIsModalOpen(true);
-  };
+
 
   const { liked, likedBy, matched, connected, blocked } = relationship;
   const { startConversationWith, removeConversationWith } = useMessages();
@@ -161,7 +157,7 @@ export function PublicProfileActions({
         {connected && (
           <button
           onClick={() => {
-            handleOpenModal();
+          
             setIsModalOpen(true);
           }}
           
@@ -182,6 +178,7 @@ export function PublicProfileActions({
             setLocation={setLocation}
             note={note}
             setNote={setNote}
+            clearForm={clearForm}
           />
         )}
 

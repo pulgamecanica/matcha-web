@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { setDate } from '@/api/ScheduledDate';
 import { useUserMe } from '@/hooks/useUserMe';
 import { ScheduledDate } from '@/types/scheduledDates';
@@ -12,6 +12,7 @@ type Props = {
   setLocation: (val: string) => void;
   note: string;
   setNote: (val: string) => void;
+  clearForm: () => void;
 };
 
 export function DatesModal({
@@ -23,10 +24,27 @@ export function DatesModal({
   setLocation,
   note,
   setNote,
+  clearForm,
 }: Props) {
+  const modalRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
   const { addScheduledDate } = useUserMe();
 
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [onClose]);
+
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -42,13 +60,14 @@ export function DatesModal({
 
     setLoading(false);
     if (result) {
+      clearForm();
       onClose();
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-lg shadow-lg relative">
+      <div ref={modalRef} className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-lg shadow-lg relative">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-gray-800 dark:text-white text-center w-full">
             ❤️ Set Your Date

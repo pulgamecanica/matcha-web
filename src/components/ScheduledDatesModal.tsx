@@ -1,6 +1,7 @@
 import { deleteDate } from '@/api/ScheduledDate';
 import { ScheduledDate } from '@/types/scheduledDate';
 import { X } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 
 type Props = {
   dates: ScheduledDate[];
@@ -8,13 +9,27 @@ type Props = {
 };
 
 export function ScheduledDatesModal({ dates, onClose }: Props) {
+  const modalRef = useRef<HTMLDivElement>(null);
   const handleDelete = async (id: number) => {
     await deleteDate(id);
   };
 
+    useEffect(() => {
+      function handleClickOutside(event: MouseEvent) {
+        if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+          onClose();
+        }
+      }
+  
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, [onClose]);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
-      <div className="bg-gray-800 md:h-auto h-full dark:bg-gray-900 p-6 rounded-lg w-full max-w-md shadow-lg relative flex flex-col">
+      <div ref={modalRef} className="bg-gray-800 md:h-auto h-full dark:bg-gray-900 p-6 rounded-lg w-full max-w-md shadow-lg relative flex flex-col">
         {/* Close button */}
         <button
           onClick={onClose}
