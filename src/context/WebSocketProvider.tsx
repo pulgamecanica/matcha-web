@@ -64,9 +64,33 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
         case 'typing':
           handlers.typing?.forEach((h) => h(parsed.payload));
           break;
+        case 'call:offer':
+          handlers['call:offer']?.forEach((h) => h(parsed.payload));
+          break;
+        case 'call:answer':
+          handlers['call:answer']?.forEach((h) => h(parsed.payload));
+          break;
+        case 'call:ice-candidate':
+          handlers['call:ice-candidate']?.forEach((h) => h(parsed.payload));
+          break;
+        case 'call:end':
+          handlers['call:end']?.forEach((h) => h(parsed.payload));
+          break;
+        case 'call:decline':
+          handlers['call:decline']?.forEach((h) => h(parsed.payload));
+          break;
+        case 'call:busy':
+          handlers['call:busy']?.forEach((h) => h(parsed.payload));
+          break;
+        case 'call:unavailable':
+          handlers['call:unavailable']?.forEach((h) => h(parsed.payload));
+          break;
+        case 'date':
+          handlers.date?.forEach((h) => h(parsed.payload));
+          break;
         default:
-          console.warn('Unknown WebSocket message type.');
-      }
+          console.warn('Unknown WebSocket message type');
+      }    
     };
 
     return () => {
