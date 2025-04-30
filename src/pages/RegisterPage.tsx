@@ -43,7 +43,7 @@ export function RegisterPage() {
 
     try {
       await register(formData);
-      setSuccess('User registered successfully! You can now login.');
+      setSuccess('User registered successfully! Please confirm your email to login.');
       // navigate('/login');
     } catch (err: unknown) {
       if (isAxiosError(err)) {
