@@ -4,12 +4,14 @@ import { Message } from './message';
 export type WSIncomingMessage =
   | { type: 'notification'; payload: Notification }
   | { type: 'message'; payload: Message }
-  | { type: 'typing'; payload: { from: number; connection_id: number } };
+  | { type: 'typing'; payload: { from: number; connection_id: number } }
+  | { type: 'date'; payload: { from: number; connection_id: number } };
 
 export type WSOutgoingMessage =
   | { type: 'typing'; payload: { to_user_id: number } }
   | { type: 'message'; payload: { to_user_id: number; content: string } }
-  | { type: 'ping' };
+  | { type: 'ping' }
+  | { type: 'date' };
 
 export type WSIncomingPayloadMap = {
   notification: Notification;

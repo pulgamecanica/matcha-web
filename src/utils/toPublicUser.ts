@@ -11,7 +11,7 @@ export function toPublicUser(
   likes: PublicUser[],
   liked_by: PublicUser[],
   matches: PublicUser[],
-  connections: PublicUser[]
+  connections: PublicUser[],
 ): PublicUser {
   return {
     id: user.id,
