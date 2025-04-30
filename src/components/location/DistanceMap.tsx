@@ -19,7 +19,7 @@ export function DistanceMap({ latitude, longitude, radiusKm }: Props) {
           attribution='&copy; OpenStreetMap contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker position={center} />
+        <Marker position={center} title="" />
         {radiusKm && radiusMeters &&
           <Circle center={center} radius={radiusMeters} pathOptions={{ color: '#007bff', fillOpacity: 0.2 }} />
         }

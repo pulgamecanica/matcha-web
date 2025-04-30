@@ -7,24 +7,27 @@ type Props = {
   profilePicture: Picture | null;
   location?: Location | null;
 };
-
 export function ProfileHeader({ user, profilePicture, location }: Props) {
+  
   const isOnline = user.online_status;
   const lastSeen = location?.city || location?.country || null;
+  
   return (
     <div className="flex items-center gap-4">
+      <div className='relative'>
       <img
         src={profilePicture?.url ?? '/placeholder-profile.jpg'}
         alt="Profile"
         className="w-24 h-24 rounded-full object-cover border-2 border-gray-300 dark:border-gray-700"
       />
+      <div className='bottom-0 flex items-center justify-center right-0 text-xs w-2 h-2 absolute dark:border-gray-700 p-3 border dark:bg-gray-900 bg-gray-100 border-gray-300 rounded-full'>{parseFloat(user.fame_rating).toFixed(0)}</div>
 
+      </div>
       <div>
         <div className="flex items-center gap-2">
           <h2 className="text-xl font-bold">
             {user.last_name}
           </h2>
-
           <span
             className={`inline-block w-3 h-3 rounded-full ${
               isOnline ? 'bg-green-500' : 'bg-gray-400'

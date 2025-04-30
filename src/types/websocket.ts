@@ -8,6 +8,7 @@ export type WSIncomingMessage =
   | { type: 'webrtc-offer'; payload: { from_user_id: number; offer: RTCSessionDescriptionInit } }
   | { type: 'webrtc-answer'; payload: { from_user_id: number; answer: RTCSessionDescriptionInit } }
   | { type: 'webrtc-ice-candidate'; payload: { from_user_id: number; candidate: RTCIceCandidateInit } }
+  | { type: 'date'; payload: { from: number; connection_id: number } };
 
 export type WSOutgoingMessage =
   | { type: 'typing'; payload: { to_user_id: number } }
@@ -16,6 +17,7 @@ export type WSOutgoingMessage =
   | { type: 'webrtc-offer'; payload: { to_user_id: number; offer: RTCSessionDescriptionInit } }
   | { type: 'webrtc-answer'; payload: { to_user_id: number; answer: RTCSessionDescriptionInit } }
   | { type: 'webrtc-ice-candidate'; payload: { to_user_id: number; candidate: RTCIceCandidateInit } }
+  | { type: 'date' };
 
   export type WSIncomingPayloadMap = {
     notification: Notification;

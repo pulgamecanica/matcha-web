@@ -5,11 +5,14 @@ import { LocationCard } from '@/components/profile/LocationCard';
 import { PictureGallery } from '@/components/profile/PictureGallery';
 import LoadingScreen from '@/components/LoadingScreen';
 import { LocationEditorModal } from '@/components/LocationEditorModal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pencil } from 'lucide-react';
 import { toPublicUser } from '@/utils/toPublicUser';
 import { ProfileStats } from '@/components/profile/ProfileStats';
 import { PublicUser } from '@/types/user';
+import { ScheduledDate } from '@/types/scheduledDate';
+import { ScheduledDatesModal } from '@/components/ScheduledDatesModal';
+
 
 export function ProfilePage() {
   const {
@@ -24,23 +27,31 @@ export function ProfilePage() {
     likes,
     likedBy,
     matches,
-    connections
+    connections,
+    scheduledDates,
   } = useUserMe();
   const [showModal, setShowModal] = useState(false);
+  const [showDatesModal, setShowDatesModal] = useState(false);
+  const [publicUser, setPublicUser] = useState<PublicUser | null>(null);
 
-  if (loading || !user) return <LoadingScreen />;
 
-  const publicUser = toPublicUser(
-    user,
-    tags,
-    pictures,
-    views as unknown as PublicUser[],
-    viewers as unknown as PublicUser[],
-    likes as unknown as PublicUser[],
-    likedBy as unknown as PublicUser[],
-    matches as unknown as PublicUser[],
-    connections as unknown as PublicUser[],
-  );
+  useEffect(() => {
+    if (!user) return;
+    setPublicUser(toPublicUser(
+      user,
+      tags,
+      pictures,
+      views as unknown as PublicUser[],
+      viewers as unknown as PublicUser[],
+      likes as unknown as PublicUser[],
+      likedBy as unknown as PublicUser[],
+      matches as unknown as PublicUser[],
+      connections as unknown as PublicUser[],
+    ))
+  }, [user, tags, pictures, views, viewers, likes, likedBy, matches, connections]);
+  
+  if (loading || !user || !publicUser) return <LoadingScreen />;
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col items-center justify-center min-h-screen">
       <ProfileHeader user={publicUser} profilePicture={profilePicture} location={location} />
@@ -50,7 +61,7 @@ export function ProfilePage() {
           onClick={() => setShowModal(true)}
           className="mt-2 text-sm text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-300"
         >
-          <Pencil className='w-4 h-4'/>
+          <Pencil className='w-4 h-4' />
         </button>
         {showModal && (
           <LocationEditorModal
@@ -60,9 +71,21 @@ export function ProfilePage() {
         )}
       </div>
       <ProfileStats showMatches showMessage user={publicUser} />
-      
+
       <TagList tags={tags} />
-      <h3 className="font-bold mt-6 text-lg">📷 Pictures</h3>
+      <button
+        className="mt-6 px-4 py-2 rounded-md text-white bg-green-600 hover:bg-green-700 disabled:opacity-50"
+        onClick={() => setShowDatesModal(true)}
+      >
+        📅 See My Dates
+      </button>
+      {showDatesModal && (
+        <ScheduledDatesModal
+          dates={scheduledDates as ScheduledDate[]}
+          onClose={() => setShowDatesModal(false)}
+        />
+      )}
+      <h3 className="font-bold mt-4 text-lg">📷 Pictures</h3>
       <PictureGallery pictures={pictures} />
     </div>
   );

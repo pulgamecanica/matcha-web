@@ -78,7 +78,7 @@ export function ProfileStats({ user, relationship, showMessage = false, showMatc
         />
         <StatItem
           label="Visitors"
-          value={new Set(user.visitors.map(v => v.id)).size}
+          value={user.visitors.length}
           color="text-green-600 dark:text-green-400"
           onClick={() => handleClick('visitors')}
         />

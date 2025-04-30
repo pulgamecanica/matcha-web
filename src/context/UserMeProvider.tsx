@@ -7,6 +7,7 @@ import { Location } from '@/types/location';
 import { useAuth } from '@hooks/useAuth';
 import toast from 'react-hot-toast';
 import { UserMeContext } from '@context/UserMeContext';
+import { ScheduledDate } from '@/types/scheduledDate';
 
 export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -22,9 +23,11 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
   const [likedBy, setLikedBy] = useState<PublicUser[]>([]);
   const [matches, setMatches] = useState<PublicUser[]>([]);
   const [connections, setConnections] = useState<PublicUser[]>([]);
+  const [scheduledDates, setScheduledDates] = useState<ScheduledDate[]>([]);
   const { isAuthenticated } = useAuth();
   
   const setLocationManually = useCallback(async (loc: Location) => {
+    if (!loc) return;
     const { city, country } = await reverseGeocodeCity(
       parseFloat(loc.latitude), 
       parseFloat(loc.longitude));
@@ -46,7 +49,7 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (err) {
       toast.error(`Failed to update location: ${err}`);
     }
-  }, []);;
+  }, []);
 
   const fallbackToBrowserLocation = useCallback(() => {
     navigator.geolocation.getCurrentPosition(
@@ -107,7 +110,8 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
           likesRes,
           likedByRes,
           matchesRes,
-          connectionsRes
+          connectionsRes,
+          scheduledDatesRes,
         ] = await Promise.all([
           axiosInstance.get<User>('/me') as unknown as User,
           axiosInstance.get('/me/tags') as unknown as Tag[],
@@ -120,6 +124,7 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
           axiosInstance.get('/me/liked_by') as unknown as PublicUser[],
           axiosInstance.get('/me/matches') as unknown as PublicUser[],
           axiosInstance.get('/me/connections') as unknown as PublicUser[],
+          axiosInstance.get('/me/dates') as unknown as ScheduledDate[],
         ]);
 
         setUser(userRes);
@@ -134,6 +139,7 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
         setLikedBy(likedByRes);
         setMatches(matchesRes);
         setConnections(connectionsRes);
+        setScheduledDates(scheduledDatesRes)
         if (!userRes?.longitude || !userRes?.latitude || !locRes || !locRes.latitude || !locRes.longitude) {
           fallbackToBrowserLocation();
         }
@@ -238,6 +244,32 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const addScheduledDate = (date : ScheduledDate) => {
+    setScheduledDates((prev) => {
+      return [...prev, date];
+    })
+  };
+
+  const reloadScheduledDates = async () => {
+    try {
+      setScheduledDates(await axiosInstance.get('/me/dates') as unknown as ScheduledDate[]);
+    } catch (err) {
+      toast.error('Failed to retrieve your dates');
+      throw err;
+    }
+  }
+
+  const reloadRelationships = async () => {
+    try {
+      setLikedBy(await axiosInstance.get('/me/liked_by') as unknown as PublicUser[])
+      setLikes(await axiosInstance.get('/me/likes') as unknown as PublicUser[])
+      setMatches(await axiosInstance.get('/me/matches') as unknown as PublicUser[]);
+      setViews(await axiosInstance.get('/me/views') as unknown as PublicUser[]);
+    } catch {
+      toast.error('Failed to retrieve your relationship');
+    }
+  }
+
   return (
       <UserMeContext.Provider
         value={{
@@ -260,9 +292,13 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
             uploadPicture,
             setProfilePicture: setProfilePictureById,
             deletePicture,
+            addScheduledDate,
             profileSetupComplete: !!(user?.gender && user?.sexual_preferences),
             matches,
             connections,
+            scheduledDates,
+            reloadScheduledDates,
+            reloadRelationships,
         }}
       >
         {children}

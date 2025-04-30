@@ -11,6 +11,8 @@ import { PublicProfileActions } from '@/components/profile/PublicProfileActions'
 import { useUserMe } from '@/hooks/useUserMe';
 import { ProfileStats } from '@/components/profile/ProfileStats';
 import { getRelationshipStatus, RelationshipStatusType } from '@/api/relationshipStatus';
+import { ReportUserModal } from '@/components/ReportUserModal';
+import { reportUser } from '@/api/reportUser';
 
 export function PublicProfilePage() {
   const { username } = useParams();
@@ -20,15 +22,29 @@ export function PublicProfilePage() {
   const [notFound, setNotFound] = useState(false);
   const [status, setStatus] = useState<RelationshipStatusType | null>(null);
   const [reloadTrigger, setReloadTrigger] = useState(0);
+  const [scheduledAt, setScheduledAt] = useState('');
+  const [location, setLocation] = useState('');
+  const [note, setNote] = useState('');
+
+  // Report modal state
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportReason, setReportReason] = useState('');
+  const [reportDescription, setReportDescription] = useState('');
+  const [reportLoading, setReportLoading] = useState(false);
+
+  const clearReportForm = () => {
+    setReportReason('');
+    setReportDescription('');
+  };
 
   const reloadRelationships = () => setReloadTrigger((n) => n + 1);
 
   useEffect(() => {
-  if (!username || !currentUser) return;
+    if (!username || !currentUser) return;
     getRelationshipStatus(username, currentUser.username).then((result) => {
       if (result) setStatus(result);
-  });
-}, [reloadTrigger, username, currentUser]);
+    });
+  }, [reloadTrigger, username, currentUser]);
 
   useEffect(() => {
     if (!username) return;
@@ -48,24 +64,85 @@ export function PublicProfilePage() {
     fetchUser();
   }, [username]);
 
+  const clearDateForm = () => {
+    setScheduledAt('');
+    setLocation('');
+    setNote('');
+  };
+
+  const handleReportSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+
+    setReportLoading(true);
+    try {
+      await reportUser({
+        username: user.username,
+        reason: reportReason,
+        description: reportDescription,
+      });
+      clearReportForm();
+      setShowReportModal(false);
+    } catch (error) {
+      console.error('Failed to submit report:', error);
+      // Optionally show error feedback to the user
+    } finally {
+      setReportLoading(false);
+    }
+  };
+
   if (loading || !currentUser) return <LoadingScreen />;
   if (notFound || !username || !user) return <NotFoundPage />;
   if (!status) return <LoadingScreen />;
 
   const profilePicture = user.pictures.find((pic) => pic.is_profile === 't') || null;
-  
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col items-center justify-center min-h-screen">
-      <ProfileHeader  user={user} profilePicture={profilePicture} />
-      <ProfileStats showMessage={false} user={user} relationship={status}/>
+      <ProfileHeader user={user} profilePicture={profilePicture} />
+      <ProfileStats showMessage={false} user={user} relationship={status} />
       <TagList tags={user.tags || []} />
+
       {user.username !== currentUser?.username && (
-        <PublicProfileActions user={user} relationship={status} refresh={reloadRelationships} />
+        <PublicProfileActions
+          user={user}
+          relationship={status}
+          refresh={reloadRelationships}
+          scheduledAt={scheduledAt}
+          setScheduledAt={setScheduledAt}
+          location={location}
+          setLocation={setLocation}
+          note={note}
+          setNote={setNote}
+          clearForm={clearDateForm}
+        />
       )}
+
+      {/* Report User Button */}
+      <button
+        onClick={() => setShowReportModal(true)}
+        className="mt-4 px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+      >
+        🔫 Report User
+      </button>
+
       <h3 className="font-bold mt-6 text-lg">📷 Pictures</h3>
-      <PictureGallery
-        pictures={(user.pictures || []).filter((pic) => pic.is_profile !== "t")}
-      />
+      <PictureGallery pictures={(user.pictures || []).filter((pic) => pic.is_profile !== 't')} />
+
+      {/* Report Modal */}
+      {showReportModal && (
+        <ReportUserModal
+          onClose={() => setShowReportModal(false)}
+          username={user.username}
+          reason={reportReason}
+          setReason={setReportReason}
+          description={reportDescription}
+          setDescription={setReportDescription}
+          clearForm={clearReportForm}
+          loading={reportLoading}
+          onSubmit={handleReportSubmit}
+        />
+      )}
     </div>
   );
 }
