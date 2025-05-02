@@ -3,6 +3,7 @@ import {
   useMemo,
   useState,
   ReactNode,
+  useRef,
 } from 'react';
 import { useWebSocket } from '@hooks/useWebSocket';
 import { fetchAllMessages } from '@api/messages';
@@ -14,11 +15,26 @@ import toast from 'react-hot-toast';
 import { fetchPublicProfile } from '@/api/publicProfile';
 import { useUserMe } from '@/hooks/useUserMe';
 
+type CallStatus =
+  | 'idle'
+  | 'incoming'
+  | 'calling'
+  | 'connected'
+  | 'declined'
+  | 'ended'
+  | 'unavailable'
+  | 'error';
+
 export function MessagesProvider({ children }: { children: ReactNode }) {
-  const { registerHandler } = useWebSocket();
+  const { registerHandler, sendMessage } = useWebSocket();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [typingUsers, setTypingUsers] = useState<Record<number, boolean>>({});
   const { user } = useUserMe();
+
+  const [incomingCall, setIncomingCall] = useState<{ from_user_id: number; offer: RTCSessionDescriptionInit } | null>(null);
+  const [callStatus, setCallStatus] = useState<CallStatus>('idle');
+  const [remoteAnswer, setRemoteAnswer] = useState<RTCSessionDescriptionInit | null>(null);
+  const iceCandidatesRef = useRef<RTCIceCandidateInit[]>([]);
 
   const enrichConversations = async (convos: Conversation[]) => {
     const enriched = await Promise.all(
@@ -58,7 +74,50 @@ export function MessagesProvider({ children }: { children: ReactNode }) {
         });
       }, 1500);
     });
-  }, [registerHandler]);
+
+    registerHandler('call:offer', ({ from_user_id, offer }) => {
+      if (callStatus === 'idle') {
+        setIncomingCall({ from_user_id, offer });
+        setCallStatus('incoming');
+      } else {
+        sendMessage({ type: 'call:busy', payload: { to_user_id: from_user_id } });
+      }
+    });
+
+    registerHandler('call:answer', ({ answer }) => {
+      setRemoteAnswer(answer);
+      setCallStatus('connected');
+    });
+
+    registerHandler('call:ice-candidate', ({ candidate }) => {
+      iceCandidatesRef.current.push(candidate);
+    });
+
+    registerHandler('call:end', () => {
+      setCallStatus('ended');
+      setIncomingCall(null);
+    });
+
+    registerHandler('call:decline', () => {
+      setCallStatus('declined');
+      setIncomingCall(null);
+      setTimeout(() => {
+        setCallStatus('idle');
+      }, 1000);
+    });
+
+    registerHandler('call:busy', () => {
+      setCallStatus('unavailable');
+    });
+
+    registerHandler('call:unavailable', () => {
+      setCallStatus('unavailable');
+      toast.error('User is unavailable');
+      setTimeout(() => {
+        setCallStatus('idle');
+      }, 1000);
+    });
+  }, [registerHandler, callStatus, sendMessage]);
 
   const appendMessageToConversation = (username: string, msg: Message) => {
     setConversations((prev) => {
@@ -90,12 +149,12 @@ export function MessagesProvider({ children }: { children: ReactNode }) {
     setConversations((prev) => {
       const exists = prev.some((c) => c.user.username === user.username);
       if (exists) return prev;
-  
+
       const newConvo: Conversation = {
         user,
         messages: [],
       };
-  
+
       return [newConvo, ...prev];
     });
   };
@@ -121,7 +180,13 @@ export function MessagesProvider({ children }: { children: ReactNode }) {
         appendMessageToConversation,
         startConversationWith,
         removeConversationWith,
-        refetchAllMessages
+        refetchAllMessages,
+        incomingCall,
+        callStatus,
+        setCallStatus,
+        setIncomingCall,
+        remoteAnswer,
+        iceCandidates: iceCandidatesRef.current,
       }}
     >
       {children}

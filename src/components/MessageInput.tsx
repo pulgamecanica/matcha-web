@@ -1,12 +1,14 @@
 import { useState, KeyboardEvent } from 'react';
 import { useWebSocket } from '@/hooks/useWebSocket';
+import { VoiceChat } from './chat/VoiceChat';
+import { PublicUser } from '@/types/user';
 
 type MessageInputProps = {
-  senderId: number;
+  sender: PublicUser;
   onSendLocalMessage: (content: string) => void;
 };
 
-export function MessageInput({ senderId, onSendLocalMessage }: MessageInputProps) {
+export function MessageInput({ sender, onSendLocalMessage }: MessageInputProps) {
   const { sendMessage } = useWebSocket();
   const [text, setText] = useState('');
 
@@ -16,7 +18,7 @@ export function MessageInput({ senderId, onSendLocalMessage }: MessageInputProps
     sendMessage({
       type: 'message',
       payload: {
-        to_user_id: senderId,
+        to_user_id: sender.id,
         content: text,
       },
     });
@@ -29,7 +31,7 @@ export function MessageInput({ senderId, onSendLocalMessage }: MessageInputProps
     sendMessage({
       type: 'typing',
       payload: {
-        to_user_id: senderId,
+        to_user_id: sender.id,
       },
     });
 
@@ -55,6 +57,7 @@ export function MessageInput({ senderId, onSendLocalMessage }: MessageInputProps
       >
         Send
       </button>
+      <div><VoiceChat toUserId={sender.id} username={sender.username} /></div>
     </div>
   );
 }

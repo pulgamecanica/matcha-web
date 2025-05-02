@@ -111,7 +111,7 @@ export function ChatWindow({ conversation, currentUser, isTyping, onSendLocalMes
       )}
 
       <MessageInput
-        senderId={conversation.user.id}
+        sender={conversation.user}
         onSendLocalMessage={onSendLocalMessage}
       />
     </div>

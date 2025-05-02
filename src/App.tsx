@@ -25,6 +25,7 @@ import { NewPasswordPage } from './pages/NewPasswordPage';
 import { ConfirmAccountPage } from './pages/ConfirmAccountPage';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { IntraCallbackPage } from './pages/IntraCallbackPage';
+import { GlobalCallHandler } from './components/GlobalCallHandler';
 
 function App() {
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
@@ -70,6 +71,7 @@ function App() {
                     <NotificationProvider>
                       <NotificationDropdown />
                       <ActionsMenu />
+                      <GlobalCallHandler />
                       <Routes>
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/intra/callback" element={<IntraCallbackPage />} />
