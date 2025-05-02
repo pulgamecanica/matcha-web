@@ -3,6 +3,8 @@ import { useWebSocket } from '@/hooks/useWebSocket';
 import { PhoneIcon, PhoneOffIcon } from 'lucide-react';
 import { CallIncomingModal } from './CallIncomingModal';
 import { useMessages } from '@/hooks/useMessages';
+import { fetchIceServers } from '@/api/ice';
+import { IceServer } from '@/types/iceServer';
 
 type Props = {
   toUserId: number;
@@ -62,14 +64,17 @@ export function VoiceChat({ toUserId, username }: Props) {
     return () => cancelAnimationFrame(animationFrameId);
   }, [callStatus, analyserRef]);
 
-  const createPeerConnection = (targetUserId: number) => {
-    const pc = new RTCPeerConnection({
-      iceServers: [
-        {
-          urls: 'stun:stun.l.google.com:19302',
-        },
-      ],
-    });
+  function normalizeIceServers(raw: IceServer[]): RTCIceServer[] {
+    return raw.map(({ urls, username, credential }) => ({
+      urls,
+      username,
+      credential,
+    }));
+  }
+  
+  const createPeerConnection = async (targetUserId: number) => {
+    const iceServers = normalizeIceServers(await fetchIceServers());
+    const pc = new RTCPeerConnection({ iceServers });
 
     pc.onicecandidate = (event) => {
       if (event.candidate) {
@@ -109,17 +114,29 @@ export function VoiceChat({ toUserId, username }: Props) {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     localStreamRef.current = stream;
     setupAudioAnalyser(stream);
-    
-    const pc = createPeerConnection(toUserId);
+  
+    const pc = await createPeerConnection(toUserId);
     stream.getTracks().forEach((track) => pc.addTrack(track, stream));
-
+  
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
-
-    sendMessage({ type: 'call:offer', payload: { to_user_id: toUserId, offer } });
-
+  
+    // ⚠️ Wait until ICE gathering completes before sending offer
+    await new Promise((resolve) => {
+      if (pc.iceGatheringState === 'complete') return resolve(null);
+      const checkState = () => {
+        if (pc.iceGatheringState === 'complete') {
+          pc.removeEventListener('icegatheringstatechange', checkState);
+          resolve(null);
+        }
+      };
+      pc.addEventListener('icegatheringstatechange', checkState);
+    });
+  
+    sendMessage({ type: 'call:offer', payload: { to_user_id: toUserId, offer: pc.localDescription! } });
+  
     setCallStatus('calling');
-
+  
     setTimeout(() => {
       if (callStatus === 'calling') {
         setCallStatus('unavailable');
@@ -131,7 +148,7 @@ export function VoiceChat({ toUserId, username }: Props) {
   const acceptCall = async () => {
     if (!incomingCall) return;
 
-    const pc = createPeerConnection(incomingCall.from_user_id);
+    const pc = await createPeerConnection(incomingCall.from_user_id);
 
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     localStreamRef.current = stream;
