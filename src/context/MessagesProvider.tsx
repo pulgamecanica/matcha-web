@@ -80,7 +80,6 @@ export function MessagesProvider({ children }: { children: ReactNode }) {
         setIncomingCall({ from_user_id, offer });
         setCallStatus('incoming');
       } else {
-        // Already in a call — reject it
         sendMessage({ type: 'call:busy', payload: { to_user_id: from_user_id } });
       }
     });
@@ -102,16 +101,21 @@ export function MessagesProvider({ children }: { children: ReactNode }) {
     registerHandler('call:decline', () => {
       setCallStatus('declined');
       setIncomingCall(null);
+      setTimeout(() => {
+        setCallStatus('idle');
+      }, 1000);
     });
 
     registerHandler('call:busy', () => {
       setCallStatus('unavailable');
-      toast.error('User is busy');
     });
 
     registerHandler('call:unavailable', () => {
       setCallStatus('unavailable');
       toast.error('User is unavailable');
+      setTimeout(() => {
+        setCallStatus('idle');
+      }, 1000);
     });
   }, [registerHandler, callStatus, sendMessage]);
 

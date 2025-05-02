@@ -29,7 +29,7 @@ export function VoiceChat({ toUserId, username }: Props) {
     if (!remoteAnswer || !pcRef.current) return;
     pcRef.current.setRemoteDescription(new RTCSessionDescription(remoteAnswer));
     setCallStatus('connected');
-  }, [remoteAnswer]);
+  }, [remoteAnswer, setCallStatus]);
 
   useEffect(() => {
     if (!pcRef.current || !iceCandidates?.length) return;
@@ -63,7 +63,13 @@ export function VoiceChat({ toUserId, username }: Props) {
   }, [callStatus, analyserRef]);
 
   const createPeerConnection = (targetUserId: number) => {
-    const pc = new RTCPeerConnection();
+    const pc = new RTCPeerConnection({
+      iceServers: [
+        {
+          urls: 'stun:stun.l.google.com:19302',
+        },
+      ],
+    });
 
     pc.onicecandidate = (event) => {
       if (event.candidate) {
@@ -151,6 +157,9 @@ export function VoiceChat({ toUserId, username }: Props) {
     }
     setCallStatus('declined');
     setIncomingCall(null);
+    setTimeout(() => {
+      setCallStatus('idle');
+    }, 1000);
   };
 
   const endCall = () => {
@@ -167,6 +176,9 @@ export function VoiceChat({ toUserId, username }: Props) {
     setIncomingCall(null);
     analyserRef.current = null;
     setVolume(0);
+    setTimeout(() => {
+      setCallStatus('idle');
+    }, 1000);
   };
 
   return (
@@ -177,7 +189,7 @@ export function VoiceChat({ toUserId, username }: Props) {
           {callStatus === 'incoming' && 'Incoming call...'}
           {callStatus === 'connected' && 'Connected ✅'}
           {callStatus === 'declined' && 'Declined ❌'}
-          {callStatus === 'unavailable' && 'No response ❌'}
+          {callStatus === 'unavailable' && 'Waiting ...'}
           {callStatus === 'ended' && 'Call ended.'}
         </span>
       )}

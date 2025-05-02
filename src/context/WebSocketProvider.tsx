@@ -18,16 +18,16 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false);
 
 
-  const handlers: Partial<{
+  const handlersRef = useRef<Partial<{
     [K in keyof WSIncomingPayloadMap]: Handler<WSIncomingPayloadMap[K]>[];
-  }> = {};
+  }>>({});
 
   const registerHandler = <K extends keyof WSIncomingPayloadMap>(
     type: K,
     handler: Handler<WSIncomingPayloadMap[K]>
   ) => {
-    if (!handlers[type]) handlers[type] = [];
-    handlers[type]!.push(handler);
+    if (!handlersRef.current[type]) handlersRef.current[type] = [];
+    handlersRef.current[type]!.push(handler);
   };
 
   const sendMessage = (msg: WSOutgoingMessage) => {
@@ -54,49 +54,35 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
 
     ws.onmessage = (event) => {
       const parsed = JSON.parse(event.data) as WSIncomingMessage;
+      const handlers = handlersRef.current;
+
+      const runHandlers = <K extends keyof WSIncomingPayloadMap>(type: K) => {
+        handlers[type]?.forEach((h) => h(parsed.payload as WSIncomingPayloadMap[K]));
+      };
+
       switch (parsed.type) {
         case 'message':
-          handlers.message?.forEach((h) => h(parsed.payload));
-          break;
         case 'notification':
-          handlers.notification?.forEach((h) => h(parsed.payload));
-          break;
         case 'typing':
-          handlers.typing?.forEach((h) => h(parsed.payload));
-          break;
         case 'call:offer':
-          handlers['call:offer']?.forEach((h) => h(parsed.payload));
-          break;
         case 'call:answer':
-          handlers['call:answer']?.forEach((h) => h(parsed.payload));
-          break;
         case 'call:ice-candidate':
-          handlers['call:ice-candidate']?.forEach((h) => h(parsed.payload));
-          break;
         case 'call:end':
-          handlers['call:end']?.forEach((h) => h(parsed.payload));
-          break;
         case 'call:decline':
-          handlers['call:decline']?.forEach((h) => h(parsed.payload));
-          break;
         case 'call:busy':
-          handlers['call:busy']?.forEach((h) => h(parsed.payload));
-          break;
         case 'call:unavailable':
-          handlers['call:unavailable']?.forEach((h) => h(parsed.payload));
-          break;
         case 'date':
-          handlers.date?.forEach((h) => h(parsed.payload));
+          runHandlers(parsed.type as keyof WSIncomingPayloadMap);
           break;
         default:
           console.warn('Unknown WebSocket message type');
-      }    
+      }
     };
 
     return () => {
       ws.close();
     };
-  }, [token, isAuthenticated, user, handlers.message, handlers.notification, handlers.typing]);
+  }, [token, isAuthenticated, user]);
 
   return (
     <WebSocketContext.Provider value={{ sendMessage, registerHandler, ready }}>
