@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { PhoneIcon, PhoneOffIcon } from 'lucide-react';
 import { CallIncomingModal } from './CallIncomingModal';
@@ -22,6 +22,8 @@ export function VoiceChat({ toUserId, username }: Props) {
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const [volume, setVolume] = useState(0);
 
   useEffect(() => {
     if (!remoteAnswer || !pcRef.current) return;
@@ -35,6 +37,30 @@ export function VoiceChat({ toUserId, username }: Props) {
       pcRef.current?.addIceCandidate(new RTCIceCandidate(candidate));
     });
   }, [iceCandidates]);
+
+  useEffect(() => {
+    let animationFrameId: number = 0;
+    const dataArray = new Uint8Array(32);
+
+    const updateVolume = () => {
+      if (analyserRef.current) {
+        analyserRef.current.getByteFrequencyData(dataArray);
+        const avg =
+          dataArray.reduce((sum, val) => sum + val, 0) / dataArray.length;
+        setVolume(avg);
+      }
+      animationFrameId = requestAnimationFrame(updateVolume);
+    };
+
+    if (callStatus === 'connected' || callStatus === 'calling') {
+      updateVolume();
+    } else {
+      cancelAnimationFrame(animationFrameId);
+      setVolume(0);
+    }
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [callStatus, analyserRef]);
 
   const createPeerConnection = (targetUserId: number) => {
     const pc = new RTCPeerConnection();
@@ -63,10 +89,21 @@ export function VoiceChat({ toUserId, username }: Props) {
     return pc;
   };
 
+  const setupAudioAnalyser = (stream: MediaStream) => {
+    const audioContext = new AudioContext();
+    const source = audioContext.createMediaStreamSource(stream);
+    const analyser = audioContext.createAnalyser();
+    analyser.fftSize = 64;
+    source.connect(analyser);
+    analyserRef.current = analyser;
+  };
+
+
   const startCall = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     localStreamRef.current = stream;
-
+    setupAudioAnalyser(stream);
+    
     const pc = createPeerConnection(toUserId);
     stream.getTracks().forEach((track) => pc.addTrack(track, stream));
 
@@ -92,6 +129,7 @@ export function VoiceChat({ toUserId, username }: Props) {
 
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     localStreamRef.current = stream;
+    setupAudioAnalyser(stream);
     stream.getTracks().forEach((track) => pc.addTrack(track, stream));
 
     await pc.setRemoteDescription(new RTCSessionDescription(incomingCall.offer));
@@ -127,6 +165,8 @@ export function VoiceChat({ toUserId, username }: Props) {
 
     setCallStatus('ended');
     setIncomingCall(null);
+    analyserRef.current = null;
+    setVolume(0);
   };
 
   return (
@@ -140,6 +180,11 @@ export function VoiceChat({ toUserId, username }: Props) {
           {callStatus === 'unavailable' && 'No response ❌'}
           {callStatus === 'ended' && 'Call ended.'}
         </span>
+      )}
+
+      {(callStatus === 'connected' || callStatus === 'calling') && (
+        <div className="w-2 h-6 bg-green-400 transition-all duration-100"
+            style={{ transform: `scaleY(${Math.max(volume / 50, 0.1)})`, transformOrigin: 'bottom' }} />
       )}
 
       {callStatus === 'incoming' && incomingCall && (
