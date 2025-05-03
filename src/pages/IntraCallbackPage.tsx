@@ -61,7 +61,7 @@ export function IntraCallbackPage() {
           );
           setStatus('success');
           console.log('✅ Intra login successful, sent to opener');
-          setTimeout(() => window.close(), 3000);
+          // setTimeout(() => window.close(), 3000);
         } else {
           console.warn('⚠️ window.opener is null');
           setStatus('error');
@@ -72,7 +72,7 @@ export function IntraCallbackPage() {
           window.opener.postMessage({ error: 'intra_login_failed' }, window.location.origin);
         }
         setStatus('error');
-        setTimeout(() => window.close(), 3000);
+        // setTimeout(() => window.close(), 3000);
       }
     }
 
