@@ -93,17 +93,17 @@ export function PublicProfilePage() {
 
   if (loading || !currentUser) return <LoadingScreen />;
   if (notFound || !username || !user) return <NotFoundPage />;
-  if (!status) return <LoadingScreen />;
+  if (!status && user.username !== currentUser?.username) return <LoadingScreen />;
 
   const profilePicture = user.pictures.find((pic) => pic.is_profile === 't') || null;
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col items-center justify-center min-h-screen">
       <ProfileHeader user={user} profilePicture={profilePicture} />
-      <ProfileStats showMessage={false} user={user} relationship={status} />
+      <ProfileStats showMessage={false} user={user} />
       <TagList tags={user.tags || []} />
 
-      {user.username !== currentUser?.username && (
+      {user.username !== currentUser?.username && status && (
         <PublicProfileActions
           user={user}
           relationship={status}
@@ -119,12 +119,14 @@ export function PublicProfilePage() {
       )}
 
       {/* Report User Button */}
-      <button
-        onClick={() => setShowReportModal(true)}
-        className="mt-4 px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-      >
-        🔫 Report User
-      </button>
+      {user.username !== currentUser?.username && (
+        <button
+          onClick={() => setShowReportModal(true)}
+          className="mt-4 px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+        >
+          🔫 Report User
+        </button>
+      )}
 
       <h3 className="font-bold mt-6 text-lg">📷 Pictures</h3>
       <PictureGallery pictures={(user.pictures || []).filter((pic) => pic.is_profile !== 't')} />
