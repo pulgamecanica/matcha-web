@@ -1,17 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
 import axiosInstance from '@api/axios';
 
-export type IntraTokenResponse = {
-  token: {
-    access_token: string;
-    token_type: 'bearer';
-    expires_in: number;
-    refresh_token: string;
-    scope: string;
-    created_at: number;
-    secret_valid_until: number;
-  };
+type IntraUser = {
+  intra_user_id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  picture_url: string;
 };
 
 export function IntraCallbackPage() {
@@ -32,30 +27,16 @@ export function IntraCallbackPage() {
       }
 
       try {
-        const res = await axiosInstance.post<IntraTokenResponse>('/auth/oauth/intra', { code }) as unknown as IntraTokenResponse;
-
-        const access_token = res?.token?.access_token;
-
-        console.log('✅ Token received from backend:', access_token);
-
-        if (!access_token)
-          throw new Error('Could not retrieve access token from the backend');
-
-        const userRes = await axios.get('https://api.intra.42.fr/v2/me', {
-          headers: { Authorization: `Bearer ${access_token}` },
-        });
-
-        const { id, first_name, last_name, email, image } = userRes.data;
-        const picture_url = image?.versions?.medium || image?.link || '';
+        const intraUser = await axiosInstance.post<IntraUser>('/auth/oauth/intra', { code }) as unknown as IntraUser;
 
         if (window.opener) {
           window.opener.postMessage(
             {
-              intra_user_id: id.toString(),
-              first_name,
-              last_name,
-              email,
-              picture_url,
+              intra_user_id: intraUser.intra_user_id.toString(),
+              first_name: intraUser.first_name,
+              last_name: intraUser.last_name,
+              email: intraUser.email,
+              picture_url: intraUser.picture_url,
             },
             window.location.origin
           );

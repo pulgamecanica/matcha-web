@@ -24,7 +24,6 @@ export function IntraLogin() {
 
   useEffect(() => {
     window.addEventListener('message', async (event) => {
-      console.log("message received", event)
       if (event.origin !== window.location.origin) return;
       const { intra_user_id, first_name, last_name, email, picture_url } = event.data;
 
