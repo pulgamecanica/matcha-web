@@ -17,6 +17,10 @@ export function ConversationPanel({
   const { user, profilePicture } = useUserMe();
   const navigate = useNavigate();
 
+  const filteredConversations = conversations.filter((conv) =>
+    conv.user.username.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="w-72 border-r dark:border-gray-500 bg-gray-100 dark:bg-gray-800 flex flex-col">
       <div className="border-b dark:border-gray-500">
@@ -48,7 +52,7 @@ export function ConversationPanel({
       <hr className='dark:border-gray-500' />
 
       <div className="overflow-y-auto flex-1">
-        {conversations.map((conv) => (
+        {filteredConversations.map((conv) => (
           <ConversationItem
             key={conv.user.username}
             user={conv.user}

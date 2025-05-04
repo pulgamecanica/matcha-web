@@ -34,13 +34,18 @@ export function MatchingPage() {
   );
 
   useEffect(() => {
+    setResults((prev) => sortMatches(prev, sort));
+  }, [sort]);
+
+  useEffect(() => {
     const savedFilters = loadFilters();
     const savedSort = loadSort();
     if (savedFilters) setFilters(savedFilters);
     if (savedSort) setSort(savedSort as SortType);
-
+  
     fetchMatches(savedFilters || {});
-  }, [sort, fetchMatches]);
+  }, []);
+  
 
   const handleFilterChange = (newFilters: MatchFilters) => {
     saveFilters(newFilters);

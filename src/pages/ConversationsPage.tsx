@@ -10,7 +10,7 @@ export function ConversationsPage() {
   const { user } = useUserMe();
   const { conversations, isUserTyping, appendMessageToConversation } = useMessages();
   const [selectedUsername, setSelectedUsername] = useState<string | null>(null);
-  const [ activeConversation, setActiveConversation] = useState<Conversation | null>(null);
+  const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
   const [searchParams] = useSearchParams();
   const initialUsername = searchParams.get('user');
 
