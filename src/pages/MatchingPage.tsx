@@ -24,28 +24,22 @@ export function MatchingPage() {
       setLoading(true);
       discoverMatches({ filters })
         .then((result) => {
-          const sorted = sortMatches(result, sort);
-          setResults(sorted);
+          setResults(result);
           saveFilters(filters);
         })
         .finally(() => setLoading(false));
     },
-    [sort]
+    []
   );
-
-  useEffect(() => {
-    setResults((prev) => sortMatches(prev, sort));
-  }, [sort]);
 
   useEffect(() => {
     const savedFilters = loadFilters();
     const savedSort = loadSort();
     if (savedFilters) setFilters(savedFilters);
     if (savedSort) setSort(savedSort as SortType);
-  
+
     fetchMatches(savedFilters || {});
-  }, []);
-  
+  }, [fetchMatches]);
 
   const handleFilterChange = (newFilters: MatchFilters) => {
     saveFilters(newFilters);
@@ -63,8 +57,8 @@ export function MatchingPage() {
           matches={results}
           sort={sort}
           onSortChange={(s) => {
-            saveSort(s);
             setSort(s);
+            saveSort(s);
           }}
           loading={loading}
         />
@@ -72,26 +66,3 @@ export function MatchingPage() {
     </Container>
   );
 }
-
-const calcAge = (birthdate: string) => {
-  const birth = new Date(birthdate);
-  const today = new Date();
-  let age = today.getFullYear() - birth.getFullYear();
-  const m = today.getMonth() - birth.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-  return age;
-};
-
-
-function sortMatches(matches: MatchResult[], sort: SortType): MatchResult[] {
-  return [...matches].sort((a, b) => {
-    if (sort === 'age') {
-      const ageA = calcAge(a.user.birth_year)
-      const ageB = calcAge(b.user.birth_year)
-      return ageA - ageB;
-    }
-
-    return parseFloat(b.score[sort] as string) - parseFloat(a.score[sort] as string);
-  });
-}
-

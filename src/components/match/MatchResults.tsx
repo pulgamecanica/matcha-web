@@ -1,11 +1,11 @@
-import { Grid } from '@mui/material';
+import { Grid, Skeleton } from '@mui/material';
 import { MatchCard } from './MatchCard';
 import { SortSelector } from './SortSelector';
 import { MatchResult } from '@/types/match';
 import { SortType } from '@/pages/MatchingPage';
 import { useEffect, useState } from 'react';
 import { NoMatches } from './NoMatches';
-import { MatchMap } from './MatchMap'; // create this component
+import { MatchMap } from './MatchMap';
 import MapIcon from '@mui/icons-material/Map';
 import ListIcon from '@mui/icons-material/ViewList';
 
@@ -17,27 +17,38 @@ type MatchResultsProps = {
 };
 
 export function MatchResults({ matches, sort, onSortChange, loading }: MatchResultsProps) {
-  const [view, setView] = useState<'list' | 'map'>(() => {
-    return (localStorage.getItem('matchViewMode') as 'list' | 'map') || 'list';
-  });
+  const [view, setView] = useState<'list' | 'map'>(
+    () => (localStorage.getItem('matchViewMode') as 'list' | 'map') || 'list'
+  );
 
   const [sortedMatches, setSortedMatches] = useState<MatchResult[]>([]);
+  const [isSorting, setIsSorting] = useState(false);
 
   useEffect(() => {
-    const sorted = [...matches].sort((a, b) =>
-      parseFloat(b.score[sort] as string) - parseFloat(a.score[sort] as string)
-    );
-    setSortedMatches(sorted);
+    setIsSorting(true);
+    const timeout = setTimeout(() => {
+      const sorted = [...matches].sort((a, b) => {
+        if (sort === 'age') {
+          const ageA = calcAge(a.user.birth_year);
+          const ageB = calcAge(b.user.birth_year);
+          return ageA - ageB;
+        }
+        return parseFloat(b.score[sort] as string) - parseFloat(a.score[sort] as string);
+      });
+      setSortedMatches(sorted);
+      setIsSorting(false);
+    }, 300); // simulate short sorting time
+
+    return () => clearTimeout(timeout);
   }, [matches, sort]);
-
-  if (loading) return;
-
-  if (!sortedMatches || sortedMatches.length === 0) return <NoMatches />;
 
   function handleViewToggle(newView: 'list' | 'map') {
     setView(newView);
     localStorage.setItem('matchViewMode', newView);
   }
+
+  if (loading) return null;
+  if (!matches || matches.length === 0) return <NoMatches />;
 
   return (
     <>
@@ -56,22 +67,39 @@ export function MatchResults({ matches, sort, onSortChange, loading }: MatchResu
             </>
           )}
         </button>
-        {view === 'list' &&
-          <SortSelector value={sort} onChange={onSortChange} />
-        }
+        {view === 'list' && <SortSelector value={sort} onChange={onSortChange} />}
       </div>
 
       {view === 'list' ? (
-        <Grid container spacing={3}>
-          {sortedMatches.map((match) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={match.user.username}>
-              <MatchCard match={match} />
-            </Grid>
-          ))}
-        </Grid>
+        isSorting ? (
+          <Grid container spacing={3}>
+            {[...Array(8)].map((_, i) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={i}>
+                <Skeleton variant="rectangular" height={250} />
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <Grid container spacing={3}>
+            {sortedMatches.map((match) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={match.user.username}>
+                <MatchCard match={match} />
+              </Grid>
+            ))}
+          </Grid>
+        )
       ) : (
         <MatchMap matches={sortedMatches} />
       )}
     </>
   );
+}
+
+function calcAge(birthYear: string) {
+  const birth = new Date(`${birthYear}-01-01`);
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  return age;
 }
