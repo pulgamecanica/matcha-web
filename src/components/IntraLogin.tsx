@@ -52,7 +52,7 @@ export function IntraLogin() {
   return (
     <button
       onClick={openIntraPopup}
-      className="w-full py-2 px-4 mt-2 bg-black text-white rounded-md hover:bg-gray-950 transition-colors"
+      className="py-2 px-4 bg-black text-white rounded-md hover:bg-gray-950 transition-colors"
     >
       Login with 42 Intra
     </button>
