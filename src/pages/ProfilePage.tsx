@@ -29,11 +29,16 @@ export function ProfilePage() {
     matches,
     connections,
     scheduledDates,
+    reloadRelationships,
   } = useUserMe();
   const [showModal, setShowModal] = useState(false);
   const [showDatesModal, setShowDatesModal] = useState(false);
   const [publicUser, setPublicUser] = useState<PublicUser | null>(null);
 
+  useEffect(() => {
+    if (!user) return;
+    reloadRelationships();
+  }, [user]);
 
   useEffect(() => {
     if (!user) return;

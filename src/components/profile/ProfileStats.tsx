@@ -10,7 +10,7 @@ type Props = {
   showMatches?: boolean;
 };
 
-type StatType = 'likes' | 'liked_by' | 'views' | 'visitors' | 'matches';
+type StatType = 'likes' | 'liked_by' | 'views' | 'visits' | 'matches';
 
 export function ProfileStats({ user, showMessage = false, showMatches = false }: Props) {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -41,7 +41,7 @@ export function ProfileStats({ user, showMessage = false, showMatches = false }:
     likes: <UserListStat users={user.likes} showMessage={showMessage} isConnected={isConnected} />,
     liked_by: <UserListStat users={user.liked_by} showMessage={showMessage} isConnected={isConnected} />,
     views: <UserListStat users={user.views} showMessage={showMessage} isConnected={isConnected} />,
-    visitors: <UserListStat users={user.visitors} showMessage={showMessage} isConnected={isConnected} />,
+    visits: <UserListStat users={user.visitors} showMessage={showMessage} isConnected={isConnected} />,
     matches: <UserListStat users={user.matches} showMessage={showMessage} isConnected={isConnected} />,
   };
 
@@ -77,7 +77,7 @@ export function ProfileStats({ user, showMessage = false, showMatches = false }:
           label="Visits"
           value={user.visitors.length}
           color="text-green-600 dark:text-green-400"
-          onClick={() => handleClick('visitors')}
+          onClick={() => handleClick('visits')}
         />
       </div>
 
