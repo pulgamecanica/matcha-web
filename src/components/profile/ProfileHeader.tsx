@@ -11,7 +11,16 @@ export function ProfileHeader({ user, profilePicture, location }: Props) {
   
   const isOnline = user.online_status;
   const lastSeen = location?.city || location?.country || null;
-  
+  const calcAge = (birthYear: string) => {
+    const birth = new Date(`${birthYear}-01-01`);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+    return age;
+  };
+  const age = calcAge(user.birth_year);
+
   return (
     <div className="flex items-center gap-4">
       <div className='relative'>
@@ -37,6 +46,11 @@ export function ProfileHeader({ user, profilePicture, location }: Props) {
         </div>
 
         <p className="text-sm text-gray-500">@{user.username}</p>
+
+        {/* ✨ New: Age · Gender · Sexual Preference */}
+        <p className="text-xs text-gray-400 mt-1">
+          {age} years old · {user.gender} · Interested in {user.sexual_preferences}
+        </p>
 
         {user.biography && (
           <p className="mt-1 text-sm text-gray-400 italic">"{user.biography}"</p>
