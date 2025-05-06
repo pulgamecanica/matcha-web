@@ -41,7 +41,7 @@ export function ProfileHeader({ user, profilePicture, location }: Props) {
             className={`inline-block w-3 h-3 rounded-full ${
               isOnline ? 'bg-green-500' : 'bg-gray-400'
             }`}
-            title={isOnline ? 'Online' : lastSeen ? `Last seen: ${lastSeen}` : 'Offline'}
+            title={isOnline ? 'Online' : `Last seen at: ${user.last_seen_at}`}
           />
         </div>
 
