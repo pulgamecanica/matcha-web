@@ -38,7 +38,7 @@ export function ProfilePage() {
   useEffect(() => {
     if (!user) return;
     reloadRelationships();
-  }, [user]);
+  }, [user, reloadRelationships]);
 
   useEffect(() => {
     if (!user) return;

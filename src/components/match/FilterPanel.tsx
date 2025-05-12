@@ -1,21 +1,18 @@
 import { useEffect, useState } from "react";
-import { fetchAllTags } from "@/api/tags";
-import Autocomplete from "@mui/material/Autocomplete";
 import {
   Box,
   Checkbox,
   FormControlLabel,
   Paper,
   Slider,
-  TextField,
   Typography,
   Button,
 } from "@mui/material";
 import { MatchFilters } from "@/types/match";
-import toast from "react-hot-toast";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useUserMe } from "@/hooks/useUserMe";
 import { DistanceMap } from "@/components/location/DistanceMap";
+import { TagsInput } from '@components/forms/TagsInput';
 
 type FilterPanelProps = {
   onSearch: (filters: MatchFilters) => void;
@@ -39,17 +36,10 @@ export function FilterPanel({ onSearch, initialFilters }: FilterPanelProps) {
   const [useTags, setUseTags] = useState(true);
 
   const [tags, setTags] = useState<string[]>([]);
-  const [allTags, setAllTags] = useState<string[]>([]);
 
   const [showAdvanced, setShowAdvanced] = useState(() => {
     return localStorage.getItem("showAdvancedSearch") === "true";
   });
-
-  useEffect(() => {
-    fetchAllTags()
-      .then(setAllTags)
-      .catch(() => toast.error("Failed to load tags"));
-  }, []);
 
   useEffect(() => {
     if (initialFilters) {
@@ -153,30 +143,11 @@ export function FilterPanel({ onSearch, initialFilters }: FilterPanelProps) {
           label="Match by Tags"
         />
 
-        <Autocomplete
-          multiple
-          disableCloseOnSelect
-          disabled={!useTags}
-          options={allTags}
+        <TagsInput
           value={tags}
-          onChange={(_, newTags) => setTags(newTags)}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Tags"
-              placeholder="Select tags"
-              InputLabelProps={{
-                className: "text-gray-900 dark:text-white",
-              }}
-              InputProps={{
-                ...params.InputProps,
-                className: "bg-white dark:bg-gray-700 text-black dark:text-white rounded",
-              }}
-            />
-          )}
-          className="dark:text-white my-4"
+          onChange={setTags}
+          disabled={!useTags}
         />
-
 
         <Button variant="contained" fullWidth onClick={handleSubmit} className="mt-2">
           Search
