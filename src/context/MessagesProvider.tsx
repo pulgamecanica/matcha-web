@@ -29,7 +29,7 @@ export function MessagesProvider({ children }: { children: ReactNode }) {
   const { registerHandler, sendMessage } = useWebSocket();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [typingUsers, setTypingUsers] = useState<Record<number, boolean>>({});
-  const { user } = useUserMe();
+  const { user, connections } = useUserMe();
 
   const [incomingCall, setIncomingCall] = useState<{ from_user_id: number; offer: RTCSessionDescriptionInit } | null>(null);
   const [callStatus, setCallStatus] = useState<CallStatus>('idle');
@@ -57,7 +57,7 @@ export function MessagesProvider({ children }: { children: ReactNode }) {
     fetchAllMessages()
       .then(enrichConversations)
       .catch((e) => toast.error(`Failed to load messages: ${e}`));
-  }, [user]);
+  }, [user, connections]);
 
   useEffect(() => {
     registerHandler('message', (msg: Message) => {

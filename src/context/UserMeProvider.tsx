@@ -266,6 +266,7 @@ export const UserMeProvider = ({ children }: { children: React.ReactNode }) => {
       setMatches(await axiosInstance.get('/me/matches') as unknown as PublicUser[]);
       setViews(await axiosInstance.get('/me/views') as unknown as PublicUser[]);
       setViewers(await axiosInstance.get('/me/visits') as unknown as PublicUser[]);
+      setConnections(await axiosInstance.get('/me/connections') as unknown as PublicUser[]);
     } catch {
       toast.error('Failed to retrieve your relationship');
     }

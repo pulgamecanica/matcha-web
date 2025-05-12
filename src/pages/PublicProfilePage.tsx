@@ -16,7 +16,7 @@ import { reportUser } from '@/api/reportUser';
 
 export function PublicProfilePage() {
   const { username } = useParams();
-  const { user: currentUser } = useUserMe();
+  const { user: currentUser, likedBy } = useUserMe();
   const [user, setUser] = useState<PublicUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -40,11 +40,11 @@ export function PublicProfilePage() {
   const reloadRelationships = () => setReloadTrigger((n) => n + 1);
 
   useEffect(() => {
-    if (!username || !currentUser) return;
+    if (!username || !currentUser || !likedBy) return;
     getRelationshipStatus(username, currentUser.username).then((result) => {
       if (result) setStatus(result);
     });
-  }, [reloadTrigger, username, currentUser]);
+  }, [reloadTrigger, username, currentUser, likedBy]);
 
   useEffect(() => {
     if (!username) return;

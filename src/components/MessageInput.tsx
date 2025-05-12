@@ -42,7 +42,7 @@ export function MessageInput({ sender, onSendLocalMessage }: MessageInputProps) 
   };
 
   return (
-    <div className="border-t px-4 py-3 flex items-center gap-2 dark:border-gray-700">
+    <div className="pb-16 sm:pb-4 border-t px-4 py-3 flex items-center gap-2 dark:border-gray-700">
       <input
         type="text"
         placeholder="Type a message..."
