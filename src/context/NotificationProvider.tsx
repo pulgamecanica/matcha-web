@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { Notification } from '@/types/notification';
 import { getNotifications, markAsRead, deleteNotification } from '@/api/notificationService';
@@ -11,7 +11,7 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
   const [hasUnread, setHasUnread] = useState(false);
   const { registerHandler } = useWebSocket();
   const { user, reloadScheduledDates, reloadRelationships } = useUserMe();
-  
+  const isHandlerRegistered = useRef(false);
 
   useEffect(() => {
     if (!user) return;
@@ -28,9 +28,8 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
   }, [user]);
 
   
-
   useEffect(() => {
-    if (!user) return;
+    if (!user || isHandlerRegistered.current) return;
 
     const updateProfileOnNotification = async (notif: Notification) => {
       switch (notif.type) {
@@ -55,7 +54,8 @@ export const NotificationProvider = ({ children }: { children: React.ReactNode }
       });
       await updateProfileOnNotification(payload);
     });
-  }, [registerHandler, user, reloadRelationships, reloadScheduledDates]);
+    isHandlerRegistered.current = true;
+  }, [registerHandler, user, reloadRelationships, reloadScheduledDates, isHandlerRegistered]);
 
   useEffect(() => {
     if (!user) return;

@@ -55,7 +55,6 @@ export function WebSocketProvider({ children }: { children: React.ReactNode }) {
     ws.onmessage = (event) => {
       const parsed = JSON.parse(event.data) as WSIncomingMessage;
       const handlers = handlersRef.current;
-
       const runHandlers = <K extends keyof WSIncomingPayloadMap>(type: K) => {
         handlers[type]?.forEach((h) => h(parsed.payload as WSIncomingPayloadMap[K]));
       };

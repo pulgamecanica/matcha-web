@@ -10,6 +10,12 @@ type Props = {
 
 export function UserListStat({ users, showMessage, isConnected }: Props) {
   const navigate = useNavigate();
+
+  const userCounts = users.reduce<Record<number, number>>((acc, user) => {
+    acc[user.id] = (acc[user.id] || 0) + 1;
+    return acc;
+  }, {});
+
   const uniqueUsers = Array.from(new Map(users.map(u => [u.id, u])).values());
 
   return (
@@ -24,8 +30,9 @@ export function UserListStat({ users, showMessage, isConnected }: Props) {
             className="hover:underline"
           >
             {user.username}
+            {userCounts[user.id] > 1 ? ` (${userCounts[user.id]})` : ''}
           </span>
-          {showMessage && isConnected(user) &&(
+          {showMessage && isConnected(user) && (
             <MailOpen
               className="h-4 w-4 text-blue-500 hover:text-blue-700"
               onClick={(e) => {
