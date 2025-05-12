@@ -5,7 +5,7 @@ import { LocationCard } from '@/components/profile/LocationCard';
 import { PictureGallery } from '@/components/profile/PictureGallery';
 import LoadingScreen from '@/components/LoadingScreen';
 import { LocationEditorModal } from '@/components/LocationEditorModal';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pencil } from 'lucide-react';
 import { toPublicUser } from '@/utils/toPublicUser';
 import { ProfileStats } from '@/components/profile/ProfileStats';
@@ -34,11 +34,14 @@ export function ProfilePage() {
   const [showModal, setShowModal] = useState(false);
   const [showDatesModal, setShowDatesModal] = useState(false);
   const [publicUser, setPublicUser] = useState<PublicUser | null>(null);
+  const hasRefreshedRelationships = useRef(false);
 
   useEffect(() => {
-    if (!user) return;
+    if (hasRefreshedRelationships.current) return;
+    
+    hasRefreshedRelationships.current = true;
     reloadRelationships();
-  }, [user, reloadRelationships]);
+  }, [reloadRelationships, hasRefreshedRelationships]);
 
   useEffect(() => {
     if (!user) return;
